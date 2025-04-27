@@ -1,0 +1,28 @@
+name: Deploy on Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SSH client
+        run: sudo apt-get install -y sshpass
+
+      - name: Upload files to server
+        run: |
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no -r \
+            api frontend mongodb \
+            docker-compose.yaml docker-compose-server.yaml \
+            ${SERVER_USER}@${SERVER_IP}:${SERVER_DESTINATION_PATH}
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_DESTINATION_PATH: ${{ secrets.SERVER_DESTINATION_PATH }}
