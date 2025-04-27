@@ -1,28 +1,82 @@
 name: Deploy on Pull Request
 
+permissions:
+  pull-requests: read
+  deployments: read
+  contents: read
+
 on:
   pull_request:
+    branches:
+      - main
     types: [opened, synchronize]
+  push:
+    branches:
+      - main  
 
 jobs:
   deploy:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
+    concurrency:
+      group: ${{ github.event.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          clean: true
 
-      - name: Install SSH client
-        run: sudo apt-get install -y sshpass
+      - name: Install rsync and sshpass
+        run: sudo apt-get update && sudo apt-get install -y rsync sshpass
 
-      - name: Upload files to server
+      - name: Sync project to server (smart copy)
         run: |
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no -r \
-            api frontend mongodb \
-            docker-compose.yaml docker-compose-server.yaml \
-            ${SERVER_USER}@${SERVER_IP}:${SERVER_DESTINATION_PATH}
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" rsync -avz \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.env' \
+            --exclude='logs' \
+            --exclude='tmp' \
+            --exclude='node_modules' \
+            --exclude='__pycache__' \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./ "${SERVER_USER}@${SERVER_IP}:${SERVER_DESTINATION_PATH}"
         env:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_DESTINATION_PATH: ${{ secrets.SERVER_DESTINATION_PATH }}
+
+      - name: Rebuild and restart docker-compose services
+        run: |
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} << 'EOF'
+            set -e
+            cd ${SERVER_DESTINATION_PATH}
+            echo "Stopping old containers..."
+            docker compose -f docker-compose-server.yaml down
+            echo "Pulling latest images (if any)..."
+            docker compose -f docker-compose-server.yaml pull || true
+            echo "Rebuilding and starting containers..."
+            docker compose -f docker-compose-server.yaml up -d --build
+            echo "Deployment completed!"
+          EOF
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_DESTINATION_PATH: ${{ secrets.SERVER_DESTINATION_PATH }}
+
+      - name: Send notification to Telegram
+        if: env.TELEGRAM_BOT_TOKEN != '' && env.TELEGRAM_CHAT_ID != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d text="✅ Deployment for PR #${PR_NUMBER} is complete!"
