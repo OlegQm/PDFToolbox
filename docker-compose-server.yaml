@@ -1,0 +1,23 @@
+# docker-compose-server.yaml
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./api
+    container_name: api_server
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend_server
+    restart: unless-stopped
+
+  mongodb:
+    build:
+      context: ./mongodb
+    container_name: mongodb_server
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
