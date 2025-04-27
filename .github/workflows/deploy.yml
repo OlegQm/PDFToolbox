@@ -53,17 +53,18 @@ jobs:
 
       - name: Rebuild and restart docker-compose services
         run: |
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} << 'EOF'
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} << EOF
             set -e
             cd ${SERVER_DESTINATION_PATH}
             echo "Stopping old containers..."
-            docker compose -f docker-compose-server.yaml down
+            docker compose -f docker-compose-server.yaml down || true
             echo "Pulling latest images (if any)..."
             docker compose -f docker-compose-server.yaml pull || true
             echo "Rebuilding and starting containers..."
             docker compose -f docker-compose-server.yaml up -d --build
             echo "Deployment completed!"
           EOF
+  
         env:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
