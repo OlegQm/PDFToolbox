@@ -10,7 +10,7 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const baseUrl = import.meta.env.REACT_APP_BASE_URL || 'http://localhost:8000';
+      const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:8000';
       console.log(`Calling ${baseUrl}/ping`)
       const res = await fetch(`${baseUrl}/ping`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
