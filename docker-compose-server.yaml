@@ -32,6 +32,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        REACT_APP_BASE_URL: https://node100.webte.fei.stuba.sk/PDFToolbox
+        NODE_ENV: production
     container_name: frontend_server
     restart: unless-stopped
     depends_on:
