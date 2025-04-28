@@ -1,7 +1,9 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+import os
 
-app = FastAPI()
+root_path = os.getenv("FASTAPI_ROOT_PATH", "")
+app = FastAPI(root_path=root_path)
 
 app.add_middleware(
     CORSMiddleware,

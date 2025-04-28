@@ -11,6 +11,8 @@ services:
       - 27017:27017
 
   api:
+    environment:
+      - FASTAPI_ROOT_PATH=/PDFToolbox/api
     build:
       context: ./api
       dockerfile: Dockerfile
