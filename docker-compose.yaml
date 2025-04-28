@@ -19,7 +19,7 @@ services:
       - 3001:5173
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - BASE_URL=http://localhost:8000
+      - REACT_APP_BASE_URL=http://localhost:8000
 
   mongodb:
     image: mongo:latest
