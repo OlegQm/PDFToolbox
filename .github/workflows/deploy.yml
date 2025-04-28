@@ -1,7 +1,7 @@
 name: Deploy on Pull Request
 
 permissions:
-  pull-requests: read
+  pull-requests: write
   deployments: read
   contents: read
 
