@@ -33,7 +33,7 @@ services:
     depends_on:
       - api
     ports:
-      - 3000:5173
+      - 3001:5173
 
 volumes:
   mongo_data:
