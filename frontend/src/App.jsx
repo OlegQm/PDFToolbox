@@ -10,7 +10,8 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('http://localhost:8000/ping')
+      const baseUrl = process.env.BASE_URL || 'http://localhost:8000';
+      const res = await fetch(`${baseUrl}/ping`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       setResp(data.message)
