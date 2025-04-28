@@ -11,8 +11,6 @@ services:
       - 27017:27017
 
   api:
-    environment:
-      - FASTAPI_ROOT_PATH=/PDFToolbox/api
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -23,6 +21,8 @@ services:
     environment:
       MONGO_URI: mongodb://mongodb:27017/mydb
       PYTHONUNBUFFERED: '1'
+      FASTAPI_ROOT_PATH: /PDFToolbox/api
+
     ports:
       - 8000:8000
 
