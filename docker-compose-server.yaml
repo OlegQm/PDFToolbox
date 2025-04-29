@@ -33,7 +33,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        VITE_BASE_URL: https://node100.webte.fei.stuba.sk/PDFToolbox
         NODE_ENV: production
     container_name: frontend_server
     restart: unless-stopped

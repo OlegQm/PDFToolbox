@@ -9,3 +9,6 @@ restart:
 
 logs:
 	docker compose logs -f
+
+prune_all:
+	docker system prune -a --volumes
