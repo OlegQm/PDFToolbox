@@ -1,23 +1,45 @@
-# docker-compose-server.yaml
 version: '3.8'
 
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_server
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - 27017:27017
+
   api:
     build:
       context: ./api
+      dockerfile: Dockerfile
     container_name: api_server
     restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/mydb
+      PYTHONUNBUFFERED: '1'
+      FASTAPI_ROOT_PATH: /PDFToolbox/api
+
+    ports:
+      - 8000:8000
 
   frontend:
+    environment:
+    - VITE_BASE_URL=https://node100.webte.fei.stuba.sk/PDFToolbox
     build:
       context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NODE_ENV: production
     container_name: frontend_server
     restart: unless-stopped
-
-  mongodb:
-    build:
-      context: ./mongodb
-    container_name: mongodb_server
+    depends_on:
+      - api
     ports:
-      - "27017:27017"
-    restart: unless-stopped
+      - 3001:80
+
+volumes:
+  mongo_data:
