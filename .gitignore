@@ -7,4 +7,3 @@ pytest_cache
 .trunk/
 certbot/
 .local-ssl/
-nginx/.htpasswd
