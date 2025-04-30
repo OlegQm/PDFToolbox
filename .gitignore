@@ -1,0 +1,10 @@
+venv/
+.env
+pytest_cache
+.pytest_cache
+*/.pytest_cache
+**/__pycache__/
+.trunk/
+certbot/
+.local-ssl/
+nginx/.htpasswd
