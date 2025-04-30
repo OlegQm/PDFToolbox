@@ -16,6 +16,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
       args:
+        VITE_BASE_URL: http://localhost:8000
         NODE_ENV: development
     volumes:
       - ./frontend:/app
