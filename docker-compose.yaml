@@ -9,7 +9,6 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - MONGO_URI=mongodb://mongodb:27017/mydb
-      - FASTAPI_ROOT_PATH=/api
 
   frontend:
     build:
