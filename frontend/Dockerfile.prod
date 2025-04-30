@@ -1,12 +1,6 @@
 FROM node:18 AS builder
 WORKDIR /app
 
-<<<<<<< HEAD
-=======
-ARG VITE_BASE_URL
-ENV VITE_BASE_URL=$VITE_BASE_URL
-
->>>>>>> d5f1d2aca4a0ae0586d6d1639c4e8ad8e2dd83f0
 COPY package*.json ./
 RUN npm install
 COPY . .
