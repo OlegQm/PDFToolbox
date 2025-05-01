@@ -12,3 +12,4 @@ def pong():
         dict: A JSON response containing a "message" key with the value "pong!".
     """
     return get_message()
+
