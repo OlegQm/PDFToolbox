@@ -46,6 +46,15 @@ async def rotate_pdf(
     except Exception:
         raise HTTPException(status_code=400, detail="Cannot read PDF.")
 
+    total_pages = len(reader.pages)
+
+    for rot in rotations_list:
+        if rot.page < 1 or rot.page > total_pages:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Page {rot.page} is out of range. PDF has {total_pages} pages."
+            )
+
     writer = PdfWriter()
     rot_map = {r.page: r.degrees for r in rotations_list}
 

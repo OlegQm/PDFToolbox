@@ -4,6 +4,7 @@ from fastapi import FastAPI, APIRouter
 
 from routers import (
     rotate_pdf,
+    extract_pages,
 )
 
 API_PREFIX = os.getenv("API_PREFIX", "")
@@ -23,5 +24,6 @@ app.add_middleware(
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(rotate_pdf.router)
+api_router.include_router(extract_pages.router)
 
 app.include_router(api_router)
