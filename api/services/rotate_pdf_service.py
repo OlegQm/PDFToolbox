@@ -30,7 +30,10 @@ async def rotate_pdf(
         HTTPException: If the file is not a PDF, cannot be read, or the rotations JSON is invalid.
     """
     if file.content_type != "application/pdf":
-        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF files are supported."
+        )
 
     try:
         raw_list = json.loads(rotations)
@@ -48,6 +51,12 @@ async def rotate_pdf(
 
     for idx, page in enumerate(reader.pages, start=1):
         if idx in rot_map:
+            rotation_angle = int(rot_map[idx])
+            if rotation_angle % 90 != 0:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Rotation must be a multiple of 90 degrees."
+                )
             page.rotate(int(rot_map[idx]))
         writer.add_page(page)
 
