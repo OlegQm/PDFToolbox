@@ -1,6 +1,10 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter
-from routers import test_endpoint
+
+from routers import (
+    test_endpoint,
+    rotate_pdf,
+)
 
 app = FastAPI(
     docs_url="/api/docs",
@@ -16,4 +20,6 @@ app.add_middleware(
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(test_endpoint.router)
+api_router.include_router(rotate_pdf.router)
+
 app.include_router(api_router)

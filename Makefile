@@ -9,3 +9,7 @@ restart:
 
 logs:
 	docker compose logs -f
+
+clean_all:
+	docker compose down --volumes --remove-orphans
+	docker system prune -a --volumes -f
