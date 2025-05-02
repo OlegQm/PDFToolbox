@@ -1,4 +1,4 @@
-# Протестировать все эндпоинты вы можете по ссылке: (endpoints)[https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs]
+# Протестировать все эндпоинты вы можете по ссылке: [endpoints](https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs)
 
 ## 1. `/api/rotate-pdf`
 
