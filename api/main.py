@@ -1,3 +1,4 @@
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter
 
@@ -5,7 +6,10 @@ from routers import (
     rotate_pdf,
 )
 
+API_PREFIX = os.getenv("API_PREFIX", "")
+
 app = FastAPI(
+    root_path=API_PREFIX,
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
