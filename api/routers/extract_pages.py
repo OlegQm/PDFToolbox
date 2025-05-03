@@ -4,6 +4,7 @@ from services.extract_pages_service import extract_pages_service
 
 router = APIRouter()
 
+
 @router.post(
     "/extract-pages",
     response_class=StreamingResponse,

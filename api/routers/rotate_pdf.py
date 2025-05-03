@@ -4,6 +4,7 @@ from services.rotate_pdf_service import rotate_pdf as rotate_pdf_service
 
 router = APIRouter()
 
+
 @router.post(
     "/rotate-pdf",
     response_class=StreamingResponse,

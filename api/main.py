@@ -5,6 +5,9 @@ from fastapi import FastAPI, APIRouter
 from routers import (
     rotate_pdf,
     extract_pages,
+    merge_pdfs,
+    split_pdf,
+    images_to_pdf,
 )
 
 API_PREFIX = os.getenv("API_PREFIX", "")
@@ -25,5 +28,8 @@ app.add_middleware(
 api_router = APIRouter(prefix="/api")
 api_router.include_router(rotate_pdf.router)
 api_router.include_router(extract_pages.router)
+api_router.include_router(merge_pdfs.router)
+api_router.include_router(split_pdf.router)
+api_router.include_router(images_to_pdf.router)
 
 app.include_router(api_router)
