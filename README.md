@@ -19,17 +19,22 @@
 3. Запустить контейнеры:
    `docker compose up --build`
 4. Открыть в браузере:
-   Фронтенд: `http://localhost:3001`  
-   Бэкенд (API): `http://localhost:8000`  
-   MongoDB: `mongodb://mongodb:27017/mydb`  
-5. Остановить приложение:
+   4.1 Фронтенд:
+     - Локально: `http://localhost:3001`
+     - На сервере: `https://node100.webte.fei.stuba.sk/PDFToolbox/`
+   4.2 Бэкенд (API):
+     - Локально: `http://localhost:8000/api` (`http://localhost:8000/api/docs`, если нужна документация)
+     - На сервере: `https://node100.webte.fei.stuba.sk/PDFToolbox/api` (`https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs`, если нужна документация)
+   4.3 MongoDB: `mongodb://mongodb:27017/mydb`  
+6. Остановить приложение:
    Ctrl + C (или `docker compose down`)
-6. Перезапустить приложение:
+7. Перезапустить приложение:
    `docker compose down && docker compose up --build`
-## Полезные команды
 
-- `docker compose down --volumes --remove-orphans
-	docker system prune -a --volumes -f`
+## Полезные команды
+#### Очистить файлы Docker-а
+- `docker compose down --volumes --remove-orphans`
+  `docker system prune -a --volumes -f`
 (при проблемах с Docker — переустановить Docker Desktop)
+#### Посмотреть логи приложения в Docker:
 - `docker compose logs -f`
-(посмотреть логи приложения в Docker)
