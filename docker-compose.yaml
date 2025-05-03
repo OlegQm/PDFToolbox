@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   api:
-    build: ./api
+    build:
+      context: ./api
     volumes:
       - ./api:/app
     ports:
@@ -9,13 +10,14 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - MONGO_URI=mongodb://mongodb:27017/mydb
-      - FASTAPI_ROOT_PATH=/api
+      - API_PREFIX=/
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
       args:
+        VITE_BASE_URL: http://localhost:8000
         NODE_ENV: development
     volumes:
       - ./frontend:/app

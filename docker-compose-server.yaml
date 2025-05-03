@@ -21,7 +21,7 @@ services:
     environment:
       MONGO_URI: mongodb://mongodb:27017/mydb
       PYTHONUNBUFFERED: '1'
-      FASTAPI_ROOT_PATH: /PDFToolbox/api
+      API_PREFIX: /PDFToolbox
 
     ports:
       - 8000:8000
@@ -33,6 +33,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
+        VITE_BASE_URL: https://node100.webte.fei.stuba.sk/PDFToolbox
         NODE_ENV: production
     container_name: frontend_server
     restart: unless-stopped
