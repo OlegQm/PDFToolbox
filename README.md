@@ -17,18 +17,19 @@
 2. Перейти в папку проекта:
    `cd PDFToolbox`
 3. Запустить контейнеры:
-   `make up`  
+   `docker compose up --build`
 4. Открыть в браузере:
    Фронтенд: `http://localhost:3001`  
    Бэкенд (API): `http://localhost:8000`  
    MongoDB: `mongodb://mongodb:27017/mydb`  
 5. Остановить приложение:
-   Ctrl + C (или `make down`)
+   Ctrl + C (или `docker compose down`)
 6. Перезапустить приложение:
-
+   `docker compose down && docker compose up --build`
 ## Полезные команды
 
-- `make clean_all`  
+- `docker compose down --volumes --remove-orphans
+	docker system prune -a --volumes -f`
 (при проблемах с Docker — переустановить Docker Desktop)
-- `make logs`
+- `docker compose logs -f`
 (посмотреть логи приложения в Docker)
