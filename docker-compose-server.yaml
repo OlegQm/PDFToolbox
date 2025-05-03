@@ -21,6 +21,7 @@ services:
     environment:
       MONGO_URI: mongodb://mongodb:27017/mydb
       PYTHONUNBUFFERED: '1'
+      API_PREFIX: /PDFToolbox
 
     ports:
       - 8000:8000

@@ -3,8 +3,9 @@ venv/
 pytest_cache
 .pytest_cache
 */.pytest_cache
-**/__pycache__
+__pycache__/
+api/__pycache__/
 .trunk/
 certbot/
 .local-ssl/
-nginx/.htpasswd
+.htpasswd

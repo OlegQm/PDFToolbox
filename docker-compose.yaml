@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   api:
-    build: ./api
+    build:
+      context: ./api
     volumes:
       - ./api:/app
     ports:
@@ -9,6 +10,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - MONGO_URI=mongodb://mongodb:27017/mydb
+      - API_PREFIX=/
 
   frontend:
     build:
