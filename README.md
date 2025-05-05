@@ -45,7 +45,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs` — если нужна документация
 
     4.3. **MongoDB**  
-    &nbsp;&nbsp;&nbsp;&nbsp;• URI: `mongodb://mongodb:27017/mydb`
+    &nbsp;&nbsp;&nbsp;&nbsp;• URI: `mongodb://mongodb:27017`
 
 5. **Остановить приложение:**
 
@@ -65,6 +65,6 @@
 #### Очистить файлы Docker-а
 - `docker compose down --volumes --remove-orphans`
 - `docker system prune -a --volumes -f`
-- При проблемах с Docker (если не очистит) — переустановить Docker Desktop)
+- При проблемах с Docker (если не очистит) — переустановить Docker Desktop
 #### Посмотреть логи приложения в Docker:
 - `docker compose logs -f`
