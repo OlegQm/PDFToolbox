@@ -1,8 +1,9 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
-from services.images_to_pdf_service import images_to_pdf_service
+from services.pdf_processing.images_to_pdf_service import images_to_pdf_service
 
 router = APIRouter()
+
 
 @router.post(
     "/images-to-pdf",

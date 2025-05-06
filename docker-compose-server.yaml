@@ -44,3 +44,4 @@ services:
 
 volumes:
   mongo_data:
+    name: prod_mongo_data

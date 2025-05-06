@@ -1,8 +1,9 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
-from services.compress_pdf_service import compress_pdf_service
+from services.pdf_processing.compress_pdf_service import compress_pdf_service
 
 router = APIRouter()
+
 
 @router.post(
     "/compress-pdf",

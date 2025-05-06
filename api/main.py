@@ -2,7 +2,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter
 
-from routers import (
+from routers.pdf_processing import (
     rotate_pdf,
     extract_pages,
     merge_pdfs,
@@ -11,9 +11,10 @@ from routers import (
     add_page_numbers,
     add_watermark,
     remove_pages,
-    url_to_pdf,
     compress_pdf,
+    url_to_pdf
 )
+from routers.authorization import token
 
 API_PREFIX = os.getenv("API_PREFIX", "")
 
@@ -26,11 +27,14 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 api_router = APIRouter(prefix="/api")
+
+######## PDF processing routers ########
 api_router.include_router(rotate_pdf.router)
 api_router.include_router(extract_pages.router)
 api_router.include_router(merge_pdfs.router)
@@ -41,5 +45,8 @@ api_router.include_router(add_watermark.router)
 api_router.include_router(remove_pages.router)
 api_router.include_router(url_to_pdf.router)
 api_router.include_router(compress_pdf.router)
+
+######## Authentication routers ########
+api_router.include_router(token.router)
 
 app.include_router(api_router)

@@ -2,7 +2,7 @@ from typing import Annotated, Literal
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import Field
-from services.add_watermark_service import add_watermark_service
+from services.pdf_processing.add_watermark_service import add_watermark_service
 
 router = APIRouter()
 

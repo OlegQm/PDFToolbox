@@ -17,7 +17,25 @@ async function rotatePdf(file, rotations) {
   const formData = new FormData();
   formData.append("file", file, file.name);
   formData.append("rotations", JSON.stringify(rotations));
-  const res = await callApi("/rotate-pdf", { method: "POST", body: formData });
+
+  // TODO Valera: Добавить полноценную регистрацию и сохранение данных пользователя
+  // Authorization
+  const username = "admin"
+  const password = "secret"
+  const resToken = await fetch(`${BASE_URL}/api/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ username, password })
+  });
+  const data = await resToken.json();
+  const access_token = data.access_token;
+
+  // Rotate PDF
+  const res = await callApi("/rotate-pdf", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${access_token}` },
+    body: formData
+  });
   const raw = await res.blob();
   return new Blob([raw], { type: "application/pdf" });
 }

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
-from services.add_page_numbers_service import add_page_numbers_service
+from services.pdf_processing.add_page_numbers_service import add_page_numbers_service
 
 router = APIRouter()
+
 
 @router.post(
     "/add-page-numbers",
