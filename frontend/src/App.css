@@ -1,42 +1,448 @@
-#root {
+/* ========================================
+   CSS-переменные
+   ======================================== */
+:root {
+  --clr-bg-page:    #f5f7fa;
+  --clr-bg-panel:   #fff;
+  --clr-border:     #e0e0e0;
+  --clr-input:      #ccc;
+  --clr-text:       #213547;
+  --clr-primary:    #646cff;
+  --clr-primary-h:  #4e56e6;
+  --clr-success:    #38a169;
+  --clr-success-h:  #2f855a;
+  --clr-danger:     #e53e3e;
+  --radius:         8px;
+  --gap:            1rem;
+  --font-size:      1rem;
+}
+
+/* ========================================
+   Базовые стили
+   ======================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--clr-bg-page);
+  color: var(--clr-text);
+}
+.app-container {
   max-width: 1280px;
-  margin: 0 auto;
+  margin: auto;
   padding: 2rem;
+}
+
+/* ========================================
+   Хедер
+   ======================================== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--gap);
+}
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.download-link {
+  color: var(--clr-primary);
+  text-decoration: none;
+  font-size: var(--font-size);
+}
+
+/* ========================================
+   Dropzone
+   ======================================== */
+.dropzone {
+  display: block;
+  margin: 6.2rem auto;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
   text-align: center;
+  position: relative;
+
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.dropzone--error,
+.drop-error-active {
+  border-color: #c0392b !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.primary-btn {
+  position: static;
+  z-index: 1;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--clr-primary);
+  color: #fff;
+  border: none;
+  border-radius:var(--radius);
+  cursor: pointer;
+  transition: background .2s;
+}
+.primary-btn:hover {
+  background: #4e56e6;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.hidden-input {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.card {
-  padding: 2em;
+.dropzone *,
+.dropzone *:before,
+.dropzone *:after {
+  overflow: visible;
 }
 
-.read-the-docs {
-  color: #888;
+
+/* Скрываем настоящий инпут, но оставляем кликабельным всю кнопку */
+.primary-btn > input {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
+
+/* Сообщение об ошибке под дропзоной */
+.drop-error {
+  margin-top: 0.5rem;
+  color: var(--clr-danger);
+  font-size: 0.9rem;
+}
+
+/* ========================================
+   Сетка инструментов
+   ======================================== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--gap);
+  margin-bottom: 2rem;
+}
+.tool-btn {
+  width: 100%;
+  height: 100px;
+  background: var(--clr-bg-panel);
+  border: 2px solid var(--clr-border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.tool-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.tool-btn:hover:not(:disabled) {
+  border-color: var(--clr-primary);
+  background: #fff;
+}
+.tool-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+.tool-btn span {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* ========================================
+   Сайдбар (панель настроек)
+   ======================================== */
+.sidebar {
+  position: fixed;
+  top: 0; right: 0;         /* небольшой отступ от края */
+  width: 360px;                /* чуть шире */
+  height: 100vh;
+  background: var(--clr-bg-panel);
+  box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  z-index: 1000;
+}
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.sidebar-header h2 {
+  font-size: 1.25rem;
+}
+.sidebar-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.settings-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;       /* пространство для скролла */
+}
+
+/* ========================================
+   Общие поля ввода внутри сайдбара
+   ======================================== */
+.settings-panel label {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+.settings-panel input[type="text"],
+.settings-panel input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: var(--font-size);
+  border: 2px solid var(--clr-border);
+  border-radius: var(--radius);
+  margin-bottom: var(--gap);
+}
+
+/* ========================================
+   Rotate-специфичные стили
+   ======================================== */
+.rotation-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+.remove-rot {
+  width: 32px; height: 32px;
+  background: var(--clr-danger);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+.add-rot {
+  width: 100%;
+  padding: 0.65rem;
+  background: var(--clr-primary);
+  border: none;
+  color: #fff;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background .2s;
+}
+.add-rot:hover {
+  background: var(--clr-primary-h);
+}
+
+/* ========================================
+   Общая кнопка Apply/Submit
+   ======================================== */
+.submit-btn {
+  margin-top: auto;
+  padding: 0.75rem;
+  background: var(--clr-success);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: var(--font-size);
+  cursor: pointer;
+  transition: background .2s;
+}
+.submit-btn:hover:not(:disabled) {
+  background: var(--clr-success-h);
+}
+.submit-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   Прочие «generic» списки (extract, merge, remove и т.д.)
+   ======================================== */
+.generic-list {
+  margin-bottom: var(--gap);
+}
+.generic-list p {
+  font-size: var(--font-size);
+  color: #555;
+}
+
+/* ========================================
+   Скроллбар внутри сайдбара
+   ======================================== */
+.settings-panel::-webkit-scrollbar {
+  width: 6px;
+}
+.settings-panel::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 3px;
+}
+
+/* Убираем браузерный outline вокруг dropzone */
+.dropzone:focus {
+  outline: none;
+}
+
+/* То же для кнопки выбора и любых вложенных интерактивных элементов */
+.dropzone button:focus,
+.dropzone input:focus {
+  outline: none;
+}
+/* Универсальный класс для кнопок действий в сайдбаре */
+.sidebar-action,
+.submit-rot {
+  /* фон как у «Extract» */
+  background-color: #38a169;
+  color: #fff;
+
+  /* скругление и убрать бордер */
+  border: none;
+  border-radius: 8px;
+
+  /* размер и отступы */
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.2;
+
+  /* растянуть на всю ширину панели */
+  width: 100%;
+  box-sizing: border-box;
+
+  /* чтобы не прилипала к «списку» */
+  margin-top: 1rem;
+
+  /* эффект наведения */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sidebar-action:hover,
+.submit-rot:hover {
+  background-color: #2f855a;
+}
+
+.sidebar-action:disabled,
+.submit-rot:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+/* Стилизация контейнера file-input:
+   чтобы кнопка и имя файла были на одной строке с gap */
+input[type="file"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;           /* расстояние между кнопкой и названием файла */
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--clr-text);
+}
+
+/* Сама кнопка выбора файла */
+input[type="file"]::file-selector-button {
+  appearance: none;      /* отключаем дефолтный стиль */
+  background-color: var(--clr-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* Ховер для этой кнопки */
+input[type="file"]::file-selector-button:hover {
+  background-color: var(--clr-primary-h);
+}
+
+/* Дизаблед-стейт */
+input[type="file"]:disabled::file-selector-button {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+/* Если нужно, чтобы имя файла не растягивало блок слишком широко */
+input[type="file"] {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Общий отступ между текстом лейбла и самим контролом */
+.generic-list label,
+.settings-panel label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.generic-list input,
+.settings-panel input {
+  margin-bottom: 1rem;
+}
+
+/* Кот поверх всего */
+/* App.css */
+.dropzone-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;    /* как у вашей дропзоны */
+  margin: 6.2rem auto; /* перенёс от .dropzone */
+  overflow: visible;
+}
+
+
+
+/* картинка кота */
+.cat-wrapper {
+  position: absolute;
+  top: -80px;       /* вот этот параметр и подбираем под себя */
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  pointer-events: none; /* чтобы картинка не мешала кликам по рамке */
+  z-index: 10;
+  overflow: visible;
+
+}
+
+.cat-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.cat-container img {
+  display: block;
+  width: auto;           /* натуральная ширина */
+  max-width: 300px;      /* или любой другой разумный лимит */
+  height: auto;
+}
+.cat {
+  position: relative;
+  z-index: 2; /* выше зрачка */
+}
+/* сам “зрачок” */
+.pupil {
+  position: absolute;
+  width: 5%;
+  padding-bottom: 5%;    /* чтобы было квадратным */
+  border-radius: 50%;
+  background: #000;
+  top: 40%;              /* начальное положение в процентах */
+  left: 22%;
+  pointer-events: none;
+  transition: top 0.05s, left 0.05s;
+}
+

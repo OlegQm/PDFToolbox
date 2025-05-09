@@ -1,60 +1,117 @@
-// src/App.jsx
-import React, { useState } from "react";
-import "./App.css"; // Tailwind imported here
+import React, { useState, useRef, useEffect } from "react";import "./App.css";
+import catImg from './components/4.1.png';
+import HoverPawButton from "./components/HoverPawButton";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 
-async function callApi(path, options = {}) {
-  const response = await fetch(`${BASE_URL}/api${path}`, options);
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`HTTP ${response.status}: ${text}`);
-  }
-  return response;
-}
+async function callApi(path, file, extraBody = {}) {
+  const form = new FormData();
+  form.append("file", file, file.name);
 
-async function rotatePdf(file, rotations) {
-  const formData = new FormData();
-  formData.append("file", file, file.name);
-  formData.append("rotations", JSON.stringify(rotations));
-  const res = await callApi("/rotate-pdf", { method: "POST", body: formData });
-  const raw = await res.blob();
-  return new Blob([raw], { type: "application/pdf" });
+  // Массив files для merge-pdfs и images-to-pdf
+  if (extraBody.files && Array.isArray(extraBody.files)) {
+    extraBody.files.forEach((f) => form.append("files", f, f.name));
+    delete extraBody.files;
+  }
+
+  Object.entries(extraBody).forEach(([k, v]) => {
+    form.append(k, typeof v === "string" ? v : JSON.stringify(v));
+  });
+
+  const res = await fetch(`${BASE_URL}/api${path}`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Error ${res.status}`);
+  }
+  return res.blob();
 }
 
 export default function App() {
+
+  const [pageUrl, setPageUrl] = useState("");
+
+  // Основные файлы
   const [file, setFile] = useState(null);
-  const [rotations, setRotations] = useState([{ page: 1, degrees: 90 }]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [mergeFiles, setMergeFiles] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+
+  // UI-состояние
   const [downloadUrl, setDownloadUrl] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [selectedTool, setSelectedTool] = useState(null);
 
-  const handleFileChange = e => {
-    setFile(e.target.files[0]);
-    setDownloadUrl("");
+  // Настройки инструментов
+  const [rotations, setRotations] = useState([{ page: 1, degrees: 90 }]);
+  const [pages, setPages] = useState("1");
+  const [splitAt, setSplitAt] = useState(1);
+  // Новые поля для водяного знака
+  const [watermark, setWatermark] = useState({
+    text: "",
+    font_name: "Helvetica",
+    bold: false,
+    italic: false,
+    font_size: 24,
+    color: "#000000",
+    alpha: 0.5,
+    position: "center",
+    offset_x: 0,
+    offset_y: 0,
+    angle: 0,
+  });
+
+  // Конфиг инструментов
+  const tools = [
+    { label: "Rotate",         path: "/rotate-pdf",      needsConfig: true },
+    { label: "Extract Pages",  path: "/extract-pages",   needsConfig: true },
+    { label: "Merge PDFs",     path: "/merge-pdfs",      needsConfig: true },
+    { label: "Split PDF",      path: "/split-pdf",       needsConfig: true },
+    { label: "Images to PDF",  path: "/images-to-pdf",   needsConfig: true },
+    { label: "Page Numbers",   path: "/add-page-numbers", needsConfig: true },
+    { label: "Watermark",      path: "/add-watermark",    needsConfig: true },
+    { label: "Remove Pages",   path: "/remove-pages",     needsConfig: true },
+    { label: "URL to PDF",     path: "/url-to-pdf",       needsConfig: true },
+    { label: "Compress",       path: "/compress-pdf",     needsConfig: true },
+  ];
+
+  // Handlers загрузки
+  const handleFile        = (e) => { setFile(e.target.files[0]); setError(""); setDownloadUrl(""); };
+  const handleMergeFiles = (e) => { setMergeFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
+  const handleImageFiles = (e) => { setImageFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
+
+  const openTool = tool => {
+    const noFileNeeded = ["/images-to-pdf", "/url-to-pdf"].includes(tool.path);
+    if (!noFileNeeded && !file) {
+      setError("Please select a PDF file first.");
+      return;
+    }
     setError("");
+    setSelectedTool(tool);
   };
 
-  const handleRotationChange = (i, field, val) => {
-    setRotations(rs =>
-      rs.map((r, idx) => (idx === i ? { ...r, [field]: val } : r))
-    );
-  };
 
-  const addRotation = () =>
-    setRotations(rs => [...rs, { page: rs.length + 1, degrees: 90 }]);
+  // Запуск API
+  const runTool = async (tool, body) => {
+    if (tool.path === "/merge-pdfs"    && mergeFiles.length < 2)      { setError("Select at least two PDFs to merge."); return; }
+    if (tool.path === "/split-pdf"     && splitAt < 1)               { setError("Split position must be >= 1."); return; }
+    if (tool.path === "/images-to-pdf" && imageFiles.length === 0)   { setError("Select at least one image."); return; }
+    if (tool.needsConfig && !file && tool.path !== "/merge-pdfs")    { setError("Please select a PDF first."); return; }
 
-  const removeRotation = i =>
-    setRotations(rs => rs.filter((_, idx) => idx !== i));
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    if (!file) return setError("Please select a PDF file.");
+    setError("");
     setLoading(true);
-    setError("");
     try {
-      const blob = await rotatePdf(file, rotations);
+      const primary = tool.path === "/merge-pdfs"
+          ? mergeFiles[0]
+          : tool.path === "/images-to-pdf"
+              ? imageFiles[0]
+              : file;
+
+      const blob = await callApi(tool.path, primary, body);
       setDownloadUrl(URL.createObjectURL(blob));
+      setSelectedTool(null);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -62,107 +119,299 @@ export default function App() {
     }
   };
 
+  // Rotate handlers
+  const addRotation    = () => setRotations(rs => [...rs, { page: rs.length+1, degrees:90 }]);
+  const updateRotation = (i,f,v) => setRotations(rs => rs.map((r,idx)=>idx===i ? {...r,[f]:v} : r));
+  const removeRotation = (i) => setRotations(rs=>rs.filter((_,idx)=>idx!==i));
+
+  // Метки кнопок в сайдбаре
+  const actionLabels = {
+    "/rotate-pdf":      "Apply & Rotate",
+    "/extract-pages":   "Extract",
+    "/merge-pdfs":      "Merge",
+    "/split-pdf":       "Split",
+    "/images-to-pdf":   "Convert",
+    "/add-page-numbers": "Add Numbers",
+    "/add-watermark":   "Watermark",
+    "/remove-pages":    "Remove",
+    "/url-to-pdf":      "Convert URL",
+    "/compress-pdf":    "Compress",
+  };
+  const containerRef = useRef(null);
+  const pupilRef = useRef(null);
+
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      const rect = containerRef.current.getBoundingClientRect();
+      // координаты мыши внутри контейнера
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // ограничиваем движение зрачка рамками глаза (примерные)
+      const minX = 85,
+            maxX = 100,
+            minY = 40,
+            maxY = 55;
+      const px = Math.min(Math.max(x, minX), maxX);
+      const py = Math.min(Math.max(y, minY), maxY);
+      pupilRef.current.style.left = px + "px";
+      pupilRef.current.style.top = py + "px";
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    return () => window.removeEventListener("mousemove", onMouseMove);
+  }, []);
+
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8">
-      <h1 className="text-5xl font-extrabold text-gray-800 mb-8">
-        PDF Toolbox
-      </h1>
 
-      <fieldset className="relative w-full max-w-md border-2 border-blue-500 rounded-xl bg-white p-6 overflow-hidden">
-        <legend className="absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-blue-600 font-semibold text-xl">
-          🚀 Rotate pages
-        </legend>
+      <div className="app-container">
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700 font-medium">Upload PDF</label>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-3 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
-            />
-          </div>
-
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Page Rotations
-            </h2>
-            <div className="space-y-4">
-              {rotations.map((r, idx) => (
-                <div key={idx} className="grid grid-cols-3 gap-4 items-end">
-                  <div>
-                    <label className="block text-sm text-gray-600">Page</label>
-                    <input
-                      type="number"
-                      min={1}
-                      value={r.page}
-                      onChange={e =>
-                        handleRotationChange(idx, "page", +e.target.value)
-                      }
-                      className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600">
-                      Degrees
-                    </label>
-                    <input
-                      type="number"
-                      step={90}
-                      placeholder="90"
-                      value={r.degrees === "" ? "" : r.degrees}
-                      onChange={e => {
-                        const v = e.target.value;
-                        handleRotationChange(
-                          idx,
-                          "degrees",
-                          v === "" ? "" : +v
-                        );
-                      }}
-                      className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeRotation(idx)}
-                    className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={addRotation}
-                className="px-4 py-2 bg-green-100 text-green-800 rounded-md hover:bg-green-200"
-              >
-                + Add Rotation
-              </button>
-            </div>
-          </div>
-
-          {error && <p className="text-red-600">⚠️ {error}</p>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Rotating..." : "Rotate PDF"}
-          </button>
-
+        <header className="header">
+          <h1>📁 Instruments</h1>
           {downloadUrl && (
-            <a
-              href={downloadUrl}
-              download="rotated.pdf"
-              className="block text-center text-blue-600 hover:underline mt-4"
-            >
-              📥 Download Rotated PDF
-            </a>
+              <a href={downloadUrl} download className="download-link">Download result</a>
           )}
-        </form>
-      </fieldset>
-    </div>
-  );
-}
+        </header>
+
+
+        <div className="main-area">
+          <div className="dropzone-wrapper">
+            <div className="cat-wrapper">
+              <div className="cat-container" ref={containerRef}>
+                <img src={catImg} className="cat" alt="cat"/>
+                <div className="pupil" ref={pupilRef}/>
+              </div>
+            </div>
+            {/* Dropzone */}
+            <label className={`dropzone ${error ? "drop-error-active" : ""}`}>
+              <div className="drop-icon">📄</div>
+              <div className="drop-text">{file ? file.name : "Drag and drop PDF here"}</div>
+              <button className="primary-btn">Choose File</button>
+              <input type="file" accept="application/pdf" className="hidden-input" onChange={handleFile}/>
+              {error && <div className="drop-error">{error}</div>}
+            </label>
+          </div>
+          {/* Инструменты */}
+          <div className="tools-grid">
+            {tools.map(tool => {
+              // те, которые НЕ требуют PDF-файла
+              const noFileNeeded = ["/images-to-pdf", "/url-to-pdf"].includes(tool.path);
+              // те, которые требуют файл
+              const needsFile = !noFileNeeded;
+
+              const disabled =
+                  loading ||
+                  (needsFile && !file) ||
+                  (noFileNeeded && !!file);
+
+              return (
+                  <HoverPawButton>
+                      key={tool.path}
+                      className="tool-btn"
+                      onClick={() => openTool(tool)}
+                      disabled={disabled}
+                  >
+                    {tool.label}
+                  </HoverPawButton>
+              );
+            })}
+          </div>
+
+        </div>
+
+        {/* Сайдбар */}
+        {selectedTool && (
+            <aside className="sidebar">
+              <div className="sidebar-header">
+                <h2>{actionLabels[selectedTool.path]}</h2>
+                <button className="sidebar-close" onClick={() => setSelectedTool(null)}>×</button>
+                </div>
+
+                {/* Rotate */}
+                {selectedTool.path === "/rotate-pdf" && (
+                    <div className="settings-panel">
+                      <div className="rotations-list">
+                        {rotations.map((r, i) => (
+                            <div key={i} className="rotation-item">
+                              <div className="field-group"><label>Page</label><input type="number" min="1"
+                                                                                     value={r.page}
+                                                                                     onChange={e => updateRotation(i, "page", +e.target.value)}/>
+                              </div>
+                              <div className="field-group"><label>Degrees</label><input type="number" step="90"
+                                                                                        value={r.degrees}
+                                                                                        onChange={e => updateRotation(i, "degrees", +e.target.value)}/>
+                              </div>
+                              <button className="remove-rot" onClick={() => removeRotation(i)}>×</button>
+                            </div>
+                        ))}
+                        <button className="add-rot" onClick={addRotation}>+ Add Rotation</button>
+                      </div>
+                    </div>
+                )}
+
+                {/* Extract Pages */}
+                {selectedTool.path === "/extract-pages" && (
+                    <div className="settings-panel">
+                      <div className="extract-list">
+                        <label>Pages (e.g. 1,3,5):</label>
+                        <input type="text" value={pages} onChange={e => setPages(e.target.value)} placeholder="1,3,5"/>
+                      </div>
+                    </div>
+                )}
+
+                {/* Merge PDFs */}
+                {selectedTool.path === "/merge-pdfs" && (
+                    <div className="settings-panel">
+                      <div className="merge-list">
+                        <label>Select PDFs to merge:</label>
+                        <input type="file" accept="application/pdf" multiple onChange={handleMergeFiles}/>
+                        {mergeFiles.length > 0 && <p>Files: {mergeFiles.map(f => f.name).join(", ")}</p>}
+                      </div>
+                    </div>
+                )}
+
+                {/* Split PDF */}
+                {selectedTool.path === "/split-pdf" && (
+                    <div className="settings-panel">
+                      <div className="split-list">
+                        <label>Split at page:</label>
+                        <input type="number" min="1" value={splitAt} onChange={e => setSplitAt(+e.target.value)}/>
+                      </div>
+                    </div>
+                )}
+
+                {/* Images to PDF */}
+                {selectedTool.path === "/images-to-pdf" && (
+                    <div className="settings-panel">
+                      <div className="images-list">
+                        <label>Select images:</label>
+                        <input type="file" accept="image/*" multiple onChange={handleImageFiles}/>
+                        {imageFiles.length > 0 && <p>Images: {imageFiles.map(f => f.name).join(", ")}</p>}
+                      </div>
+                    </div>
+                )}
+
+                {/* Page Numbers */}
+                {selectedTool.path === "/add-page-numbers" && (
+                    <div className="settings-panel">
+                      <div className="generic-list"><p>No additional settings required.</p></div>
+                    </div>
+                )}
+
+                {/* Watermark */}
+                {selectedTool.path === "/add-watermark" && (
+                    <div className="settings-panel">
+                      <div className="watermark-list">
+                        {Object.entries(watermark).map(([key, val]) => (
+                            <div key={key} className="field-group">
+                              <label>{key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</label>
+                              {typeof val === 'boolean' ? (
+                                  <input type="checkbox"
+                                         checked={val}
+                                         onChange={e => setWatermark(wm => ({...wm, [key]: e.target.checked}))}
+                                  />
+                              ) : (
+                                  <input
+                                      type={typeof val === 'number' ? 'number' : 'text'}
+                                      value={val}
+                                      onChange={e => {
+                                        const v = e.target.value;
+                                        setWatermark(wm => ({
+                                          ...wm,
+                                          [key]: typeof watermark[key] === 'number' ? +v : v
+                                        }));
+                                      }}
+                                  />
+                              )}
+                            </div>
+                        ))}
+                      </div>
+                    </div>
+                )}
+
+                {/* Remove Pages */}
+                {selectedTool.path === "/remove-pages" && (
+                    <div className="settings-panel">
+                      <div className="extract-list">
+                        <label>Pages to remove (e.g. 2,4,5):</label>
+                        <input
+                            type="text"
+                            value={pages}
+                            onChange={e => setPages(e.target.value)}
+                            placeholder="2,4,5"
+                        />
+                      </div>
+                    </div>
+                )}
+
+                {/* URL to PDF */}
+                {selectedTool.path === "/url-to-pdf" && (
+                    <div className="settings-panel">
+                      <div className="extract-list">
+                        <label>Page URL:</label>
+                        <input
+                            type="text"
+                            value={pageUrl}
+                            onChange={e => setPageUrl(e.target.value)}
+                            placeholder="https://example.com"
+                        />
+                      </div>
+                    </div>
+                )}
+                {/* Compress PDF */}
+                {selectedTool.path === "/compress-pdf" && (
+                    <div className="settings-panel">
+                      <div className="generic-list">
+                        <p>No additional settings required.</p>
+                      </div>
+                    </div>
+                )}
+                {/* Submit */}
+                <button className="submit-rot"
+                        onClick={() => {
+                          let body = {};
+                          switch (selectedTool.path) {
+                            case "/rotate-pdf":
+                              body = {rotations};
+                              break;
+                            case "/extract-pages":
+                              body = {pages: pages.split(",").map(s => +s.trim()).filter(n => !isNaN(n))};
+                              break;
+                            case "/merge-pdfs":
+                              body = {files: mergeFiles};
+                              break;
+                            case "/split-pdf":
+                              body = {split_at: splitAt};
+                              break;
+                            case "/images-to-pdf":
+                              body = {files: imageFiles};
+                              break;
+                            case "/add-page-numbers":
+                              body = {};
+                              break;
+                            case "/add-watermark":
+                              body = {...watermark};
+                              break;
+                            case "/remove-pages":
+                              body = {pages: pages.split(",").map(s => +s.trim()).filter(n => !isNaN(n))};
+                              break;
+                            case "/url-to-pdf":
+                              body = {url: pageUrl};
+                              break;
+                            case "/compress-pdf":
+                              body = {};
+                              break;
+                            default:
+                              body = {};
+                          }
+                          runTool(selectedTool, body);
+                        }}
+                        disabled={loading}
+                >
+                  {loading ? "Processing…" : actionLabels[selectedTool.path]}
+                </button>
+              </aside>
+          )}
+        </div>
+        );
+        }

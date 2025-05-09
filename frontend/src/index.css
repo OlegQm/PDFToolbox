@@ -1,68 +1,137 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Основной контейнер */
+.app {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-a {
-  font-weight: 500;
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.title span {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #213547;
+}
+.header nav a {
+  margin: 0 1rem;
   color: #646cff;
-  text-decoration: inherit;
+  text-decoration: none;
+  font-weight: 500;
 }
-a:hover {
+.header nav a:hover {
   color: #535bf2;
 }
-
-body {
-  margin: 0;
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #ff9800;
+  border-radius: 50%;
+  color: white;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Dropzone */
+.dropzone {
+  position: relative;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  padding: 3rem 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  transition: border-color 0.2s;
 }
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
+.dropzone:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.hidden-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.drop-icon {
+  font-size: 3rem;
+  color: #888;
+  margin-bottom: 1rem;
+}
+.drop-text {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #213547;
+}
+.primary-btn {
+  background: #646cff;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.primary-btn:hover {
+  background: #535bf2;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Сетка инструментов */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.tool-btn {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.tool-btn:hover:not(:disabled) {
+  border-color: #646cff;
+  background: #fff;
+}
+.tool-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.tool-icon {
+  margin-bottom: 0.5rem;
+}
+
+/* Ошибки и ссылка */
+.error {
+  color: #c0392b;
+  margin-top: 1rem;
+}
+.download-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #646cff;
+  text-decoration: none;
+  font-weight: 500;
+}
+.download-link:hover {
+  text-decoration: underline;
 }
