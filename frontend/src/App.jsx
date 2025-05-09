@@ -1,6 +1,5 @@
-// src/App.jsx
 import React, { useState } from "react";
-import "./App.css"; // Tailwind imported here
+import "./App.css";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 
