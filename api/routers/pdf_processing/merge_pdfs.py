@@ -1,6 +1,6 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
-from services.merge_pdfs_service import merge_pdfs_service
+from services.pdf_processing.merge_pdfs_service import merge_pdfs_service
 
 router = APIRouter()
 

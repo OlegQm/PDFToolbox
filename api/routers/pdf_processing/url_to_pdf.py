@@ -2,9 +2,10 @@ from typing import Annotated
 from fastapi import APIRouter, Form
 from fastapi.responses import StreamingResponse
 from pydantic import Field, HttpUrl
-from services.url_to_pdf_service import url_to_pdf_service
+from services.pdf_processing.url_to_pdf_service import url_to_pdf_service
 
 router = APIRouter()
+
 
 @router.post(
     "/url-to-pdf",

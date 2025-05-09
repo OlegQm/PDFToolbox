@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import Field
-from services.remove_pages_service import remove_pages_service
+from services.pdf_processing.remove_pages_service import remove_pages_service
 
 router = APIRouter()
 
