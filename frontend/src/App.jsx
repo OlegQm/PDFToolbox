@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";import "./App.css";
-import catImg from './components/4.1.png';
+import React, { useState, useRef, useEffect } from "react"; import "./App.css";
+import catImg from './components/white_cat.png';
 import HoverPawButton from "./components/HoverPawButton";
 import "./App.css";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
 
 async function callApi(path, file, extraBody = {}) {
   const form = new FormData();
-  form.append("file", file, file.name);
-
-  // Массив files для merge-pdfs и images-to-pdf
+  if (file) {
+    form.append("file", file, file.name);
+  }
   if (extraBody.files && Array.isArray(extraBody.files)) {
-    extraBody.files.forEach((f) => form.append("files", f, f.name));
+    extraBody.files.forEach(f => form.append("files", f, f.name));
     delete extraBody.files;
   }
-
   Object.entries(extraBody).forEach(([k, v]) => {
     form.append(k, typeof v === "string" ? v : JSON.stringify(v));
   });
@@ -31,24 +31,18 @@ async function callApi(path, file, extraBody = {}) {
 }
 
 export default function App() {
-
   const [pageUrl, setPageUrl] = useState("");
-
-  // file
   const [file, setFile] = useState(null);
+
   const [mergeFiles, setMergeFiles] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
-
-  // UI
   const [downloadUrl, setDownloadUrl] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedTool, setSelectedTool] = useState(null);
-
   const [rotations, setRotations] = useState([{ page: 1, degrees: 90 }]);
   const [pages, setPages] = useState("1");
   const [splitAt, setSplitAt] = useState(1);
-
   const [watermark, setWatermark] = useState({
     text: "",
     font_name: "Helvetica",
@@ -63,38 +57,66 @@ export default function App() {
     angle: 0,
   });
   const emojiMap = {
-    "Rotate":          "🔄",
-    "Extract Pages":   "📑",
-    "Merge PDFs":      "📚",
-    "Split PDF":       "✂️",
-    "Images to PDF":   "🖼️",
-    "Page Numbers":    "🔢",
-    "Watermark":       "💧",
-    "Remove Pages":    "➖",
-    "URL to PDF":      "🌐",
-    "Compress":        "⚙️",
+    "Rotate": "🔄",
+    "Extract Pages": "📑",
+    "Merge PDFs": "📚",
+    "Split PDF": "✂️",
+    "Images to PDF": "🖼️",
+    "Page Numbers": "🔢",
+    "Watermark": "💧",
+    "Remove Pages": "➖",
+    "URL to PDF": "🌐",
+    "Compress": "⚙️",
   };
 
   const tools = [
-    { label: "Rotate",         path: "/rotate-pdf",      needsConfig: true },
-    { label: "Extract Pages",  path: "/extract-pages",   needsConfig: true },
-    { label: "Merge PDFs",     path: "/merge-pdfs",      needsConfig: true },
-    { label: "Split PDF",      path: "/split-pdf",       needsConfig: true },
-    { label: "Images to PDF",  path: "/images-to-pdf",   needsConfig: true },
-    { label: "Page Numbers",   path: "/add-page-numbers", needsConfig: true },
-    { label: "Watermark",      path: "/add-watermark",    needsConfig: true },
-    { label: "Remove Pages",   path: "/remove-pages",     needsConfig: true },
-    { label: "URL to PDF",     path: "/url-to-pdf",       needsConfig: true },
-    { label: "Compress",       path: "/compress-pdf",     needsConfig: true },
+    { label: "Rotate", path: "/rotate-pdf", needsConfig: true },
+    { label: "Extract Pages", path: "/extract-pages", needsConfig: true },
+    { label: "Merge PDFs", path: "/merge-pdfs", needsConfig: true },
+    { label: "Split PDF", path: "/split-pdf", needsConfig: true },
+    { label: "Images to PDF", path: "/images-to-pdf", needsConfig: true },
+    { label: "Page Numbers", path: "/add-page-numbers", needsConfig: true },
+    { label: "Watermark", path: "/add-watermark", needsConfig: true },
+    { label: "Remove Pages", path: "/remove-pages", needsConfig: true },
+    { label: "URL to PDF", path: "/url-to-pdf", needsConfig: true },
+    { label: "Compress", path: "/compress-pdf", needsConfig: true },
   ];
 
-  // Handlers
-  const handleFile        = (e) => { setFile(e.target.files[0]); setError(""); setDownloadUrl(""); };
-  const handleMergeFiles = (e) => { setMergeFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
+  function isPdfFile(file) {
+    return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  }
+
+  const handleFile = (e) => {
+    const f = e.target.files[0];
+    if (f) {
+      if (!isPdfFile(f)) {
+        setError("Only PDF files are allowed.");
+        setFile(null);
+        setDownloadUrl("");
+        return;
+      }
+      setFile(f);
+      setError("");
+      setDownloadUrl("");
+    }
+  };
+
+  const handleMergeFiles = (e) => {
+    const arr = Array.from(e.target.files);
+    const notPdf = arr.find(f => !isPdfFile(f));
+    if (notPdf) {
+      setError(`File ${notPdf.name} is not a PDF.`);
+      return;
+    }
+    setMergeFiles(arr);
+    setError("");
+    setDownloadUrl("");
+  };
+
   const handleImageFiles = (e) => { setImageFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
 
   const openTool = tool => {
-    const noFileNeeded = ["/images-to-pdf", "/url-to-pdf"].includes(tool.path);
+    const noFileNeeded = canWorkWithoutMainFile.includes(tool.path);
     if (!noFileNeeded && !file) {
       setError("Please select a PDF file first.");
       return;
@@ -103,22 +125,34 @@ export default function App() {
     setSelectedTool(tool);
   };
 
-
-  //Start API
   const runTool = async (tool, body) => {
-    if (tool.path === "/merge-pdfs"    && mergeFiles.length < 2)      { setError("Select at least two PDFs to merge."); return; }
-    if (tool.path === "/split-pdf"     && splitAt < 1)               { setError("Split position must be >= 1."); return; }
-    if (tool.path === "/images-to-pdf" && imageFiles.length === 0)   { setError("Select at least one image."); return; }
-    if (tool.needsConfig && !file && tool.path !== "/merge-pdfs")    { setError("Please select a PDF first."); return; }
+    if (tool.path === "/merge-pdfs" && mergeFiles.length < 2) {
+      setError("Select at least two PDFs to merge.");
+      return;
+    }
+    if (tool.path === "/split-pdf" && splitAt < 1) {
+      setError("Split position must be >= 1.");
+      return;
+    }
+    if (tool.path === "/images-to-pdf" && imageFiles.length === 0) {
+      setError("Select at least one image.");
+      return;
+    }
+
+    const needsMainPdf = !canWorkWithoutMainFile.includes(tool.path);
+    if (tool.needsConfig && needsMainPdf && !file) {
+      setError("Please select a PDF first.");
+      return;
+    }
 
     setError("");
     setLoading(true);
     try {
       const primary = tool.path === "/merge-pdfs"
-          ? mergeFiles[0]
-          : tool.path === "/images-to-pdf"
-              ? imageFiles[0]
-              : file;
+        ? mergeFiles[0]
+        : tool.path === "/images-to-pdf"
+          ? imageFiles[0]
+          : file;
 
       const blob = await callApi(tool.path, primary, body);
       setDownloadUrl(URL.createObjectURL(blob));
@@ -130,22 +164,21 @@ export default function App() {
     }
   };
 
-  // Rotate handlers
-  const addRotation    = () => setRotations(rs => [...rs, { page: rs.length+1, degrees:90 }]);
-  const updateRotation = (i,f,v) => setRotations(rs => rs.map((r,idx)=>idx===i ? {...r,[f]:v} : r));
-  const removeRotation = (i) => setRotations(rs=>rs.filter((_,idx)=>idx!==i));
+  const addRotation = () => setRotations(rs => [...rs, { page: rs.length + 1, degrees: 90 }]);
+  const updateRotation = (i, f, v) => setRotations(rs => rs.map((r, idx) => idx === i ? { ...r, [f]: v } : r));
+  const removeRotation = (i) => setRotations(rs => rs.filter((_, idx) => idx !== i));
 
   const actionLabels = {
-    "/rotate-pdf":      "Apply & Rotate",
-    "/extract-pages":   "Extract",
-    "/merge-pdfs":      "Merge",
-    "/split-pdf":       "Split",
-    "/images-to-pdf":   "Convert",
+    "/rotate-pdf": "Apply & Rotate",
+    "/extract-pages": "Extract",
+    "/merge-pdfs": "Merge",
+    "/split-pdf": "Split",
+    "/images-to-pdf": "Convert",
     "/add-page-numbers": "Add Numbers",
-    "/add-watermark":   "Watermark",
-    "/remove-pages":    "Remove",
-    "/url-to-pdf":      "Convert URL",
-    "/compress-pdf":    "Compress",
+    "/add-watermark": "Watermark",
+    "/remove-pages": "Remove",
+    "/url-to-pdf": "Convert URL",
+    "/compress-pdf": "Compress",
   };
   const containerRef = useRef(null);
   const pupilRef = useRef(null);
@@ -153,13 +186,12 @@ export default function App() {
   useEffect(() => {
     const onMouseMove = (e) => {
       const rect = containerRef.current.getBoundingClientRect();
-      //Cat
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       const minX = 85,
-            maxX = 100,
-            minY = 40,
-            maxY = 55;
+        maxX = 100,
+        minY = 40,
+        maxY = 55;
       const px = Math.min(Math.max(x, minX), maxX);
       const py = Math.min(Math.max(y, minY), maxY);
       pupilRef.current.style.left = px + "px";
@@ -172,257 +204,237 @@ export default function App() {
 
 
   return (
+    <div className="app-container">
+      <header className="header">
+        <h1>📁 Instruments</h1>
+        {downloadUrl && (
+          <a href={downloadUrl} download className="download-link">Download result</a>
+        )}
+      </header>
 
-      <div className="app-container">
+      <div className="main-area">
+        <div className="dropzone-wrapper">
+          <div className="cat-wrapper">
+            <div className="cat-container" ref={containerRef}>
+              <img src={catImg} className="cat" alt="cat" />
+              <div className="pupil" ref={pupilRef} />
+            </div>
+          </div>
+          <label className={`dropzone ${error ? "drop-error-active" : ""}`}>
+            <div className="drop-icon">📄</div>
+            <div className="drop-text">{file ? file.name : "Drag and drop PDF here"}</div>
+            <button className="primary-btn">Choose File</button>
+            <input type="file" accept="application/pdf" className="hidden-input" onChange={handleFile} />
+            {error && <div className="drop-error">{error}</div>}
+          </label>
+        </div>
+        <div className="tools-grid">
+          {tools.map(tool => {
+            const noFileNeeded = canWorkWithoutMainFile.includes(tool.path);
+            const needsFile = !noFileNeeded;
 
-        <header className="header">
-          <h1>📁 Instruments</h1>
-          {downloadUrl && (
-              <a href={downloadUrl} download className="download-link">Download result</a>
-          )}
-        </header>
+            const disabled =
+              loading ||
+              (needsFile && !file) ||
+              (noFileNeeded && !!file);
 
+            return (
+              <HoverPawButton
+                key={tool.path}
+                className="tool-btn"
+                onClick={() => openTool(tool)}
+                disabled={disabled}
+              >
+                <span className="tool-sticker">{emojiMap[tool.label]}</span>
+                <span className="tool-label">{tool.label}</span>
+              </HoverPawButton>
+            );
+          })}
+        </div>
 
-        <div className="main-area">
-          <div className="dropzone-wrapper">
-            <div className="cat-wrapper">
-              <div className="cat-container" ref={containerRef}>
-                <img src={catImg} className="cat" alt="cat"/>
-                <div className="pupil" ref={pupilRef}/>
+      </div>
+
+      {selectedTool && (
+        <aside className="sidebar">
+          <div className="sidebar-header">
+            <h2>{actionLabels[selectedTool.path]}</h2>
+            <button className="sidebar-close" onClick={() => setSelectedTool(null)}>×</button>
+          </div>
+
+          {selectedTool.path === "/rotate-pdf" && (
+            <div className="settings-panel">
+              <div className="rotations-list">
+                {rotations.map((r, i) => (
+                  <div key={i} className="rotation-item">
+                    <div className="field-group"><label>Page</label><input type="number" min="1"
+                      value={r.page}
+                      onChange={e => updateRotation(i, "page", +e.target.value)} />
+                    </div>
+                    <div className="field-group"><label>Degrees</label><input type="number" step="90"
+                      value={r.degrees}
+                      onChange={e => updateRotation(i, "degrees", +e.target.value)} />
+                    </div>
+                    <button className="remove-rot" onClick={() => removeRotation(i)}>×</button>
+                  </div>
+                ))}
+                <button className="add-rot" onClick={addRotation}>+ Add Rotation</button>
               </div>
             </div>
-            {/* Dropzone */}
-            <label className={`dropzone ${error ? "drop-error-active" : ""}`}>
-              <div className="drop-icon">📄</div>
-              <div className="drop-text">{file ? file.name : "Drag and drop PDF here"}</div>
-              <button className="primary-btn">Choose File</button>
-              <input type="file" accept="application/pdf" className="hidden-input" onChange={handleFile}/>
-              {error && <div className="drop-error">{error}</div>}
-            </label>
-          </div>
-          {/* Instruments */}
-          <div className="tools-grid">
-            {tools.map(tool => {
-              // not PDF-file
-              const noFileNeeded = ["/images-to-pdf", "/url-to-pdf"].includes(tool.path);
-              // file
-              const needsFile = !noFileNeeded;
-
-              const disabled =
-                  loading ||
-                  (needsFile && !file) ||
-                  (noFileNeeded && !!file);
-
-              return (
-                  <HoverPawButton
-                      key={tool.path}
-                      className="tool-btn"
-                      onClick={() => openTool(tool)}
-                      disabled={disabled}
-                  >
-                    <span className="tool-sticker">{emojiMap[tool.label]}</span>
-                    <span className="tool-label">{tool.label}</span>
-                  </HoverPawButton>
-
-              );
-            })}
-          </div>
-
-        </div>
-
-        {/* Сайдбар */}
-        {selectedTool && (
-            <aside className="sidebar">
-              <div className="sidebar-header">
-                <h2>{actionLabels[selectedTool.path]}</h2>
-                <button className="sidebar-close" onClick={() => setSelectedTool(null)}>×</button>
-                </div>
-
-                {/* Rotate */}
-                {selectedTool.path === "/rotate-pdf" && (
-                    <div className="settings-panel">
-                      <div className="rotations-list">
-                        {rotations.map((r, i) => (
-                            <div key={i} className="rotation-item">
-                              <div className="field-group"><label>Page</label><input type="number" min="1"
-                                                                                     value={r.page}
-                                                                                     onChange={e => updateRotation(i, "page", +e.target.value)}/>
-                              </div>
-                              <div className="field-group"><label>Degrees</label><input type="number" step="90"
-                                                                                        value={r.degrees}
-                                                                                        onChange={e => updateRotation(i, "degrees", +e.target.value)}/>
-                              </div>
-                              <button className="remove-rot" onClick={() => removeRotation(i)}>×</button>
-                            </div>
-                        ))}
-                        <button className="add-rot" onClick={addRotation}>+ Add Rotation</button>
-                      </div>
-                    </div>
-                )}
-
-                {/* Extract Pages */}
-                {selectedTool.path === "/extract-pages" && (
-                    <div className="settings-panel">
-                      <div className="extract-list">
-                        <label>Pages (e.g. 1,3,5):</label>
-                        <input type="text" value={pages} onChange={e => setPages(e.target.value)} placeholder="1,3,5"/>
-                      </div>
-                    </div>
-                )}
-
-                {/* Merge PDFs */}
-                {selectedTool.path === "/merge-pdfs" && (
-                    <div className="settings-panel">
-                      <div className="merge-list">
-                        <label>Select PDFs to merge:</label>
-                        <input type="file" accept="application/pdf" multiple onChange={handleMergeFiles}/>
-                        {mergeFiles.length > 0 && <p>Files: {mergeFiles.map(f => f.name).join(", ")}</p>}
-                      </div>
-                    </div>
-                )}
-
-                {/* Split PDF */}
-                {selectedTool.path === "/split-pdf" && (
-                    <div className="settings-panel">
-                      <div className="split-list">
-                        <label>Split at page:</label>
-                        <input type="number" min="1" value={splitAt} onChange={e => setSplitAt(+e.target.value)}/>
-                      </div>
-                    </div>
-                )}
-
-                {/* Images to PDF */}
-                {selectedTool.path === "/images-to-pdf" && (
-                    <div className="settings-panel">
-                      <div className="images-list">
-                        <label>Select images:</label>
-                        <input type="file" accept="image/*" multiple onChange={handleImageFiles}/>
-                        {imageFiles.length > 0 && <p>Images: {imageFiles.map(f => f.name).join(", ")}</p>}
-                      </div>
-                    </div>
-                )}
-
-                {/* Page Numbers */}
-                {selectedTool.path === "/add-page-numbers" && (
-                    <div className="settings-panel">
-                      <div className="generic-list"><p>No additional settings required.</p></div>
-                    </div>
-                )}
-
-                {/* Watermark */}
-                {selectedTool.path === "/add-watermark" && (
-                    <div className="settings-panel">
-                      <div className="watermark-list">
-                        {Object.entries(watermark).map(([key, val]) => (
-                            <div key={key} className="field-group">
-                              <label>{key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</label>
-                              {typeof val === 'boolean' ? (
-                                  <input type="checkbox"
-                                         checked={val}
-                                         onChange={e => setWatermark(wm => ({...wm, [key]: e.target.checked}))}
-                                  />
-                              ) : (
-                                  <input
-                                      type={typeof val === 'number' ? 'number' : 'text'}
-                                      value={val}
-                                      onChange={e => {
-                                        const v = e.target.value;
-                                        setWatermark(wm => ({
-                                          ...wm,
-                                          [key]: typeof watermark[key] === 'number' ? +v : v
-                                        }));
-                                      }}
-                                  />
-                              )}
-                            </div>
-                        ))}
-                      </div>
-                    </div>
-                )}
-
-                {/* Remove Pages */}
-                {selectedTool.path === "/remove-pages" && (
-                    <div className="settings-panel">
-                      <div className="extract-list">
-                        <label>Pages to remove (e.g. 2,4,5):</label>
-                        <input
-                            type="text"
-                            value={pages}
-                            onChange={e => setPages(e.target.value)}
-                            placeholder="2,4,5"
-                        />
-                      </div>
-                    </div>
-                )}
-
-                {/* URL to PDF */}
-                {selectedTool.path === "/url-to-pdf" && (
-                    <div className="settings-panel">
-                      <div className="extract-list">
-                        <label>Page URL:</label>
-                        <input
-                            type="text"
-                            value={pageUrl}
-                            onChange={e => setPageUrl(e.target.value)}
-                            placeholder="https://example.com"
-                        />
-                      </div>
-                    </div>
-                )}
-                {/* Compress PDF */}
-                {selectedTool.path === "/compress-pdf" && (
-                    <div className="settings-panel">
-                      <div className="generic-list">
-                        <p>No additional settings required.</p>
-                      </div>
-                    </div>
-                )}
-                {/* Submit */}
-                <button className="submit-rot"
-                        onClick={() => {
-                          let body = {};
-                          switch (selectedTool.path) {
-                            case "/rotate-pdf":
-                              body = {rotations};
-                              break;
-                            case "/extract-pages":
-                              body = {pages: pages.split(",").map(s => +s.trim()).filter(n => !isNaN(n))};
-                              break;
-                            case "/merge-pdfs":
-                              body = {files: mergeFiles};
-                              break;
-                            case "/split-pdf":
-                              body = {split_at: splitAt};
-                              break;
-                            case "/images-to-pdf":
-                              body = {files: imageFiles};
-                              break;
-                            case "/add-page-numbers":
-                              body = {};
-                              break;
-                            case "/add-watermark":
-                              body = {...watermark};
-                              break;
-                            case "/remove-pages":
-                              body = {pages: pages.split(",").map(s => +s.trim()).filter(n => !isNaN(n))};
-                              break;
-                            case "/url-to-pdf":
-                              body = {url: pageUrl};
-                              break;
-                            case "/compress-pdf":
-                              body = {};
-                              break;
-                            default:
-                              body = {};
-                          }
-                          runTool(selectedTool, body);
-                        }}
-                        disabled={loading}
-                >
-                  {loading ? "Processing…" : actionLabels[selectedTool.path]}
-                </button>
-              </aside>
           )}
-        </div>
-        );
-        }
+
+          {selectedTool.path === "/extract-pages" && (
+            <div className="settings-panel">
+              <div className="extract-list">
+                <label>Pages (e.g. 1,3,5):</label>
+                <input type="text" value={pages} onChange={e => setPages(e.target.value)} placeholder="1,3,5" />
+              </div>
+            </div>
+          )}
+
+          {selectedTool.path === "/merge-pdfs" && (
+            <div className="settings-panel">
+              <div className="merge-list">
+                <label>Select PDFs to merge:</label>
+                <input type="file" accept="application/pdf" multiple onChange={handleMergeFiles} />
+                {mergeFiles.length > 0 && <p>Files: {mergeFiles.map(f => f.name).join(", ")}</p>}
+              </div>
+            </div>
+          )}
+
+          {selectedTool.path === "/split-pdf" && (
+            <div className="settings-panel">
+              <div className="split-list">
+                <label>Split at page:</label>
+                <input type="number" min="1" value={splitAt} onChange={e => setSplitAt(+e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          {selectedTool.path === "/images-to-pdf" && (
+            <div className="settings-panel">
+              <div className="images-list">
+                <label>Select images:</label>
+                <input type="file" accept="image/*" multiple onChange={handleImageFiles} />
+                {imageFiles.length > 0 && <p>Images: {imageFiles.map(f => f.name).join(", ")}</p>}
+              </div>
+            </div>
+          )}
+
+          {selectedTool.path === "/add-page-numbers" && (
+            <div className="settings-panel">
+              <div className="generic-list"><p>No additional settings required.</p></div>
+            </div>
+          )}
+
+          {selectedTool.path === "/add-watermark" && (
+            <div className="settings-panel">
+              <div className="watermark-list">
+                {Object.entries(watermark).map(([key, val]) => (
+                  <div key={key} className="field-group">
+                    <label>{key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</label>
+                    {typeof val === 'boolean' ? (
+                      <input type="checkbox"
+                        checked={val}
+                        onChange={e => setWatermark(wm => ({ ...wm, [key]: e.target.checked }))}
+                      />
+                    ) : (
+                      <input
+                        type={typeof val === 'number' ? 'number' : 'text'}
+                        value={val}
+                        onChange={e => {
+                          const v = e.target.value;
+                          setWatermark(wm => ({
+                            ...wm,
+                            [key]: typeof watermark[key] === 'number' ? +v : v
+                          }));
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedTool.path === "/remove-pages" && (
+            <div className="settings-panel">
+              <div className="extract-list">
+                <label>Pages to remove (e.g. 2,4,5):</label>
+                <input
+                  type="text"
+                  value={pages}
+                  onChange={e => setPages(e.target.value)}
+                  placeholder="2,4,5"
+                />
+              </div>
+            </div>
+          )}
+
+          {selectedTool.path === "/url-to-pdf" && (
+            <div className="settings-panel">
+              <div className="extract-list">
+                <label>Page URL:</label>
+                <input
+                  type="text"
+                  value={pageUrl}
+                  onChange={e => setPageUrl(e.target.value)}
+                  placeholder="https://example.com"
+                />
+              </div>
+            </div>
+          )}
+          {selectedTool.path === "/compress-pdf" && (
+            <div className="settings-panel">
+              <div className="generic-list">
+                <p>No additional settings required.</p>
+              </div>
+            </div>
+          )}
+          <button className="submit-rot"
+            onClick={() => {
+              let body = {};
+              switch (selectedTool.path) {
+                case "/rotate-pdf":
+                  body = { rotations };
+                  break;
+                case "/extract-pages":
+                  body = { pages: pages.split(",").map(s => +s.trim()).filter(n => !isNaN(n)) };
+                  break;
+                case "/merge-pdfs":
+                  body = { files: mergeFiles };
+                  break;
+                case "/split-pdf":
+                  body = { split_at: splitAt };
+                  break;
+                case "/images-to-pdf":
+                  body = { files: imageFiles };
+                  break;
+                case "/add-page-numbers":
+                  body = {};
+                  break;
+                case "/add-watermark":
+                  body = { ...watermark };
+                  break;
+                case "/remove-pages":
+                  body = { pages: pages.split(",").map(s => +s.trim()).filter(n => !isNaN(n)) };
+                  break;
+                case "/url-to-pdf":
+                  body = { url: pageUrl };
+                  break;
+                case "/compress-pdf":
+                  body = {};
+                  break;
+                default:
+                  body = {};
+              }
+              runTool(selectedTool, body);
+            }}
+            disabled={loading}
+          >
+            {loading ? "Processing..." : actionLabels[selectedTool.path]}
+          </button>
+        </aside>
+      )}
+    </div>
+  );
+}

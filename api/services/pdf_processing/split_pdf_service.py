@@ -26,8 +26,12 @@ async def split_pdf_service(
         raise HTTPException(400, "Cannot read PDF.")
 
     total = len(reader.pages)
-
-    if split_at < 1 or split_at >= total:
+    if total == 1:
+        raise HTTPException(
+            400,
+            "Total length of file must be greater than 1."
+        )
+    elif split_at < 1 or split_at >= total:
         raise HTTPException(
             400,
             f"split_at must be between 1 and {total-1}, got {split_at}."

@@ -1,43 +1,46 @@
-/* Основной контейнер */
 .app {
-  max-width: 800px;
+  max-width: 50rem;
   margin: 2rem auto;
   padding: 1.5rem;
   font-family: Arial, sans-serif;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
 
-/* Header */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
 }
+
 .title {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
+
 .title span {
   font-size: 1.5rem;
   font-weight: 600;
   color: #213547;
 }
+
 .header nav a {
   margin: 0 1rem;
   color: #646cff;
   text-decoration: none;
   font-weight: 500;
 }
+
 .header nav a:hover {
   color: #535bf2;
 }
+
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 2.25rem;
+  height: 2.25rem;
   background: #ff9800;
   border-radius: 50%;
   color: white;
@@ -47,19 +50,20 @@
   font-weight: bold;
 }
 
-/* Dropzone */
 .dropzone {
   position: relative;
-  border: 2px dashed #ccc;
-  border-radius: 12px;
+  border: 0.125rem dashed #ccc;
+  border-radius: 0.75rem;
   padding: 3rem 1rem;
   text-align: center;
   margin-bottom: 2rem;
   transition: border-color 0.2s;
 }
+
 .dropzone:hover {
   border-color: #646cff;
 }
+
 .hidden-input {
   position: absolute;
   inset: 0;
@@ -68,63 +72,70 @@
   opacity: 0;
   cursor: pointer;
 }
+
 .drop-icon {
   font-size: 3rem;
   color: #888;
   margin-bottom: 1rem;
 }
+
 .drop-text {
   font-size: 1.25rem;
   margin-bottom: 1rem;
   color: #213547;
 }
+
 .primary-btn {
   background: #646cff;
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .primary-btn:hover {
   background: #535bf2;
 }
 
-/* Сетка инструментов */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
 }
+
 .tool-btn {
   background: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 0.0625rem solid #e0e0e0;
+  border-radius: 0.5rem;
   padding: 1rem;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
+
 .tool-btn:hover:not(:disabled) {
   border-color: #646cff;
   background: #fff;
 }
+
 .tool-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 .tool-icon {
   margin-bottom: 0.5rem;
 }
 
-/* Ошибки и ссылка */
 .error {
   color: #c0392b;
   margin-top: 1rem;
 }
+
 .download-link {
   display: inline-block;
   margin-top: 1rem;
@@ -132,6 +143,7 @@
   text-decoration: none;
   font-weight: 500;
 }
+
 .download-link:hover {
   text-decoration: underline;
 }
