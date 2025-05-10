@@ -1,14 +1,17 @@
 import React from "react";
-import { useRive } from "@rive-app/react-canvas";
-import pawRiv from "../components/PawButton.riv";
-
-export default function HoverPawButton({ children, ...props }) {
+import { useRive, Layout, Fit, Alignment } from "@rive-app/react-canvas";
+import pawRiv from "../components/6.riv";
+import "../components/HoverPawButton.css";
+export default function HoverPawButton({ children, className, disabled, ...props }) {
     const { rive, RiveComponent } = useRive({
         src: pawRiv,
         animations: "Timeline 1",
         autoplay: false,
+        layout: new Layout({
+            fit:     Fit.Cover,        // Try Fit.Fill if you don’t mind cropping
+            alignment: Alignment.Center
+        }),
     });
-
 
 
     const handleEnter = () => rive && rive.play("Timeline 1");
@@ -16,21 +19,21 @@ export default function HoverPawButton({ children, ...props }) {
 
     return (
         <div
+            className="paw-button-wrapper"
             onMouseEnter={handleEnter}
             onMouseLeave={handleLeave}
-            {...props}
             style={{ position: "relative", display: "inline-block" }}
         >
-            <button>{children}</button>
-            <RiveComponent
-                style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: "100%",
-                    width: "80px",
-                    pointerEvents: "none",
-                }}
-            />
+            <button
+                className={className}
+                disabled={disabled}
+                {...props}
+            >
+                {children}
+            </button>
+            <RiveComponent className="paw-rive" />
+
+
         </div>
     );
 }

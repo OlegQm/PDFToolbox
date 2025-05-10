@@ -1,10 +1,10 @@
 /* ========================================
-   CSS-переменные
+   CSS variables
    ======================================== */
 :root {
-  --clr-bg-page:    #f5f7fa;
-  --clr-bg-panel:   #fff;
-  --clr-border:     #e0e0e0;
+  --clr-bg-page: #e5e5e6;
+  --clr-bg-panel: #efeded;
+  --clr-border: #cac9c9;
   --clr-input:      #ccc;
   --clr-text:       #213547;
   --clr-primary:    #646cff;
@@ -18,7 +18,7 @@
 }
 
 /* ========================================
-   Базовые стили
+   Basic styles
    ======================================== */
 * {
   box-sizing: border-box;
@@ -37,7 +37,7 @@ body {
 }
 
 /* ========================================
-   Хедер
+   Heder
    ======================================== */
 .header {
   display: flex;
@@ -108,7 +108,6 @@ body {
 }
 
 
-/* Скрываем настоящий инпут, но оставляем кликабельным всю кнопку */
 .primary-btn > input {
   position: absolute;
   top: 0; left: 0;
@@ -117,7 +116,6 @@ body {
   cursor: pointer;
 }
 
-/* Сообщение об ошибке под дропзоной */
 .drop-error {
   margin-top: 0.5rem;
   color: var(--clr-danger);
@@ -125,7 +123,7 @@ body {
 }
 
 /* ========================================
-   Сетка инструментов
+   Tool grid
    ======================================== */
 .tools-grid {
   display: grid;
@@ -152,7 +150,7 @@ body {
 }
 .tool-btn:hover:not(:disabled) {
   border-color: var(--clr-primary);
-  background: #fff;
+  background: #b9bcf1;
 }
 .tool-icon {
   font-size: 1.5rem;
@@ -164,12 +162,12 @@ body {
 }
 
 /* ========================================
-   Сайдбар (панель настроек)
+   Sidebar (settings panel)
    ======================================== */
 .sidebar {
   position: fixed;
-  top: 0; right: 0;         /* небольшой отступ от края */
-  width: 360px;                /* чуть шире */
+  top: 0; right: 0;
+  width: 360px;
   height: 100vh;
   background: var(--clr-bg-panel);
   box-shadow: -4px 0 16px rgba(0,0,0,0.1);
@@ -196,11 +194,11 @@ body {
 .settings-panel {
   flex: 1;
   overflow-y: auto;
-  padding-right: 0.5rem;       /* пространство для скролла */
+  padding-right: 0.5rem;
 }
 
 /* ========================================
-   Общие поля ввода внутри сайдбара
+   Common input fields inside the sidebar
    ======================================== */
 .settings-panel label {
   font-size: 0.9rem;
@@ -217,7 +215,7 @@ body {
 }
 
 /* ========================================
-   Rotate-специфичные стили
+   Rotate
    ======================================== */
 .rotation-item {
   display: flex;
@@ -247,7 +245,7 @@ body {
 }
 
 /* ========================================
-   Общая кнопка Apply/Submit
+   Apply/Submit
    ======================================== */
 .submit-btn {
   margin-top: auto;
@@ -269,7 +267,7 @@ body {
 }
 
 /* ========================================
-   Прочие «generic» списки (extract, merge, remove и т.д.)
+   Other ‘generic’ lists (extract, merge, remove, etc.)
    ======================================== */
 .generic-list {
   margin-bottom: var(--gap);
@@ -280,7 +278,7 @@ body {
 }
 
 /* ========================================
-   Скроллбар внутри сайдбара
+   Scrollbar inside the sidebar
    ======================================== */
 .settings-panel::-webkit-scrollbar {
   width: 6px;
@@ -290,40 +288,32 @@ body {
   border-radius: 3px;
 }
 
-/* Убираем браузерный outline вокруг dropzone */
 .dropzone:focus {
   outline: none;
 }
 
-/* То же для кнопки выбора и любых вложенных интерактивных элементов */
 .dropzone button:focus,
 .dropzone input:focus {
   outline: none;
 }
-/* Универсальный класс для кнопок действий в сайдбаре */
 .sidebar-action,
 .submit-rot {
-  /* фон как у «Extract» */
+
   background-color: #38a169;
   color: #fff;
 
-  /* скругление и убрать бордер */
   border: none;
   border-radius: 8px;
 
-  /* размер и отступы */
   padding: 0.75rem 1rem;
   font-size: 1rem;
   line-height: 1.2;
 
-  /* растянуть на всю ширину панели */
   width: 100%;
   box-sizing: border-box;
 
-  /* чтобы не прилипала к «списку» */
   margin-top: 1rem;
 
-  /* эффект наведения */
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -338,20 +328,18 @@ body {
   background-color: #a0a0a0;
   cursor: not-allowed;
 }
-/* Стилизация контейнера file-input:
-   чтобы кнопка и имя файла были на одной строке с gap */
+
 input[type="file"] {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;           /* расстояние между кнопкой и названием файла */
+  gap: 0.5rem;
   font-family: inherit;
   font-size: 1rem;
   color: var(--clr-text);
 }
 
-/* Сама кнопка выбора файла */
 input[type="file"]::file-selector-button {
-  appearance: none;      /* отключаем дефолтный стиль */
+  appearance: none;
   background-color: var(--clr-primary);
   color: #fff;
   border: none;
@@ -361,18 +349,15 @@ input[type="file"]::file-selector-button {
   transition: background-color 0.2s;
 }
 
-/* Ховер для этой кнопки */
 input[type="file"]::file-selector-button:hover {
   background-color: var(--clr-primary-h);
 }
 
-/* Дизаблед-стейт */
 input[type="file"]:disabled::file-selector-button {
   background-color: #a0a0a0;
   cursor: not-allowed;
 }
 
-/* Если нужно, чтобы имя файла не растягивало блок слишком широко */
 input[type="file"] {
   max-width: 100%;
   white-space: nowrap;
@@ -380,7 +365,6 @@ input[type="file"] {
   text-overflow: ellipsis;
 }
 
-/* Общий отступ между текстом лейбла и самим контролом */
 .generic-list label,
 .settings-panel label {
   display: block;
@@ -391,27 +375,25 @@ input[type="file"] {
   margin-bottom: 1rem;
 }
 
-/* Кот поверх всего */
 /* App.css */
 .dropzone-wrapper {
   position: relative;
   width: 100%;
-  max-width: 500px;    /* как у вашей дропзоны */
-  margin: 6.2rem auto; /* перенёс от .dropzone */
+  max-width: 500px;
+  margin: 6.2rem auto;
   overflow: visible;
 }
 
 
 
-/* картинка кота */
 .cat-wrapper {
   position: absolute;
-  top: -80px;       /* вот этот параметр и подбираем под себя */
+  top: -80px;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
-  pointer-events: none; /* чтобы картинка не мешала кликам по рамке */
+  pointer-events: none;
   z-index: 10;
   overflow: visible;
 
@@ -425,24 +407,32 @@ input[type="file"] {
 
 .cat-container img {
   display: block;
-  width: auto;           /* натуральная ширина */
-  max-width: 300px;      /* или любой другой разумный лимит */
+  width: auto;
+  max-width: 300px;
   height: auto;
 }
 .cat {
   position: relative;
-  z-index: 2; /* выше зрачка */
+  z-index: 2;
 }
-/* сам “зрачок” */
 .pupil {
   position: absolute;
   width: 5%;
-  padding-bottom: 5%;    /* чтобы было квадратным */
+  padding-bottom: 5%;
   border-radius: 50%;
   background: #000;
-  top: 40%;              /* начальное положение в процентах */
+  top: 40%;
   left: 22%;
   pointer-events: none;
   transition: top 0.05s, left 0.05s;
 }
 
+.tool-sticker {
+  margin-right: 6px;
+  font-size: 19em;
+  vertical-align: middle;
+}
+
+.tool-label {
+  vertical-align: middle;
+}

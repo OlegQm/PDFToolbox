@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";import "./App.css";
 import catImg from './components/4.1.png';
 import HoverPawButton from "./components/HoverPawButton";
+import "./App.css";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 
@@ -33,22 +34,21 @@ export default function App() {
 
   const [pageUrl, setPageUrl] = useState("");
 
-  // Основные файлы
+  // file
   const [file, setFile] = useState(null);
   const [mergeFiles, setMergeFiles] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
 
-  // UI-состояние
+  // UI
   const [downloadUrl, setDownloadUrl] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedTool, setSelectedTool] = useState(null);
 
-  // Настройки инструментов
   const [rotations, setRotations] = useState([{ page: 1, degrees: 90 }]);
   const [pages, setPages] = useState("1");
   const [splitAt, setSplitAt] = useState(1);
-  // Новые поля для водяного знака
+
   const [watermark, setWatermark] = useState({
     text: "",
     font_name: "Helvetica",
@@ -62,8 +62,19 @@ export default function App() {
     offset_y: 0,
     angle: 0,
   });
+  const emojiMap = {
+    "Rotate":          "🔄",
+    "Extract Pages":   "📑",
+    "Merge PDFs":      "📚",
+    "Split PDF":       "✂️",
+    "Images to PDF":   "🖼️",
+    "Page Numbers":    "🔢",
+    "Watermark":       "💧",
+    "Remove Pages":    "➖",
+    "URL to PDF":      "🌐",
+    "Compress":        "⚙️",
+  };
 
-  // Конфиг инструментов
   const tools = [
     { label: "Rotate",         path: "/rotate-pdf",      needsConfig: true },
     { label: "Extract Pages",  path: "/extract-pages",   needsConfig: true },
@@ -77,7 +88,7 @@ export default function App() {
     { label: "Compress",       path: "/compress-pdf",     needsConfig: true },
   ];
 
-  // Handlers загрузки
+  // Handlers
   const handleFile        = (e) => { setFile(e.target.files[0]); setError(""); setDownloadUrl(""); };
   const handleMergeFiles = (e) => { setMergeFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
   const handleImageFiles = (e) => { setImageFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
@@ -93,7 +104,7 @@ export default function App() {
   };
 
 
-  // Запуск API
+  //Start API
   const runTool = async (tool, body) => {
     if (tool.path === "/merge-pdfs"    && mergeFiles.length < 2)      { setError("Select at least two PDFs to merge."); return; }
     if (tool.path === "/split-pdf"     && splitAt < 1)               { setError("Split position must be >= 1."); return; }
@@ -124,7 +135,6 @@ export default function App() {
   const updateRotation = (i,f,v) => setRotations(rs => rs.map((r,idx)=>idx===i ? {...r,[f]:v} : r));
   const removeRotation = (i) => setRotations(rs=>rs.filter((_,idx)=>idx!==i));
 
-  // Метки кнопок в сайдбаре
   const actionLabels = {
     "/rotate-pdf":      "Apply & Rotate",
     "/extract-pages":   "Extract",
@@ -143,10 +153,9 @@ export default function App() {
   useEffect(() => {
     const onMouseMove = (e) => {
       const rect = containerRef.current.getBoundingClientRect();
-      // координаты мыши внутри контейнера
+      //Cat
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      // ограничиваем движение зрачка рамками глаза (примерные)
       const minX = 85,
             maxX = 100,
             minY = 40,
@@ -191,12 +200,12 @@ export default function App() {
               {error && <div className="drop-error">{error}</div>}
             </label>
           </div>
-          {/* Инструменты */}
+          {/* Instruments */}
           <div className="tools-grid">
             {tools.map(tool => {
-              // те, которые НЕ требуют PDF-файла
+              // not PDF-file
               const noFileNeeded = ["/images-to-pdf", "/url-to-pdf"].includes(tool.path);
-              // те, которые требуют файл
+              // file
               const needsFile = !noFileNeeded;
 
               const disabled =
@@ -205,14 +214,16 @@ export default function App() {
                   (noFileNeeded && !!file);
 
               return (
-                  <HoverPawButton>
+                  <HoverPawButton
                       key={tool.path}
                       className="tool-btn"
                       onClick={() => openTool(tool)}
                       disabled={disabled}
                   >
-                    {tool.label}
+                    <span className="tool-sticker">{emojiMap[tool.label]}</span>
+                    <span className="tool-label">{tool.label}</span>
                   </HoverPawButton>
+
               );
             })}
           </div>
