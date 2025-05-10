@@ -4,7 +4,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import Field
 from services.pdf_processing.add_watermark_service import add_watermark_service
 
-router = APIRouter()
+router = APIRouter(tags=["pdftools"])
 
 
 @router.post(

@@ -4,7 +4,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import Field
 from services.pdf_processing.remove_pages_service import remove_pages_service
 
-router = APIRouter()
+router = APIRouter(tags=["pdftools"])
 
 
 @router.post(

@@ -1,0 +1,15 @@
+.paw-rive {
+    display: none;
+    position: absolute;
+    top:    -20%;
+    left:   17%;
+    transform: translateX(-50%);
+    width:  200px;
+    height: 200px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.paw-button-wrapper:hover .paw-rive {
+    display: block;
+}

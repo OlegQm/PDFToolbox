@@ -14,5 +14,6 @@ export default defineConfig(({ command, mode }) => {
         'node63.webte.fei.stuba.sk',
       ],
     },
+    assetsInclude: ['**/*.riv'],
   };
 });
