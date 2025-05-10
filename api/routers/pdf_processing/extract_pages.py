@@ -2,7 +2,7 @@ from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.extract_pages_service import extract_pages_service
 
-router = APIRouter()
+router = APIRouter(tags=["pdftools"])
 
 
 @router.post(

@@ -2,11 +2,11 @@ from typing import Dict, Any
 from fastapi import APIRouter, Form, HTTPException, status
 from services.authorization.token_service import login_for_access_token_service
 
-router = APIRouter()
+router = APIRouter(tags=["auth"])
 
 
 @router.post(
-    "/token",
+    "/authorization/token",
     summary="Obtain access token",
     description="""
 Authenticate user by username and password and return a JSON Web Token (JWT).

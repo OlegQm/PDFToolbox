@@ -5,6 +5,8 @@ services:
     image: mongo:latest
     container_name: mongodb_server
     restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=pdftoolbox_prod_db
     volumes:
       - mongo_data:/data/db
     ports:
@@ -19,7 +21,8 @@ services:
     depends_on:
       - mongodb
     environment:
-      MONGO_URI: mongodb://mongodb:27017/mydb
+      MONGO_URI: mongodb://mongodb:27017
+      MONGO_DB_NAME: pdftoolbox_prod_db
       PYTHONUNBUFFERED: '1'
       API_PREFIX: /PDFToolbox
 

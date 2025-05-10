@@ -4,7 +4,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import Field, HttpUrl
 from services.pdf_processing.url_to_pdf_service import url_to_pdf_service
 
-router = APIRouter()
+router = APIRouter(tags=["pdftools"])
 
 
 @router.post(
