@@ -1,11 +1,14 @@
 from typing import Dict, Any
 from fastapi import HTTPException, status
+from motor.motor_asyncio import AsyncIOMotorCollection
 from utils.auth import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import timedelta
+from services.authorization.registration_service import authenticate_user
 
-def login_for_access_token_service(
+async def login_for_access_token_service(
     username: str,
-    password: str
+    password: str,
+    users: AsyncIOMotorCollection
 ) -> Dict[str, Any]:
     """
     Validate credentials and generate an access token.
@@ -13,8 +16,7 @@ def login_for_access_token_service(
     - Creates a JWT with a ACCESS_TOKEN_EXPIRE_MINUTES‑minute expiration.
     - Returns the token and its type.
     """
-    # TODO ANTONIO: Добавить проверку пользователя в БД
-    if not (username == "admin" and password == "secret"):
+    if not await authenticate_user(username, password, users):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
