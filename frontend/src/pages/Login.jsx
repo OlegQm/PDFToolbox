@@ -8,7 +8,6 @@ import "./auth.css";
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 
 
-
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

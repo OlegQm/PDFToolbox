@@ -50,7 +50,7 @@ export default function Register() {
 
 
             ////ЧУВАКИ Я ХЗ ЧТО СЮДА ПОДСТАВЛЯТЬ! ПРИ ЛОКАЛЬНОМ - ОК ФУНГУЕ - ЧТО ДЕЛАТЬ В СЛУЧАЕ С САЙТОМ - ХЗ
-            const res = await fetch(`${BASE_URL}/api/authorization/token`, {
+            const res = await fetch(`${BASE_URL}/api/authorization/register`, {
                 method: "POST",
                 body: formData
             });
