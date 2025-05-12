@@ -1,6 +1,7 @@
 from typing import Dict, Any
-from fastapi import APIRouter, Form, HTTPException, status
+from fastapi import APIRouter, Form, HTTPException, status, Depends
 from services.authorization.token_service import login_for_access_token_service
+from services.authorization.registration_service import get_users_collection
 
 router = APIRouter(tags=["auth"])
 
@@ -18,9 +19,10 @@ On success returns `{ "access_token": "...", "token_type": "bearer" }`.
 On failure returns 401 Unauthorized.
 """
 )
-def login_for_access_token(
+async def login_for_access_token(
     username: str = Form(..., description="The user's username"),
-    password: str = Form(..., description="The user's password")
+    password: str = Form(..., description="The user's password"),
+    users=Depends(get_users_collection)
 ) -> Dict[str, Any]:
     """
     Validate credentials and generate an access token.
@@ -30,9 +32,10 @@ def login_for_access_token(
     3. Return the token and token_type.
     """
     try:
-        return login_for_access_token_service(
+        return await login_for_access_token_service(
             username=username,
-            password=password
+            password=password,
+            users=users
         )
     except HTTPException:
         raise
