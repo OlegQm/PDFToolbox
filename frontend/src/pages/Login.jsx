@@ -38,8 +38,6 @@ export default function Login() {
         });
     }, []);
 
-
-
     const location = useLocation();
 
     useEffect(() => {
@@ -51,19 +49,18 @@ export default function Login() {
                 setErrorMsg("");
             }, 5000);
 
-            return () => clearTimeout(timer); // на случай, если компонент размонтируется
+            return () => clearTimeout(timer);
         }
     }, [location]);
     const handleSubmit = async e => {
         e.preventDefault();
-        setErrorMsg(""); // сбросить прошлую ошибку
+        setErrorMsg("");
 
         try {
             const formData = new FormData();
             formData.append("username", username);
             formData.append("password", password);
 
-            ////ЧУВАКИ Я ХЗ ЧТО СЮДА ПОДСТАВЛЯТЬ! ПРИ ЛОКАЛЬНОМ - ОК ФУНГУЕ - ЧТО ДЕЛАТЬ В СЛУЧАЕ С САЙТОМ - ХЗ
             const res = await fetch(`${BASE_URL}api/authorization/token`, {
                 method: "POST",
                 body: formData
@@ -76,8 +73,7 @@ export default function Login() {
                 return;
             }
 
-            // ✅ Успешный логин — сохранить токен
-            Cookies.set("access_token", data.access_token, { expires: 1 }); // expires = 1 день
+            Cookies.set("access_token", data.access_token, { expires: 1 });
             navigate("/", { replace: true });
 
         } catch (err) {

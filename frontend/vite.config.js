@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   const BASE_URL = mode === 'production' ? '/PDFToolbox/' : '/'
   const API_URL  = mode === 'production'
-    ? BASE_URL        // если nginx на сервере проксирует /PDFToolbox/ на API
+    ? BASE_URL
     : 'http://localhost:8000/'
 
   return {

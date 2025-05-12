@@ -15,7 +15,7 @@ async function callApi(path, file, extraBody = {}) {
     form.append("file", file, file.name);
   }
   if (extraBody.files && Array.isArray(extraBody.files)) {
-    extraBody.files.forEach(f => form.append("files", f.name));
+    extraBody.files.forEach(f => form.append("files", f, f.name));
     delete extraBody.files;
   }
   Object.entries(extraBody).forEach(([k, v]) => {
@@ -40,7 +40,6 @@ async function callApi(path, file, extraBody = {}) {
   });
 
   if (res.status === 401) {
-    // ❌ Токен есть, но он истёк/неверный
     Cookies.remove("access_token");
     throw new Error("Your session has expired. Please log in again.");
   }
@@ -57,9 +56,9 @@ async function callApi(path, file, extraBody = {}) {
 function getTokenExpiration(token) {
   try {
     const payload = token.split(".")[1];
-    const decoded = atob(payload); // base64 decode
+    const decoded = atob(payload);
     const parsed = JSON.parse(decoded);
-    return parsed.exp * 1000; // сек -> миллисекунды
+    return parsed.exp * 1000;
   } catch (err) {
     console.error("Token decode error:", err);
     return null;
@@ -266,8 +265,7 @@ export default function App() {
       }
     };
 
-    const interval = setInterval(checkToken, 5000); // каждые 5 секунд
-
+    const interval = setInterval(checkToken, 5000);
     return () => clearInterval(interval);
   }, []);
 

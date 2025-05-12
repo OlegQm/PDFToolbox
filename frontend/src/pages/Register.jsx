@@ -48,8 +48,6 @@ export default function Register() {
             formData.append("username", username);
             formData.append("password", password);
 
-
-            ////ЧУВАКИ Я ХЗ ЧТО СЮДА ПОДСТАВЛЯТЬ! ПРИ ЛОКАЛЬНОМ - ОК ФУНГУЕ - ЧТО ДЕЛАТЬ В СЛУЧАЕ С САЙТОМ - ХЗ
             const res = await fetch(`${BASE_URL}/api/authorization/register`, {
                 method: "POST",
                 body: formData
@@ -63,7 +61,7 @@ export default function Register() {
             }
 
 
-            setSuccessMsg(data.msg); // "User 'username' created."
+            setSuccessMsg(data.msg);
             setTimeout(() => navigate("/login"), 2000);
 
         } catch (err) {
