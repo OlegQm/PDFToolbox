@@ -12,7 +12,7 @@ const APP_PATH      = '/*';
 export default function Router() {
   return (
     <Routes>
-      {/* <Route path="/" element={<Navigate to={LOGIN_PATH} replace />} /> */}
+      <Route path="/" element={<Navigate to={LOGIN_PATH} replace />} />
 
       <Route path={LOGIN_PATH}    element={<Login />} />
       <Route path={REGISTER_PATH} element={<Register />} />
