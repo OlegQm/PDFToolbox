@@ -19,7 +19,7 @@ export default function Router() {
 
       <Route path={APP_PATH}      element={<App />} />
 
-      {/* <Route path="*" element={<Navigate to={LOGIN_PATH} replace />} /> */}
+      <Route path="*" element={<Navigate to={LOGIN_PATH} replace />} />
     </Routes>
   );
 }
