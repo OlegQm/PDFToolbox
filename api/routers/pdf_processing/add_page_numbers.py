@@ -1,6 +1,7 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.add_page_numbers_service import add_page_numbers_service
+from utils.auth import verify_token
 
 router = APIRouter(tags=["pdftools"])
 
@@ -18,7 +19,8 @@ async def add_page_numbers(
     file: UploadFile = File(
         ...,
         description="The PDF file to number. Content type must be 'application/pdf'."
-    )
+    ),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     - **file**: source PDF to which page numbers will be added.

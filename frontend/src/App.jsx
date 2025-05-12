@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from "react"; import "./App.css";
 import catImg from './components/white_cat.png';
 import HoverPawButton from "./components/HoverPawButton";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
+
 
 async function callApi(path, file, extraBody = {}) {
   const form = new FormData();
@@ -12,23 +15,57 @@ async function callApi(path, file, extraBody = {}) {
     form.append("file", file, file.name);
   }
   if (extraBody.files && Array.isArray(extraBody.files)) {
-    extraBody.files.forEach(f => form.append("files", f, f.name));
+    extraBody.files.forEach(f => form.append("files", f.name));
     delete extraBody.files;
   }
   Object.entries(extraBody).forEach(([k, v]) => {
     form.append(k, typeof v === "string" ? v : JSON.stringify(v));
   });
 
+  const token = Cookies.get("access_token");
+  if (!token) {
+    setTimeout(() => {
+      Cookies.remove("access_token");
+      window.location.href = "/login";
+    }, 1000);
+    throw new Error("You must LOG IN before using services!");
+  }
+
   const res = await fetch(`${BASE_URL}/api${path}`, {
     method: "POST",
     body: form,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
+
+  if (res.status === 401) {
+    // ❌ Токен есть, но он истёк/неверный
+    Cookies.remove("access_token");
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || `Error ${res.status}`);
   }
+
   return res.blob();
 }
+
+
+function getTokenExpiration(token) {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = atob(payload); // base64 decode
+    const parsed = JSON.parse(decoded);
+    return parsed.exp * 1000; // сек -> миллисекунды
+  } catch (err) {
+    console.error("Token decode error:", err);
+    return null;
+  }
+}
+
 
 export default function App() {
   const [pageUrl, setPageUrl] = useState("");
@@ -81,6 +118,7 @@ export default function App() {
     { label: "URL to PDF", path: "/url-to-pdf", needsConfig: true },
     { label: "Compress", path: "/compress-pdf", needsConfig: true },
   ];
+
 
   function isPdfFile(file) {
     return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
@@ -200,6 +238,37 @@ export default function App() {
 
     window.addEventListener("mousemove", onMouseMove);
     return () => window.removeEventListener("mousemove", onMouseMove);
+  }, []);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error === "Your session has expired. Please log in again.") {
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    }
+  }, [error]);
+
+
+  useEffect(() => {
+    const checkToken = () => {
+      const token = Cookies.get("access_token");
+      if (!token) return;
+
+      const exp = getTokenExpiration(token);
+      if (!exp) return;
+
+      const now = Date.now();
+      if (now >= exp) {
+        Cookies.remove("access_token");
+        navigate("/login?expired=true");
+      }
+    };
+
+    const interval = setInterval(checkToken, 5000); // каждые 5 секунд
+
+    return () => clearInterval(interval);
   }, []);
 
 

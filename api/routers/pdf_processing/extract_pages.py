@@ -1,6 +1,7 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.extract_pages_service import extract_pages_service
+from utils.auth import verify_token
 
 router = APIRouter(tags=["pdftools"])
 
@@ -22,7 +23,8 @@ async def extract_pages(
     pages: str = Form(
         ...,
         description="A JSON‐encoded array of page numbers, e.g. `[1, 3, 5]`."
-    )
+    ),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     Extract specified pages from the uploaded PDF.

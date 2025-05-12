@@ -1,6 +1,7 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.images_to_pdf_service import images_to_pdf_service
+from utils.auth import verify_token
 
 router = APIRouter(tags=["pdftools"])
 
@@ -18,7 +19,8 @@ async def images_to_pdf(
     files: list[UploadFile] = File(
         ...,
         description="Upload all images to include (content types must start with 'image/')"
-    )
+    ),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     - **files**: list of image files to convert into PDF

@@ -12,8 +12,10 @@
   "dependencies": {
     "@rive-app/canvas": "^2.27.2",
     "@rive-app/react-canvas": "^4.19.1",
+    "js-cookie": "^3.0.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
