@@ -2,9 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ command, mode }) => {
+  const BASE_URL = mode === 'production' ? '/PDFToolbox/' : '/'
   return {
     plugins: [react()],
-    base: mode === 'production' ? '/PDFToolbox/' : '/',
+    base: BASE_URL,
+    define: {
+      'import.meta.env.VITE_BASE_URL': JSON.stringify(BASE_URL)
+    },
     server: {
       host: true,
       allowedHosts: [
@@ -15,5 +19,5 @@ export default defineConfig(({ command, mode }) => {
       ],
     },
     assetsInclude: ['**/*.riv'],
-  };
-});
+  }
+})

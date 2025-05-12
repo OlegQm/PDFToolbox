@@ -3,23 +3,23 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
-import App from './App.jsx'; // Ваш старый интерфейс–Dashboard
+import App from './App.jsx';
+
+const LOGIN_PATH    = '/login';
+const REGISTER_PATH = '/register';
+const APP_PATH      = '/*';
 
 export default function Router() {
-    return (
-        <Routes>
-            {/* По корню сразу на логин */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to={LOGIN_PATH} replace />} />
 
-            {/* Страницы логина/регистрации */}
-            <Route path="/login"   element={<Login />} />
-            <Route path="/register" element={<Register />} />
+      <Route path={LOGIN_PATH}    element={<Login />} />
+      <Route path={REGISTER_PATH} element={<Register />} />
 
-            {/* Ваш Dashboard без проверок */}
-            <Route path="/app/*" element={<App />} />
+      <Route path={APP_PATH}      element={<App />} />
 
-            {/* Всё, что не вхoдит — обратно на логин */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-    );
+      <Route path="*" element={<Navigate to={LOGIN_PATH} replace />} />
+    </Routes>
+  );
 }

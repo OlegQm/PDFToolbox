@@ -4,8 +4,10 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import Router from './Router.jsx';
 
+const basename = import.meta.env.BASE_URL
+
 createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
         <Router />
     </BrowserRouter>
 );
