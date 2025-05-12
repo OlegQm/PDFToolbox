@@ -466,24 +466,18 @@ input[type="file"] {
   vertical-align: middle;
 }
 
-.file-btns {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.clear-btn {
-  background: transparent;
-  border: 2px solid var(--clr-danger);
-  color: var(--clr-danger);
-  border-radius: var(--radius);
-  padding: 0.5rem;
+.logout-btn {
+  background-color: #ffffff;
+  color: #000000;
+  border: 0.125rem solid #000000;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-left: auto;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: filter 0.2s ease;
 }
 
-.clear-btn:hover {
-  background: var(--clr-danger);
-  color: #fff;
+.logout-btn:hover {
+  filter: brightness(0.9);
 }

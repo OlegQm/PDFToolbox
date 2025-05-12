@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from "react"; import "./App.css";
 import catImg from './components/white_cat.png';
 import HoverPawButton from "./components/HoverPawButton";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
+
 
 async function callApi(path, file, extraBody = {}) {
   const form = new FormData();
@@ -19,16 +22,49 @@ async function callApi(path, file, extraBody = {}) {
     form.append(k, typeof v === "string" ? v : JSON.stringify(v));
   });
 
+  const token = Cookies.get("access_token");
+  if (!token) {
+    setTimeout(() => {
+      Cookies.remove("access_token");
+      window.location.href = "/login";
+    }, 1000);
+    throw new Error("You must LOG IN before using services!");
+  }
+
   const res = await fetch(`${BASE_URL}/api${path}`, {
     method: "POST",
     body: form,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
+
+  if (res.status === 401) {
+    Cookies.remove("access_token");
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || `Error ${res.status}`);
   }
+
   return res.blob();
 }
+
+
+function getTokenExpiration(token) {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = atob(payload);
+    const parsed = JSON.parse(decoded);
+    return parsed.exp * 1000;
+  } catch (err) {
+    console.error("Token decode error:", err);
+    return null;
+  }
+}
+
 
 export default function App() {
   const [pageUrl, setPageUrl] = useState("");
@@ -81,6 +117,7 @@ export default function App() {
     { label: "URL to PDF", path: "/url-to-pdf", needsConfig: true },
     { label: "Compress", path: "/compress-pdf", needsConfig: true },
   ];
+
 
   function isPdfFile(file) {
     return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
@@ -202,6 +239,40 @@ export default function App() {
     return () => window.removeEventListener("mousemove", onMouseMove);
   }, []);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error === "Your session has expired. Please log in again.") {
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    }
+  }, [error]);
+
+
+  useEffect(() => {
+    const checkToken = () => {
+      const token = Cookies.get("access_token");
+      if (!token) return;
+
+      const exp = getTokenExpiration(token);
+      if (!exp) return;
+
+      const now = Date.now();
+      if (now >= exp) {
+        Cookies.remove("access_token");
+        navigate("/login?expired=true");
+      }
+    };
+
+    const interval = setInterval(checkToken, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("access_token");
+    navigate("/login");
+  };
 
   return (
     <div className="app-container">
@@ -210,6 +281,7 @@ export default function App() {
         {downloadUrl && (
           <a href={downloadUrl} download className="download-link">Download result</a>
         )}
+        <button onClick={handleLogout} className="logout-btn">Log Out</button>
       </header>
 
       <div className="main-area">

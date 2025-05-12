@@ -1,8 +1,9 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.compress_pdf_service import compress_pdf_service
+from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -12,8 +13,10 @@ router = APIRouter(tags=["pdftools"])
     description="Accepts a PDF and returns a compressed version without reordering pages."
 )
 async def compress_pdf(
-    file: UploadFile = File(..., description="PDF file to compress (application/pdf)")
-) -> StreamingResponse:
+    file: UploadFile = File(..., description="PDF file to compress (application/pdf)"
+    ),
+    user: str = Depends(verify_token)
+ )-> StreamingResponse:
     """
     - **file**: source PDF to compress
     """

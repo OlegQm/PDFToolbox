@@ -1,10 +1,11 @@
 from typing import Annotated
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import Field, HttpUrl
 from services.pdf_processing.url_to_pdf_service import url_to_pdf_service
+from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -17,9 +18,11 @@ async def url_to_pdf(
     url: Annotated[
         HttpUrl,
         Field(
-            ..., description="HTTP or HTTPS URL to convert to PDF"
+            ...,
+            description="HTTP or HTTPS URL to convert to PDF"
         )
-    ] = Form(...)
+    ] = Form(...),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     - **url**: must be a valid HTTP/HTTPS URL (Pydantic HttpUrl)

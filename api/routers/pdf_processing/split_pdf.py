@@ -1,8 +1,9 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.split_pdf_service import split_pdf_service
+from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -23,7 +24,8 @@ async def split_pdf(
         ...,
         gt=0,
         description="Number of pages to keep in the first PDF (must be >=1)."
-    )
+    ),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     - **file**: source PDF  

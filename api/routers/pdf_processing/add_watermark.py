@@ -1,10 +1,11 @@
 from typing import Annotated, Literal
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from services.pdf_processing.add_watermark_service import add_watermark_service
+from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -65,6 +66,7 @@ async def add_watermark(
         float,
         Field(..., ge=-360.0, le=360.0, description="Rotation angle in degrees (-360…360)")
     ] = Form(0.0),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     - **file**: source PDF  

@@ -1,8 +1,9 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from services.pdf_processing.merge_pdfs_service import merge_pdfs_service
+from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -18,7 +19,8 @@ async def merge_pdfs(
     files: list[UploadFile] = File(
         ...,
         description="Upload two or more PDF files to merge."
-    )
+    ),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     Merge PDFs endpoint.

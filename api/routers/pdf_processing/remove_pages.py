@@ -1,10 +1,11 @@
 from typing import Annotated
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from services.pdf_processing.remove_pages_service import remove_pages_service
+from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -23,7 +24,8 @@ async def remove_pages(
     pages: Annotated[
         str,
         Field(..., description="JSON array of page numbers to remove, e.g. [2,5]")
-    ] = Form(...)
+    ] = Form(...),
+    user: str = Depends(verify_token)
 ) -> StreamingResponse:
     """
     - **file**: source PDF
