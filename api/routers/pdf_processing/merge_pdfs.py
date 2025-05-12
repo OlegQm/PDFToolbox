@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from services.pdf_processing.merge_pdfs_service import merge_pdfs_service
 from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(

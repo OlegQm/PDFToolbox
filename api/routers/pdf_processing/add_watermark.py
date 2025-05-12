@@ -5,7 +5,7 @@ from pydantic import Field
 from services.pdf_processing.add_watermark_service import add_watermark_service
 from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(

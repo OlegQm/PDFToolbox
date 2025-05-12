@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from services.pdf_processing.extract_pages_service import extract_pages_service
 from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(

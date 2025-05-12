@@ -269,6 +269,10 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleLogout = () => {
+    Cookies.remove("access_token");
+    navigate("/login");
+  };
 
   return (
     <div className="app-container">
@@ -277,6 +281,7 @@ export default function App() {
         {downloadUrl && (
           <a href={downloadUrl} download className="download-link">Download result</a>
         )}
+        <button onClick={handleLogout} className="logout-btn">Log Out</button>
       </header>
 
       <div className="main-area">

@@ -5,7 +5,7 @@ from pydantic import Field, HttpUrl
 from services.pdf_processing.url_to_pdf_service import url_to_pdf_service
 from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -18,7 +18,8 @@ async def url_to_pdf(
     url: Annotated[
         HttpUrl,
         Field(
-            ..., description="HTTP or HTTPS URL to convert to PDF"
+            ...,
+            description="HTTP or HTTPS URL to convert to PDF"
         )
     ] = Form(...),
     user: str = Depends(verify_token)

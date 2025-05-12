@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from services.pdf_processing.rotate_pdf_service import rotate_pdf as rotate_pdf_service
 from utils.auth import verify_token
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
