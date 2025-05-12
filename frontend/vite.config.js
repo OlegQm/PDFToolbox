@@ -17,14 +17,18 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       proxy: {
-        // при dev-запуске все запросы /api/* будут идти на localhost:8000
         '/api': {
           target: 'http://localhost:8000',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, ''),
         },
       },
-      allowedHosts: [ /* …ваши хосты… */ ],
+      allowedHosts: [
+        'node100.webte.fei.stuba.sk',
+        'node98.webte.fei.stuba.sk',
+        'node85.webte.fei.stuba.sk',
+        'node63.webte.fei.stuba.sk',
+      ],
     },
     assetsInclude: ['**/*.riv'],
   }
