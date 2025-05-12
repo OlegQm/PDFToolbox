@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
 
 

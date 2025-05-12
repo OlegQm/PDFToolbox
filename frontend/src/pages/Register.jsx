@@ -5,7 +5,7 @@ import bg from "./font.png";
 import cat from "./cat.png";
 import "./auth.css";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 export default function Register() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

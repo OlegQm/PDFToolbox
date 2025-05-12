@@ -5,8 +5,7 @@ import Cookies from "js-cookie";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import "./auth.css";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
-
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export default function Login() {
     const [username, setUsername] = useState("");
@@ -79,7 +78,7 @@ export default function Login() {
 
             // ✅ Успешный логин — сохранить токен
             Cookies.set("access_token", data.access_token, { expires: 1 }); // expires = 1 день
-            navigate("/app");
+            navigate("/", { replace: true });
 
         } catch (err) {
             console.error(err);
