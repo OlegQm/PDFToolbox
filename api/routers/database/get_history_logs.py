@@ -61,7 +61,11 @@ async def get_logs(
             skip,
             limit
         )
-        await log_action(user, "Got history logs", history_collection)
+        await log_action(
+            username=user,
+            action="Got history logs",
+            history_collection=history_collection
+        )
         return {
             "total": total,
             "skip": skip,

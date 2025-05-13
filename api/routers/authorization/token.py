@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from fastapi import APIRouter, Form, HTTPException, status, Depends
+from fastapi import APIRouter, Form, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorCollection
 from services.authorization.token_service import login_for_access_token_service
 from services.authorization.registration_service import get_users_collection
@@ -7,6 +7,7 @@ from services.authorization.logging_service import (
     get_history_collection,
     log_action
 )
+from services.authorization.geoip_service import resolve_geo
 
 router = APIRouter(tags=["auth"])
 
@@ -25,6 +26,7 @@ On failure returns 401 Unauthorized.
 """
 )
 async def login_for_access_token(
+    request: Request,
     username: str = Form(..., description="The user's username"),
     password: str = Form(..., description="The user's password"),
     users = Depends(get_users_collection),
@@ -37,6 +39,8 @@ async def login_for_access_token(
     2. Create a JWT with a ACCESS_TOKEN_EXPIRE_MINUTES‑minute expiration.
     3. Return the token and token_type.
     """
+    print(f"Login attempt from {request.client.host} for user {username}")
+    print(await resolve_geo(request.client.host))
     try:
         result = await login_for_access_token_service(
             username=username,
