@@ -11,3 +11,4 @@ pdfkit==1.0.0
 python-jose==3.4.0
 passlib==1.7.4
 geoip2==5.1.0
+starlette==0.46.2

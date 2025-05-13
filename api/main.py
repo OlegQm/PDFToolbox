@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from routers.pdf_processing import (
     rotate_pdf,
@@ -94,6 +95,7 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
     lifespan=lifespan
 )
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
