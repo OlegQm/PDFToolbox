@@ -1,7 +1,12 @@
 from typing import Dict, Any
 from fastapi import APIRouter, Form, HTTPException, status, Depends
+from motor.motor_asyncio import AsyncIOMotorCollection
 from services.authorization.token_service import login_for_access_token_service
 from services.authorization.registration_service import get_users_collection
+from services.authorization.logging_service import (
+    get_history_collection,
+    log_action
+)
 
 router = APIRouter(tags=["auth"])
 
@@ -22,7 +27,8 @@ On failure returns 401 Unauthorized.
 async def login_for_access_token(
     username: str = Form(..., description="The user's username"),
     password: str = Form(..., description="The user's password"),
-    users=Depends(get_users_collection)
+    users = Depends(get_users_collection),
+    history_collection: AsyncIOMotorCollection = Depends(get_history_collection)
 ) -> Dict[str, Any]:
     """
     Validate credentials and generate an access token.
@@ -32,11 +38,17 @@ async def login_for_access_token(
     3. Return the token and token_type.
     """
     try:
-        return await login_for_access_token_service(
+        result = await login_for_access_token_service(
             username=username,
             password=password,
             users=users
         )
+        await log_action(
+            username=username,
+            action="User login",
+            history_collection=history_collection
+        )
+        return result
     except HTTPException:
         raise
     except Exception as e:

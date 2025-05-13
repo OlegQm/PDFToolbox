@@ -1,7 +1,12 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
 from fastapi.responses import StreamingResponse
+from motor.motor_asyncio import AsyncIOMotorCollection
 from services.pdf_processing.extract_pages_service import extract_pages_service
 from utils.auth import verify_token
+from services.authorization.logging_service import (
+    get_history_collection,
+    log_action
+)
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -24,7 +29,8 @@ async def extract_pages(
         ...,
         description="A JSON‐encoded array of page numbers, e.g. `[1, 3, 5]`."
     ),
-    user: str = Depends(verify_token)
+    user: str = Depends(verify_token),
+    history_collection: AsyncIOMotorCollection = Depends(get_history_collection)
 ) -> StreamingResponse:
     """
     Extract specified pages from the uploaded PDF.
@@ -37,7 +43,13 @@ async def extract_pages(
         HTTPException(500): on unexpected internal errors.
     """
     try:
-        return await extract_pages_service(file, pages)
+        result = await extract_pages_service(file, pages)
+        await log_action(
+            username=user,
+            action=f"Extracted pages {pages} from PDF",
+            history_collection=history_collection
+        )
+        return result
     except HTTPException:
         raise
     except Exception as e:

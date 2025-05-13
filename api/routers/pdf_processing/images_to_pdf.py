@@ -1,7 +1,12 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from fastapi.responses import StreamingResponse
+from motor.motor_asyncio import AsyncIOMotorCollection
 from services.pdf_processing.images_to_pdf_service import images_to_pdf_service
 from utils.auth import verify_token
+from services.authorization.logging_service import (
+    get_history_collection,
+    log_action
+)
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -20,13 +25,20 @@ async def images_to_pdf(
         ...,
         description="Upload all images to include (content types must start with 'image/')"
     ),
-    user: str = Depends(verify_token)
+    user: str = Depends(verify_token),
+    history_collection: AsyncIOMotorCollection = Depends(get_history_collection)
 ) -> StreamingResponse:
     """
     - **files**: list of image files to convert into PDF
     """
     try:
-        return await images_to_pdf_service(files)
+        result = await images_to_pdf_service(files)
+        await log_action(
+            username=user,
+            action="Converted images to PDF",
+            history_collection=history_collection
+        )
+        return result
     except HTTPException:
         raise
     except Exception as e:
