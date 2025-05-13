@@ -25,6 +25,8 @@ services:
       MONGO_DB_NAME: pdftoolbox_prod_db
       PYTHONUNBUFFERED: '1'
       API_PREFIX: /PDFToolbox
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: sine_pugna_nulla_vicrtoria
 
     ports:
       - 8000:8000

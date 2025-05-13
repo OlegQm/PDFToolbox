@@ -1,6 +1,10 @@
 import os
 import logging
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
+from motor.motor_asyncio import (
+    AsyncIOMotorClient,
+    AsyncIOMotorDatabase,
+    AsyncIOMotorCollection
+)
 from pymongo.errors import ConnectionFailure
 
 logger = logging.getLogger(__name__)
@@ -69,7 +73,9 @@ class AsyncMongoDB:
             logger.info("MongoDB connection closed")
 
     async def get_collection(self, name: str) -> AsyncIOMotorCollection:
-        """Returns a collection by name, error if it does not exist."""
+        """
+        Returns a collection by name, error if it does not exist.
+        """
         if self.db is None:
             logger.error("Attempted to get collection '%s' before DB initialized", name)
             raise ConnectionFailure("Database not initialized")
@@ -100,22 +106,29 @@ class AsyncMongoDB:
             logger.info("Created new collection '%s'", name)
         coll = self.db[name]
         if index_fields:
-            self._client[self._db_name][name].create_index(index_fields, unique=unique)
-            logger.info(
-                "Created index on collection '%s': %s (unique=%s)",
-                name, index_fields, unique
-            )
+            existing_idxs = await coll.index_information()
+            desired = list(index_fields)
+            if not any(info.get('key') == desired for info in existing_idxs.values()):
+                idx_name = coll.create_index(desired, unique=unique)
+                logger.info(
+                    "Created index '%s' on collection '%s': %s (unique=%s)",
+                    idx_name, name, desired, unique
+                )
         return coll
 
     async def list_collection_names(self) -> list[str]:
-        """Returns list of collection names in the database."""
+        """
+        Returns list of collection names in the database.
+        """
         if self.db is None:
             logger.error("Attempted to list collections before DB initialized")
             raise ConnectionFailure("Database not initialized")
         return await self.db.list_collection_names()
 
     async def verify_connection(self) -> bool:
-        """Pings server and attempts reconnect if ping fails."""
+        """
+        Pings server and attempts reconnect if ping fails.
+        """
         if self._client is None:
             await self.connect()
         try:

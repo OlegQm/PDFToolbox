@@ -24,7 +24,8 @@ async def get_users_collection() -> AsyncIOMotorCollection:
 async def create_user(
     username: str,
     password: str,
-    users: AsyncIOMotorCollection
+    users: AsyncIOMotorCollection,
+    is_admin: bool = False
 ) -> Dict[str, str]:
     """
     Asynchronously creates a new user in the database.
@@ -33,6 +34,7 @@ async def create_user(
         username (str): The username of the new user.
         password (str): The plaintext password of the new user.
         users (AsyncIOMotorCollection): The MongoDB collection where user data is stored.
+        is_admin (bool): Flag indicating if the user should have admin privileges.
 
     Returns:
         Dict[str, str]: A dictionary containing the username of the created user.
@@ -51,7 +53,7 @@ async def create_user(
     user_doc = {
         "username": username,
         "password": hashed,
-        "is_admin": False
+        "is_admin": is_admin
     }
     result = await users.insert_one(user_doc)
     if not result.acknowledged:
