@@ -1,24 +1,23 @@
-# services/authorization/geoip_service.py
 import os
-import httpx
+import geoip2.database
+from pathlib import Path
 from functools import lru_cache
 from typing import Tuple
 
 @lru_cache()
-def get_geoip_api_url() -> str:
-    return os.getenv("GEOIP_API_URL", "https://ipapi.co")
+def get_reader() -> geoip2.database.Reader:
+    db_path = Path(__file__).resolve().parents[2] / "geoip" / "GeoLite2-City.mmdb"
+    return geoip2.database.Reader(str(db_path))
 
 async def resolve_geo(ip: str) -> Tuple[str, str]:
     """
-    Returns (city, country_name) by IP.
-    If something goes wrong, returns empty strings.
+    По IP берёт город и страну из локальной MaxMind GeoLite2 City.
     """
-    url = f"{get_geoip_api_url()}/{ip}/json/"
-    print("URL:", url)
     try:
-        async with httpx.AsyncClient(timeout=1.0) as client:
-            r = await client.get(url)
-            data = r.json()
-            return data
+        reader = get_reader()
+        resp = reader.city(ip)
+        city = resp.city.name or ""
+        country = resp.country.name or ""
+        return resp
     except Exception as e:
         return e
