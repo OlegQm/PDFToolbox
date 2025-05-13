@@ -278,10 +278,14 @@ export default function App() {
     <div className="app-container">
       <header className="header">
         <h1>📁 Instruments</h1>
-        {downloadUrl && (
-          <a href={downloadUrl} download className="download-link">Download result</a>
-        )}
         <button onClick={handleLogout} className="logout-btn">Log Out</button>
+        {downloadUrl && (
+          <div className="download-wrapper" style={{ padding: "0.5rem 1rem" }}>
+            <a href={downloadUrl} download className="download-link">
+              Download result
+            </a>
+          </div>
+        )}
       </header>
 
       <div className="main-area">
@@ -465,6 +469,26 @@ export default function App() {
           <button className="submit-rot"
             onClick={() => {
               let body = {};
+              if (selectedTool.path === "/url-to-pdf" && !pageUrl.trim()) {
+                setError("Please enter a valid URL.");
+                return;
+              }
+              if (selectedTool.path === "/rotate-pdf" && rotations.length === 0) {
+                setError("Please specify at least one rotation.");
+                return;
+              }
+              if (selectedTool.path === "/extract-pages" && !pages.trim()) {
+                setError("Please specify pages to extract (e.g. 1,3,5).");
+                return;
+              }
+              if (selectedTool.path === "/remove-pages" && !pages.trim()) {
+                setError("Please specify pages to remove (e.g. 2,4,5).");
+                return;
+              }
+              if (selectedTool.path === "/add-watermark" && !watermark.text.trim()) {
+                setError("Please enter watermark text.");
+                return;
+              }
               switch (selectedTool.path) {
                 case "/rotate-pdf":
                   body = { rotations };
@@ -501,7 +525,14 @@ export default function App() {
               }
               runTool(selectedTool, body);
             }}
-            disabled={loading}
+            disabled={
+              loading ||
+              (selectedTool.path === "/rotate-pdf" && rotations.length === 0) ||
+              (selectedTool.path === "/extract-pages" && !pages.trim()) ||
+              (selectedTool.path === "/remove-pages" && !pages.trim()) ||
+              (selectedTool.path === "/url-to-pdf" && !pageUrl.trim()) ||
+              (selectedTool.path === "/add-watermark" && !watermark.text.trim())
+             }
           >
             {loading ? "Processing..." : actionLabels[selectedTool.path]}
           </button>

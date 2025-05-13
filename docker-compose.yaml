@@ -12,6 +12,8 @@ services:
       - MONGO_URI=mongodb://mongodb:27017
       - MONGO_DB_NAME=pdftoolbox_dev_db
       - API_PREFIX=/
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=sine_pugna_nulla_vicrtoria
 
   frontend:
     build:
