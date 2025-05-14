@@ -1,5 +1,5 @@
 from typing import Annotated, Literal
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from motor.motor_asyncio import AsyncIOMotorCollection
@@ -9,6 +9,7 @@ from services.authorization.logging_service import (
     get_history_collection,
     log_action
 )
+from services.authorization.geoip_service import resolve_geo
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -23,6 +24,7 @@ at the chosen position.
 """
 )
 async def add_watermark(
+    request: Request,
     file: UploadFile = File(
         ..., description="PDF file to watermark (application/pdf)"
     ),
@@ -94,9 +96,12 @@ async def add_watermark(
             offset_y,
             angle
         )
+        city, country = await resolve_geo(request.client.host)
         await log_action(
             username=user,
             action=f"Added watermark: {text}",
+            city=city,
+            country=country,
             history_collection=history_collection
         )
         return result

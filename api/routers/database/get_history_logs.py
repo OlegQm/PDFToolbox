@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Request
 from motor.motor_asyncio import AsyncIOMotorCollection
 from utils.auth import verify_token
 from services.database.get_history_logs_service import get_logs_service
@@ -7,8 +7,9 @@ from services.authorization.logging_service import (
     get_history_collection,
     log_action
 )
+from services.authorization.geoip_service import resolve_geo
 
-router = APIRouter(tags=["database"])
+router = APIRouter(tags=["Database"])
 
 @router.get(
     "/database/get-history-logs",
@@ -17,6 +18,7 @@ router = APIRouter(tags=["database"])
     description="Retrieve paginated history logs from the database."
 )
 async def get_logs(
+    request: Request,
     skip: int = Query(
         0,
         ge=0,
@@ -61,7 +63,14 @@ async def get_logs(
             skip,
             limit
         )
-        await log_action(user, "Got history logs", history_collection)
+        city, country = await resolve_geo(request.client.host)
+        await log_action(
+            username=user,
+            action="Got history logs",
+            city=city,
+            country=country,
+            history_collection=history_collection
+        )
         return {
             "total": total,
             "skip": skip,

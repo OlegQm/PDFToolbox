@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from routers.pdf_processing import (
     rotate_pdf,
@@ -32,7 +33,9 @@ from services.authorization.registration_service import (
 )
 from routers.database import (
     check_db_health,
-    get_history_logs
+    get_history_logs,
+    clear_history_collection,
+    export_history_to_csv
 )
 from utils.database import mongo_db
 
@@ -65,6 +68,8 @@ async def lifespan(app: FastAPI):
                 await log_action(
                     username=admin_user,
                     action="Admin user creation",
+                    city="Bratislava",
+                    country="Slovakia",
                     history_collection=history_collection
                 )
             except Exception as e:
@@ -78,6 +83,8 @@ async def lifespan(app: FastAPI):
             await log_action(
                 username=admin_user,
                 action="Admin user creation failed",
+                city="Admin secret city",
+                country="Admin secret country",
                 history_collection=history_collection
             )
         except Exception as e:
@@ -93,6 +100,10 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
     lifespan=lifespan
+)
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts="*"
 )
 app.add_middleware(
     CORSMiddleware,
@@ -123,5 +134,7 @@ api_router.include_router(registration.router)
 ######## Database routers ########
 api_router.include_router(check_db_health.router)
 api_router.include_router(get_history_logs.router)
+api_router.include_router(clear_history_collection.router)
+api_router.include_router(export_history_to_csv.router)
 
 app.include_router(api_router)

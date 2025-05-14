@@ -19,6 +19,8 @@ async def get_history_collection() -> AsyncIOMotorCollection:
 async def log_action(
     username: str,
     action: str,
+    city: str,
+    country: str,
     history_collection: AsyncIOMotorCollection
 ) -> None:
     """
@@ -27,6 +29,8 @@ async def log_action(
     doc = {
         "username": username,
         "action": action,
+        "city": city,
+        "country": country,
         "timestamp": datetime.now(timezone.utc)
     }
     result = await history_collection.insert_one(doc)

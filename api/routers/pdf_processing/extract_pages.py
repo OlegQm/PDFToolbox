@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorCollection
 from services.pdf_processing.extract_pages_service import extract_pages_service
@@ -7,6 +7,7 @@ from services.authorization.logging_service import (
     get_history_collection,
     log_action
 )
+from services.authorization.geoip_service import resolve_geo
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -21,6 +22,7 @@ pages into a new PDF, and returns it as a downloadable file.
 """
 )
 async def extract_pages(
+    request: Request,
     file: UploadFile = File(
         ...,
         description="The PDF file to extract pages from. Content type must be 'application/pdf'."
@@ -44,9 +46,12 @@ async def extract_pages(
     """
     try:
         result = await extract_pages_service(file, pages)
+        city, country = await resolve_geo(request.client.host)
         await log_action(
             username=user,
             action=f"Extracted pages {pages} from PDF",
+            city=city,
+            country=country,
             history_collection=history_collection
         )
         return result

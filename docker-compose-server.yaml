@@ -27,6 +27,7 @@ services:
       API_PREFIX: /PDFToolbox
       ADMIN_USER: admin
       ADMIN_PASSWORD: sine_pugna_nulla_vicrtoria
+      GEOIP_API_URL: https://ipapi.co
 
     ports:
       - 8000:8000

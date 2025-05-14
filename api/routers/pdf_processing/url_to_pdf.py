@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Form, Depends, HTTPException
+from fastapi import APIRouter, Form, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field, HttpUrl
 from motor.motor_asyncio import AsyncIOMotorCollection
@@ -9,6 +9,7 @@ from services.authorization.logging_service import (
     log_action
 )
 from utils.auth import verify_token
+from services.authorization.geoip_service import resolve_geo
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -20,6 +21,7 @@ router = APIRouter(tags=["PDF tools"])
     description="Accepts a valid HTTP/HTTPS URL and returns a PDF rendering of that page."
 )
 async def url_to_pdf(
+    request: Request,
     url: Annotated[
         HttpUrl,
         Field(
@@ -33,11 +35,14 @@ async def url_to_pdf(
     """
     - **url**: must be a valid HTTP/HTTPS URL (Pydantic HttpUrl)
     """
-    result = await url_to_pdf_service(str(url))
     try:
+        result = await url_to_pdf_service(str(url))
+        city, country = await resolve_geo(request.client.host)
         await log_action(
             username=user,
             action=f"Converted URL {url} to PDF",
+            city=city,
+            country=country,
             history_collection=history_collection
         )
         return result
