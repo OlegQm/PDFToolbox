@@ -66,6 +66,8 @@ async def lifespan(app: FastAPI):
                 await log_action(
                     username=admin_user,
                     action="Admin user creation",
+                    city="Bratislava",
+                    country="Slovakia",
                     history_collection=history_collection
                 )
             except Exception as e:
@@ -79,6 +81,8 @@ async def lifespan(app: FastAPI):
             await log_action(
                 username=admin_user,
                 action="Admin user creation failed",
+                city="Admin secret city",
+                country="Admin secret country",
                 history_collection=history_collection
             )
         except Exception as e:
@@ -95,7 +99,10 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
     lifespan=lifespan
 )
-app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts="*"
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

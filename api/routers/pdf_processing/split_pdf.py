@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorCollection
 from services.pdf_processing.split_pdf_service import split_pdf_service
@@ -7,6 +7,7 @@ from services.authorization.logging_service import (
     log_action
 )
 from utils.auth import verify_token
+from services.authorization.geoip_service import resolve_geo
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -21,6 +22,7 @@ the rest into `part2.pdf`. Both parts are returned as a ZIP archive.
 """
 )
 async def split_pdf(
+    request: Request,
     file: UploadFile = File(
         ...,
         description="The PDF file to split (content-type must be application/pdf)."
@@ -39,9 +41,12 @@ async def split_pdf(
     """
     try:
         result = await split_pdf_service(file, split_at)
+        city, country = await resolve_geo(request.client.host)
         await log_action(
             username=user,
             action=f"Split PDF at page {split_at}",
+            city=city,
+            country=country,
             history_collection=history_collection
         )
         return result

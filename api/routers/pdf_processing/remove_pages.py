@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from motor.motor_asyncio import AsyncIOMotorCollection
@@ -9,6 +9,7 @@ from services.authorization.logging_service import (
     get_history_collection,
     log_action
 )
+from services.authorization.geoip_service import resolve_geo
 
 router = APIRouter(tags=["PDF tools"])
 
@@ -23,6 +24,7 @@ returns a new PDF with those pages removed.
 """
 )
 async def remove_pages(
+    request: Request,
     file: UploadFile = File(
         ..., description="PDF file to process (application/pdf)"
     ),
@@ -39,9 +41,12 @@ async def remove_pages(
     """
     try:
         result = await remove_pages_service(file, pages)
+        city, country = await resolve_geo(request.client.host)
         await log_action(
             username=user,
             action=f"Removed pages {pages} from PDF",
+            city=city,
+            country=country,
             history_collection=history_collection
         )
         return result

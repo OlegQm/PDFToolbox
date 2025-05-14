@@ -22,7 +22,7 @@ def get_reader() -> geoip2.database.Reader:
             expected location.
     """
     db_path = Path(__file__).resolve().parents[2] / "geoip" / "GeoLite2-City.mmdb"
-    return geoip2.database.Reader(str(db_path), locales=['en'])
+    return geoip2.database.Reader(str(db_path))
 
 async def resolve_geo(ip: str) -> Tuple[str, str]:
     """
@@ -32,15 +32,15 @@ async def resolve_geo(ip: str) -> Tuple[str, str]:
     try:
         resp = get_reader().city(ip)
         city = (
-            resp.city.names.get("en", "Default city")
+            resp.city.names.get("en", "Unknown city")
             or resp.city.name
-            or "Default city"
+            or "Unknown city"
         )
         country = (
-            resp.country.names.get("en", "Default country")
+            resp.country.names.get("en", "Unknown country")
             or resp.country.name
-            or "Default country"
+            or "Unknown country"
         )
         return city, country
     except Exception:
-        return "Default city", "Default country"
+        return "Unknown city", "Unknown country"

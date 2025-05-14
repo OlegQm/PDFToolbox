@@ -39,17 +39,18 @@ async def login_for_access_token(
     2. Create a JWT with a ACCESS_TOKEN_EXPIRE_MINUTES‑minute expiration.
     3. Return the token and token_type.
     """
-    print(f"Login attempt from {request.client.host} for user {username}")
-    print(await resolve_geo(request.client.host))
     try:
         result = await login_for_access_token_service(
             username=username,
             password=password,
             users=users
         )
+        city, country = await resolve_geo(request.client.host)
         await log_action(
             username=username,
             action="User login",
+            city=city,
+            country=country,
             history_collection=history_collection
         )
         return result
