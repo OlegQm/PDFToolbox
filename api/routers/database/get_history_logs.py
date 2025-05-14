@@ -9,7 +9,7 @@ from services.authorization.logging_service import (
 )
 from services.authorization.geoip_service import resolve_geo
 
-router = APIRouter(tags=["database"])
+router = APIRouter(tags=["Database"])
 
 @router.get(
     "/database/get-history-logs",
