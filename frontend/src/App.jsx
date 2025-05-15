@@ -343,7 +343,6 @@ export default function App() {
           {downloadUrl && (
               <div className="modal" onClick={() => setDownloadUrl("")}>
                 <div className="modal-content" onClick={e => e.stopPropagation()}>
-                  {/* Кнопка-крестик в углу */}
                   <button
                       type="button"
                       className="modal-close"
@@ -449,6 +448,7 @@ export default function App() {
             <button className="sidebar-close" onClick={() => setSelectedTool(null)}>×</button>
           </div>
 
+          {/* Rotate PDF */}
           {selectedTool.path === "/rotate-pdf" && (
             <div className="settings-panel">
               <div className="rotations-list">
@@ -480,6 +480,7 @@ export default function App() {
             </div>
           )}
 
+          {/* Extract PDFs */}
           {selectedTool.path === "/extract-pages" && (
             <div className="settings-panel">
               <div className="extract-list">
@@ -490,6 +491,7 @@ export default function App() {
             </div>
           )}
 
+          {/* Merge PDFs */}
           {selectedTool.path === "/merge-pdfs" && (
               <div className="settings-panel">
                 <div className="merge-list">
@@ -512,16 +514,32 @@ export default function App() {
                       className="hidden-input"
                   />
 
-                  <span>
-                    {mergeFiles.length > 0
-                        ? t('filesSelected', { names: mergeFiles.map(f => f.name).join(', ') })
-                        : t('fileNotSelected')}
-                  </span>
+                  {mergeFiles.length > 0 ? (
+                      <div className="file-btns" onClick={e => e.stopPropagation()}>
+          <span className="drop-text">
+            {mergeFiles.map(f => f.name).join(', ')}
+          </span>
+                        <button
+                            type="button"
+                            className="clear-btn"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setMergeFiles([]);
+                              setError("");
+                            }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                  ) : (
+                      <span>{t('fileNotSelected')}</span>
+                  )}
                 </div>
               </div>
           )}
 
 
+          {/* Splid PDF */}
           {selectedTool.path === "/split-pdf" && (
               <div className="settings-panel">
                 <div className="split-list">
@@ -536,6 +554,7 @@ export default function App() {
               </div>
           )}
 
+          {/* Images to PDF */}
           {selectedTool.path === "/images-to-pdf" && (
               <div className="settings-panel">
                 <div className="images-list">
@@ -558,16 +577,31 @@ export default function App() {
                       className="hidden-input"
                   />
 
-                  <span>
-                    {imageFiles.length > 0
-                        ? t('imagesSelected', { names: imageFiles.map(f => f.name).join(', ') })
-                        : t('fileNotSelected')}
-                  </span>
+                  {imageFiles.length > 0 ? (
+                      <div className="file-btns" onClick={e => e.stopPropagation()}>
+                        <span className="drop-text">
+                          {imageFiles.map(f => f.name).join(', ')}
+                        </span>
+                        <button
+                            type="button"
+                            className="clear-btn"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setImageFiles([]);
+                              setError("");
+                            }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                  ) : (
+                      <span>{t('fileNotSelected')}</span>
+                  )}
                 </div>
               </div>
           )}
 
-
+          {/* Add page numbers */}
           {selectedTool.path === "/add-page-numbers" && (
               <div className="settings-panel">
                 <div className="generic-list">

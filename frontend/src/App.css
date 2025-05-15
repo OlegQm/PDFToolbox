@@ -11,10 +11,11 @@
   --clr-primary-h: #4e56e6;
   --clr-success: #38a169;
   --clr-success-h: #2f855a;
-  --clr-danger: #e53e3e;
+  --clr-danger: #e66969;
   --radius: 8px;
   --gap: 1rem;
   --font-size: 1rem;
+  --clr-danger-h: #c0392b;
 }
 
 /* ========================================
@@ -476,40 +477,39 @@ input[type="file"] {
 }
 
 .clear-btn {
-  background: none;            /* прозрачный фон */
-  border: none;                /* без обводки */
-  color: var(--clr-danger);    /* ваш красный цвет */
-  font-size: 1.5rem;           /* увеличиваем крестик */
-  line-height: 1;              /* чтобы не было дополнительного «висения» */
-  padding: 0;                  /* без внутренних отступов */
+  background: none;
+  border: none;
+  color: var(--clr-danger);
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0;
   cursor: pointer;
   position: relative;
-  top: -2px;                   /* поднимаем чуть выше базовой линии */
-  margin-left: 0.5rem;         /* отступ от текста файла */
-  vertical-align: middle;      /* выравнивание по строке */
-  z-index: 10;             /* выше, чем у hidden-input */
+  top: -2px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  z-index: 10;
   pointer-events: auto;
   margin-right: 1rem;
 }
 .clear-btn:hover {
-  opacity: 0.8;                /* лёгкий эффект при наведении */
+  opacity: 0.8;
 
 }
 
 .header-actions {
   display: inline-flex;
   align-items: center;
-  gap: 1rem;        /* расстояние между кнопками */
-  margin-left: 2rem;/* отступ от заголовка */
+  gap: 1rem;
+  margin-left: 2rem;
 }
 
-/* общий стиль для кнопок-иконок */
 .icon-btn {
   background: none;
   border: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;     /* иконка + подпись */
+  gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   font-size: 1rem;
   color: var(--clr-text);
@@ -517,16 +517,13 @@ input[type="file"] {
   transition: color 0.2s;
 }
 
-/* hover-эффект */
 .icon-btn:hover {
   color: var(--clr-primary);
 }
 
-/* если нужно чуть разнести текст от иконки */
 .icon-btn span {
   line-height: 1;
 }
-/* фоновая подложка */
 .modal {
   position: fixed;
   top: 0;
@@ -540,7 +537,6 @@ input[type="file"] {
   z-index: 1000;
 }
 
-/* само модальное окно */
 .modal-content {
   position: relative;
   background: #fff;
@@ -551,7 +547,6 @@ input[type="file"] {
   text-align: center;
 }
 
-/* крестик-отмена */
 .modal-close {
   position: absolute;
   top: 0.5rem;
@@ -563,7 +558,6 @@ input[type="file"] {
   cursor: pointer;
 }
 
-/* стили кнопки загрузки внутри модалки */
 .download-btn {
   display: inline-block;
   margin-top: 1rem;
@@ -580,16 +574,14 @@ input[type="file"] {
   opacity: 0.9;
 }
 
-/* обёртка для кнопки и меню */
 .lang-switcher {
   position: relative;
   display: inline-block;
 }
 
-/* само выпадающее меню */
 .lang-menu {
   position: absolute;
-  top: 100%;            /* сразу под кнопкой */
+  top: 100%;
   left: 0;
   margin: 0;
   padding: 0.25rem 0;
@@ -601,14 +593,12 @@ input[type="file"] {
   z-index: 2000;
 }
 
-/* пункт меню */
 .lang-menu li {
   padding: 0.5rem 1rem;
   cursor: pointer;
   white-space: nowrap;
 }
 
-/* hover-эффект для пункта */
 .lang-menu li:hover {
   background: #f0f0f0;
 }
@@ -616,7 +606,14 @@ input[type="file"] {
 .merge-list,
 .images-list {
   display: flex;
-  flex-direction: column;  /* теперь элементы идут сверху вниз */
-  align-items: flex-start; /* прижать «влево» */
-  gap: 0.5rem;             /* отступы между label, кнопкой и текстом */
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.logout-btn {
+  background-color: #ffffff;
+  color: #000000;
+  border: 0.125rem solid #000000;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
 }
