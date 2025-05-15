@@ -22,6 +22,10 @@ async def url_to_pdf_service(
         HTTPException(500): if wkhtmltopdf is unavailable or PDF generation fails.
     """
     wk_path = os.getenv("WKHTMLTOPDF_PATH")
+    options = {
+        'enable-local-file-access': None,
+        'no-outline':              None
+    }
     try:
         if wk_path:
             config = pdfkit.configuration(wkhtmltopdf=wk_path)
@@ -29,19 +33,13 @@ async def url_to_pdf_service(
                 url,
                 False,
                 configuration=config,
-                options={
-                    'enable-local-file-access': None,
-                    'no-outline': None
-                }
+                options=options
             )
         else:
             pdf_bytes = pdfkit.from_url(
                 url,
                 False,
-                options={
-                    'enable-local-file-access': None,
-                    'no-outline': None
-                }
+                options=options
             )
     except OSError as e:
         raise HTTPException(500, f"wkhtmltopdf executable not found or not executable: {e}")
