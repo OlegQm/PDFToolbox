@@ -1,8 +1,15 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
+from motor.motor_asyncio import AsyncIOMotorCollection
 from services.pdf_processing.extract_pages_service import extract_pages_service
+from utils.auth import verify_token
+from services.authorization.logging_service import (
+    get_history_collection,
+    log_action
+)
+from services.authorization.geoip_service import resolve_geo
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -15,6 +22,7 @@ pages into a new PDF, and returns it as a downloadable file.
 """
 )
 async def extract_pages(
+    request: Request,
     file: UploadFile = File(
         ...,
         description="The PDF file to extract pages from. Content type must be 'application/pdf'."
@@ -22,7 +30,9 @@ async def extract_pages(
     pages: str = Form(
         ...,
         description="A JSON‐encoded array of page numbers, e.g. `[1, 3, 5]`."
-    )
+    ),
+    user: str = Depends(verify_token),
+    history_collection: AsyncIOMotorCollection = Depends(get_history_collection)
 ) -> StreamingResponse:
     """
     Extract specified pages from the uploaded PDF.
@@ -35,7 +45,16 @@ async def extract_pages(
         HTTPException(500): on unexpected internal errors.
     """
     try:
-        return await extract_pages_service(file, pages)
+        result = await extract_pages_service(file, pages)
+        city, country = await resolve_geo(request.client.host)
+        await log_action(
+            username=user,
+            action=f"Extracted pages {pages} from PDF",
+            city=city,
+            country=country,
+            history_collection=history_collection
+        )
+        return result
     except HTTPException:
         raise
     except Exception as e:

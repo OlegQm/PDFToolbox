@@ -1,10 +1,17 @@
 from typing import Annotated, Literal
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
+from motor.motor_asyncio import AsyncIOMotorCollection
 from services.pdf_processing.add_watermark_service import add_watermark_service
+from utils.auth import verify_token
+from services.authorization.logging_service import (
+    get_history_collection,
+    log_action
+)
+from services.authorization.geoip_service import resolve_geo
 
-router = APIRouter(tags=["pdftools"])
+router = APIRouter(tags=["PDF tools"])
 
 
 @router.post(
@@ -17,6 +24,7 @@ at the chosen position.
 """
 )
 async def add_watermark(
+    request: Request,
     file: UploadFile = File(
         ..., description="PDF file to watermark (application/pdf)"
     ),
@@ -63,8 +71,10 @@ async def add_watermark(
     ] = Form(10.0),
     angle: Annotated[
         float,
-        Field(..., ge=-360.0, le=360.0, description="Rotation angle in degrees (-360…360)")
+        Field(..., ge=-360.0, le=360.0, description="Rotation angle in degrees (-360...360)")
     ] = Form(0.0),
+    user: str = Depends(verify_token),
+    history_collection: AsyncIOMotorCollection = Depends(get_history_collection)
 ) -> StreamingResponse:
     """
     - **file**: source PDF  
@@ -72,7 +82,7 @@ async def add_watermark(
     - **color**, **alpha**, **position**, **offset_x**, **offset_y**, **angle**  
     """
     try:
-        return await add_watermark_service(
+        result = await add_watermark_service(
             file,
             text,
             font_name,
@@ -86,6 +96,15 @@ async def add_watermark(
             offset_y,
             angle
         )
+        city, country = await resolve_geo(request.client.host)
+        await log_action(
+            username=user,
+            action=f"Added watermark: {text}",
+            city=city,
+            country=country,
+            history_collection=history_collection
+        )
+        return result
     except HTTPException:
         raise
     except Exception as e:
