@@ -6,6 +6,9 @@ import Register from './pages/Register.jsx'
 import App from './App.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
 import PublicRoute from './components/PublicRoute.jsx'
+import HistoryPage from './pages/History';
+import InstructionPage from './pages/Instruction';
+
 
 export default function Router() {
   return (
@@ -28,6 +31,8 @@ export default function Router() {
           </PrivateRoute>
         }
       />
+      <Route path="/history" element={<HistoryPage />} />
+      <Route path="/instruction" element={<InstructionPage />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -1,0 +1,97 @@
+.instruction-container {
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 1rem 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.instruction-container h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.instruction-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instruction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.instruction-emoji {
+    font-size: 1.8rem;
+    line-height: 1;
+    margin-top: 0.15rem;
+}
+
+.instruction-content {
+    flex: 1;
+}
+
+.instruction-content h2 {
+    font-size: 1.25rem;
+    margin: 0 0 0.25rem;
+    color: #2c3e50;
+}
+
+.instruction-content p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--clr-text, #4a4a4a);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .instruction-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+    .instruction-item {
+        gap: 0.75rem;
+    }
+    .instruction-emoji {
+        font-size: 1.5rem;
+    }
+    .instruction-content h2 {
+        font-size: 1.1rem;
+    }
+}
+.back-btn {
+    /* Сброс дефолтного вида */
+    background: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+
+    /* Внутренние отступы и размер шрифта */
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    /* Горизонтальное выравнивание и отступ снизу */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+
+    /* Цвет и курсор */
+    color: #2c3e50;
+    cursor: pointer;
+
+    /* Лёгкая тень для объёма */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.back-btn:hover {
+    background: #e5e9ec;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
