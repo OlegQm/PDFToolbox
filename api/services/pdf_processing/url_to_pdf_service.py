@@ -24,10 +24,7 @@ async def url_to_pdf_service(
     wk_path = os.getenv("WKHTMLTOPDF_PATH")
     options = {
         'enable-local-file-access': None,
-        'no-outline':              None,
-        'print-media-type':        None,
-        'javascript-delay':        '3000',
-        'ignore-load-errors':      None,
+        'no-outline':              None
     }
     try:
         if wk_path:
