@@ -474,16 +474,25 @@ input[type="file"] {
 }
 
 .clear-btn {
-  background: transparent;
-  border: 2px solid var(--clr-danger);
-  color: var(--clr-danger);
-  border-radius: var(--radius);
-  padding: 0.5rem;
+  background: none;            /* прозрачный фон */
+  border: none;                /* без обводки */
+  color: var(--clr-danger);    /* ваш красный цвет */
+  font-size: 1.5rem;           /* увеличиваем крестик */
+  line-height: 1;              /* чтобы не было дополнительного «висения» */
+  padding: 0;                  /* без внутренних отступов */
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  position: relative;
+  top: -2px;                   /* поднимаем чуть выше базовой линии */
+  margin-left: 0.5rem;         /* отступ от текста файла */
+  vertical-align: middle;      /* выравнивание по строке */
+  z-index: 10;             /* выше, чем у hidden-input */
+  pointer-events: auto;
+}
+.clear-btn:hover {
+  opacity: 0.8;                /* лёгкий эффект при наведении */
 }
 
-.clear-btn:hover {
-  background: var(--clr-danger);
-  color: #fff;
+/* когда после .file-btns идёт .primary-btn, дать ему отступ слева */
+.file-btns + .primary-btn {
+  margin-left: var(--gap);
 }

@@ -221,12 +221,39 @@ export default function App() {
             </div>
           </div>
           <label className={`dropzone ${error ? "drop-error-active" : ""}`}>
+
             <div className="drop-icon">📄</div>
-            <div className="drop-text">{file ? file.name : "Drag and drop PDF here"}</div>
+
+            {file ? (
+                <div className="file-btns" onClick={e => e.stopPropagation()}>
+                  <span className="drop-text">{file.name}</span>
+                  <button
+                      type="button"
+                      className="clear-btn"
+                      onClick={() => {
+
+                        setFile(null);
+                        setDownloadUrl("");
+                        setError("");
+                      }}
+                  >
+                    ×
+                  </button>
+                </div>
+            ) : (
+                <div className="drop-text">Drag and drop PDF here</div>
+            )}
+
             <button className="primary-btn">Choose File</button>
-            <input type="file" accept="application/pdf" className="hidden-input" onChange={handleFile} />
+            <input
+                type="file"
+                accept="application/pdf"
+                className="hidden-input"
+                onChange={handleFile}
+            />
             {error && <div className="drop-error">{error}</div>}
           </label>
+
         </div>
         <div className="tools-grid">
           {tools.map(tool => {
@@ -234,20 +261,20 @@ export default function App() {
             const needsFile = !noFileNeeded;
 
             const disabled =
-              loading ||
-              (needsFile && !file) ||
-              (noFileNeeded && !!file);
+                loading ||
+                (needsFile && !file) ||
+                (noFileNeeded && !!file);
 
             return (
-              <HoverPawButton
-                key={tool.path}
-                className="tool-btn"
-                onClick={() => openTool(tool)}
-                disabled={disabled}
-              >
-                <span className="tool-sticker">{emojiMap[tool.label]}</span>
-                <span className="tool-label">{tool.label}</span>
-              </HoverPawButton>
+                <HoverPawButton
+                    key={tool.path}
+                    className="tool-btn"
+                    onClick={() => openTool(tool)}
+                    disabled={disabled}
+                >
+                  <span className="tool-sticker">{emojiMap[tool.label]}</span>
+                  <span className="tool-label">{tool.label}</span>
+                </HoverPawButton>
             );
           })}
         </div>
