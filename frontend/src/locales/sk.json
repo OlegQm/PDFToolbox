@@ -76,5 +76,33 @@
    "urlToPdf":        "Načíta webovú stránku podľa URL a uloží ju ako PDF.",
    "compressPdf":     "Zmenší veľkosť PDF kompresiou."
  },
-  "back": "Späť"
+  "back": "Späť",
+
+  "historyPage": {
+    "logHistory": "Historia zápisov",
+    "History": "Historia",
+    "DownloadCSV": "Stiahnuť CSV",
+    "ClearHistory": "Vymazať históriu",
+
+    "Clearcancelled": "Vymazanie zrušené",
+    "Downloadingthispage": "Stiahnutie tejto stránky...",
+    "Allhistorycleared.": "Všetka história je vymazaná.",
+
+    "User": "Používateľ",
+    "Action": "Akcia",
+    "City":  "Mesto",
+    "Country":  "Krajina",
+    "Date": "Dátum",
+    "Prev": "Pred",
+    "Next": "Ďalej",
+
+    "totalRecords": "Počet záznamov: {{count}}",
+    "show": "Zobraziť",
+    "noRecords": "Žiadne záznamy",
+    "confirmClear": "Naozaj chcete vymazať?",
+    "errorTokenMissing": "Chýba token — prosím, prihláste sa znova.",
+    "cleared": "Všetka história bola vymazaná.",
+    "Yes": "Áno",
+    "No": "Nie"
+  }
 }

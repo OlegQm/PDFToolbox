@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 SECRET_KEY = os.getenv("SECRET_KEY_FOR_TOKEN", "default_env_secret")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 2
+ACCESS_TOKEN_EXPIRE_MINUTES = 10
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/token")
 
