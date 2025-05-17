@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react"; import "./App.css";
 import { useTranslation } from "react-i18next";
-  import catImg from './components/white_cat.png';
+import catImg from './components/white_cat.png';
 import HoverPawButton from "./components/HoverPawButton";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
-import clockGif from "./assets/icons8-clock-50.png";
-import infoGif from "./assets/icons8-info-50.png";
-import globe from "./assets/icons8-planet-50.png";
+import clockGif from "./assets/clock.png";
+import infoGif from "./assets/info.png";
+import globe from "./assets/planet.png";
 
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -76,7 +76,7 @@ export default function App() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const mergeInputRef  = useRef(null);
+  const mergeInputRef = useRef(null);
   const imagesInputRef = useRef(null);
 
   const [pageUrl, setPageUrl] = useState("");
@@ -118,16 +118,16 @@ export default function App() {
   };
 
   const tools = [
-    { label: "Rotate", path: "/rotate-pdf", needsConfig: true ,i18nKey: "rotate"},
-    { label: "Extract Pages", path: "/extract-pages", needsConfig: true,i18nKey: "extractPages" },
-    { label: "Merge PDFs", path: "/merge-pdfs", needsConfig: true , i18nKey: "mergePdfs" },
-    { label: "Split PDF", path: "/split-pdf", needsConfig: true , i18nKey: "splitPdf"},
-    { label: "Images to PDF", path: "/images-to-pdf", needsConfig: true ,i18nKey: "imagesToPdf"},
-    { label: "Page Numbers", path: "/add-page-numbers", needsConfig: true ,i18nKey: "addPageNumbers"},
-    { label: "Watermark", path: "/add-watermark", needsConfig: true ,i18nKey: "addWatermark"},
-    { label: "Remove Pages", path: "/remove-pages", needsConfig: true ,i18nKey: "removePages"},
-    { label: "URL to PDF", path: "/url-to-pdf", needsConfig: true ,i18nKey: "urlToPdf"},
-    { label: "Compress", path: "/compress-pdf", needsConfig: true ,i18nKey: "compressPdf"},
+    { label: "Rotate", path: "/rotate-pdf", needsConfig: true, i18nKey: "rotate" },
+    { label: "Extract Pages", path: "/extract-pages", needsConfig: true, i18nKey: "extractPages" },
+    { label: "Merge PDFs", path: "/merge-pdfs", needsConfig: true, i18nKey: "mergePdfs" },
+    { label: "Split PDF", path: "/split-pdf", needsConfig: true, i18nKey: "splitPdf" },
+    { label: "Images to PDF", path: "/images-to-pdf", needsConfig: true, i18nKey: "imagesToPdf" },
+    { label: "Page Numbers", path: "/add-page-numbers", needsConfig: true, i18nKey: "addPageNumbers" },
+    { label: "Watermark", path: "/add-watermark", needsConfig: true, i18nKey: "addWatermark" },
+    { label: "Remove Pages", path: "/remove-pages", needsConfig: true, i18nKey: "removePages" },
+    { label: "URL to PDF", path: "/url-to-pdf", needsConfig: true, i18nKey: "urlToPdf" },
+    { label: "Compress", path: "/compress-pdf", needsConfig: true, i18nKey: "compressPdf" },
   ];
 
 
@@ -218,16 +218,16 @@ export default function App() {
   const removeRotation = (i) => setRotations(rs => rs.filter((_, idx) => idx !== i));
 
   const actionLabels = {
-    "/rotate-pdf":        "applyRotate",
-    "/extract-pages":     "extract",
-    "/merge-pdfs":        "merge",
-    "/split-pdf":         "split",
-    "/images-to-pdf":     "convertImages",
-    "/add-page-numbers":  "addNumbers",
-    "/add-watermark":     "watermark",
-    "/remove-pages":      "remove",
-    "/url-to-pdf":        "convertUrl",
-    "/compress-pdf":      "compress"
+    "/rotate-pdf": "applyRotate",
+    "/extract-pages": "extract",
+    "/merge-pdfs": "merge",
+    "/split-pdf": "split",
+    "/images-to-pdf": "convertImages",
+    "/add-page-numbers": "addNumbers",
+    "/add-watermark": "watermark",
+    "/remove-pages": "remove",
+    "/url-to-pdf": "convertUrl",
+    "/compress-pdf": "compress"
   };
   const containerRef = useRef(null);
   const pupilRef = useRef(null);
@@ -286,130 +286,130 @@ export default function App() {
   };
 
   return (
-      <div className="app-container">
-        <header className="header">
-          <h1>📁 {t('instruments')}</h1>
+    <div className="app-container">
+      <header className="header">
+        <h1>📁 {t('instruments')}</h1>
 
-          <div className="header-actions">
-            {/* History */}
-            <button
-                type="button"
-                className="icon-btn history-btn"
-                onClick={() => navigate("/history")}
-            >
-              <img src={clockGif} alt={t('history')} width="24" height="24"/>
-              <span>{t('history')}</span>
-            </button>
-
-            {/* Language */}
-            <div className="lang-switcher">
-              <button
-                  type="button"
-                  className="icon-btn language-btn"
-                  onClick={() => setLangMenuOpen(open => !open)}
-              >
-                <img src={globe} alt="Language" width="24" height="24" className="icon-img" />
-                <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
-              </button>
-
-              {langMenuOpen && (
-                  <ul className="lang-menu">
-                    <li onClick={() => { i18n.changeLanguage('en'); setLangMenuOpen(false); }}>
-                      English
-                    </li>
-                    <li onClick={() => { i18n.changeLanguage('sk'); setLangMenuOpen(false); }}>
-                      Slovak
-                    </li>
-                  </ul>
-              )}
-            </div>
-
-
-            {/* Instruction */}
-            <button
-                type="button"
-                className="icon-btn instruction-btn"
-                onClick={() => navigate("/instruction")}
-            >
-              <img src={infoGif} alt={t('instruction')} width="24" height="24"/>
-              <span>{t('instruction')}</span>
-            </button>
-          </div>
-
-          <button onClick={handleLogout} className="logout-btn">
-            {t('logout')}
+        <div className="header-actions">
+          {/* History */}
+          <button
+            type="button"
+            className="icon-btn history-btn"
+            onClick={() => navigate("/history")}
+          >
+            <img src={clockGif} alt={t('history')} width="24" height="24" />
+            <span>{t('history')}</span>
           </button>
 
-          {downloadUrl && (
-              <div className="modal" onClick={() => setDownloadUrl("")}>
-                <div className="modal-content" onClick={e => e.stopPropagation()}>
-                  <button
-                      type="button"
-                      className="modal-close"
-                      onClick={() => setDownloadUrl("")}
-                  >
-                    ×
-                  </button>
+          {/* Language */}
+          <div className="lang-switcher">
+            <button
+              type="button"
+              className="icon-btn language-btn"
+              onClick={() => setLangMenuOpen(open => !open)}
+            >
+              <img src={globe} alt="Language" width="24" height="24" className="icon-img" />
+              <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
+            </button>
 
-                  {/* Ваша кнопка загрузки */}
-                  <a href={downloadUrl} download className="download-btn">
-                    Download result
-                  </a>
-                </div>
-              </div>
-          )}
+            {langMenuOpen && (
+              <ul className="lang-menu">
+                <li onClick={() => { i18n.changeLanguage('en'); setLangMenuOpen(false); }}>
+                  English
+                </li>
+                <li onClick={() => { i18n.changeLanguage('sk'); setLangMenuOpen(false); }}>
+                  Slovak
+                </li>
+              </ul>
+            )}
+          </div>
 
-        </header>
 
-        <div className="main-area">
-          <div className="dropzone-wrapper">
-            <div className="cat-wrapper">
-              <div className="cat-container" ref={containerRef}>
-                <img src={catImg} className="cat" alt="cat"/>
-                <div className="pupil" ref={pupilRef}/>
-              </div>
-            </div>
-            <div className={`dropzone ${error ? "drop-error-active" : ""}`}>
+          {/* Instruction */}
+          <button
+            type="button"
+            className="icon-btn instruction-btn"
+            onClick={() => navigate("/instruction")}
+          >
+            <img src={infoGif} alt={t('instruction')} width="24" height="24" />
+            <span>{t('instruction')}</span>
+          </button>
+        </div>
 
-              <div className="drop-icon">📄</div>
+        <button onClick={handleLogout} className="logout-btn">
+          {t('logout')}
+        </button>
 
-              {file ? (
-                  <div className="file-btns" onClick={e => e.stopPropagation()}>
-                    <span className="drop-text">{file.name}</span>
-                    <button
-                        type="button"
-                        className="clear-btn"
-                        onClick={e => {
-                          e.stopPropagation();
-                          setFile(null);
-                          setDownloadUrl("");
-                          setError("");
-                        }}
-                    >
-                      ×
-                    </button>
-                  </div>
-              ) : (
-                  <div className="drop-text">{t('dragDrop')}</div>
-              )}
-
+        {downloadUrl && (
+          <div className="modal" onClick={() => setDownloadUrl("")}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
               <button
-               type="button"
-               className="primary-btn"
-               onClick={e => {
-                  e.stopPropagation();
-                  dropInputRef.current.click();
+                type="button"
+                className="modal-close"
+                onClick={() => setDownloadUrl("")}
+              >
+                ×
+              </button>
 
-                }}
-               >
-                {t('chooseFile')}
-               </button>
+              {/* Ваша кнопка загрузки */}
+              <a href={downloadUrl} download className="download-btn">
+                Download result
+              </a>
+            </div>
+          </div>
+        )}
+
+      </header>
+
+      <div className="main-area">
+        <div className="dropzone-wrapper">
+          <div className="cat-wrapper">
+            <div className="cat-container" ref={containerRef}>
+              <img src={catImg} className="cat" alt="cat" />
+              <div className="pupil" ref={pupilRef} />
+            </div>
+          </div>
+          <div className={`dropzone ${error ? "drop-error-active" : ""}`}>
+
+            <div className="drop-icon">📄</div>
+
+            {file ? (
+              <div className="file-btns" onClick={e => e.stopPropagation()}>
+                <span className="drop-text">{file.name}</span>
+                <button
+                  type="button"
+                  className="clear-btn"
+                  onClick={e => {
+                    e.stopPropagation();
+                    setFile(null);
+                    setDownloadUrl("");
+                    setError("");
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div className="drop-text">{t('dragDrop')}</div>
+            )}
+
+            <button
+              type="button"
+              className="primary-btn"
+              onClick={e => {
+                e.stopPropagation();
+                dropInputRef.current.click();
+
+              }}
+            >
+              {t('chooseFile')}
+            </button>
             <input
-                ref={dropInputRef}
-                type="file"
-                accept="application/pdf"
-                className="hidden-input"
-                onChange={handleFile}
+              ref={dropInputRef}
+              type="file"
+              accept="application/pdf"
+              className="hidden-input"
+              onChange={handleFile}
             />
             {error && <div className="drop-error">{t(error)}</div>}
           </div>
@@ -421,20 +421,20 @@ export default function App() {
             const needsFile = !noFileNeeded;
 
             const disabled =
-                  loading ||
-                  (needsFile && !file) ||
-                  (noFileNeeded && !!file);
+              loading ||
+              (needsFile && !file) ||
+              (noFileNeeded && !!file);
 
-              return (
-                <HoverPawButton
-                    key={tool.path}
-                    className="tool-btn"
-                    onClick={() => openTool(tool)}
-                    disabled={disabled}
-                >
-                  <span className="tool-sticker">{emojiMap[tool.label]}</span>
-                  <span className="tool-label">{t(tool.i18nKey)}</span>
-                </HoverPawButton>
+            return (
+              <HoverPawButton
+                key={tool.path}
+                className="tool-btn"
+                onClick={() => openTool(tool)}
+                disabled={disabled}
+              >
+                <span className="tool-sticker">{emojiMap[tool.label]}</span>
+                <span className="tool-label">{t(tool.i18nKey)}</span>
+              </HoverPawButton>
             );
           })}
         </div>
@@ -461,15 +461,15 @@ export default function App() {
                     <div className="field-group">
                       <label>{t('rotateDegrees')}</label>
                       <input type="number" step="90"
-                      value={r.degrees}
-                      onChange={e => updateRotation(i, "degrees", +e.target.value)} />
+                        value={r.degrees}
+                        onChange={e => updateRotation(i, "degrees", +e.target.value)} />
                     </div>
                     <button
-                        type="button"
-                        className="remove-rot"
-                        onClick={() => removeRotation(i)}
-                        aria-label={t('removeRotation')}
-                        title={t('removeRotation')}
+                      type="button"
+                      className="remove-rot"
+                      onClick={() => removeRotation(i)}
+                      aria-label={t('removeRotation')}
+                      title={t('removeRotation')}
                     >
                       ×
                     </button>
@@ -486,193 +486,193 @@ export default function App() {
               <div className="extract-list">
                 <label>{t('pagesExample')}</label>
                 <input type="text" value={pages} onChange={e => setPages(e.target.value)}
-                       placeholder={t('placeholder_pages')}/>
+                  placeholder={t('placeholder_pages')} />
               </div>
             </div>
           )}
 
           {/* Merge PDFs */}
           {selectedTool.path === "/merge-pdfs" && (
-              <div className="settings-panel">
-                <div className="merge-list">
-                  <label>{t('selectPdfs')}</label>
+            <div className="settings-panel">
+              <div className="merge-list">
+                <label>{t('selectPdfs')}</label>
 
-                  <button
+                <button
+                  type="button"
+                  className="primary-btn"
+                  onClick={() => mergeInputRef.current.click()}
+                >
+                  {t('chooseFiles')}
+                </button>
+
+                <input
+                  ref={mergeInputRef}
+                  type="file"
+                  accept="application/pdf"
+                  multiple
+                  onChange={handleMergeFiles}
+                  className="hidden-input"
+                />
+
+                {mergeFiles.length > 0 ? (
+                  <div className="file-btns" onClick={e => e.stopPropagation()}>
+                    <span className="drop-text">
+                      {mergeFiles.map(f => f.name).join(', ')}
+                    </span>
+                    <button
                       type="button"
-                      className="primary-btn"
-                      onClick={() => mergeInputRef.current.click()}
-                  >
-                    {t('chooseFiles')}
-                  </button>
-
-                  <input
-                      ref={mergeInputRef}
-                      type="file"
-                      accept="application/pdf"
-                      multiple
-                      onChange={handleMergeFiles}
-                      className="hidden-input"
-                  />
-
-                  {mergeFiles.length > 0 ? (
-                      <div className="file-btns" onClick={e => e.stopPropagation()}>
-          <span className="drop-text">
-            {mergeFiles.map(f => f.name).join(', ')}
-          </span>
-                        <button
-                            type="button"
-                            className="clear-btn"
-                            onClick={e => {
-                              e.stopPropagation();
-                              setMergeFiles([]);
-                              setError("");
-                            }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                  ) : (
-                      <span>{t('fileNotSelected')}</span>
-                  )}
-                </div>
+                      className="clear-btn"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setMergeFiles([]);
+                        setError("");
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <span>{t('fileNotSelected')}</span>
+                )}
               </div>
+            </div>
           )}
 
 
           {/* Splid PDF */}
           {selectedTool.path === "/split-pdf" && (
-              <div className="settings-panel">
-                <div className="split-list">
-                  <label>{t('splitAtPage')}</label>
-                  <input
-                      type="number"
-                      min="1"
-                      value={splitAt}
-                      onChange={e => setSplitAt(+e.target.value)}
-                  />
-                </div>
+            <div className="settings-panel">
+              <div className="split-list">
+                <label>{t('splitAtPage')}</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={splitAt}
+                  onChange={e => setSplitAt(+e.target.value)}
+                />
               </div>
+            </div>
           )}
 
           {/* Images to PDF */}
           {selectedTool.path === "/images-to-pdf" && (
-              <div className="settings-panel">
-                <div className="images-list">
-                  <label>{t('selectImages')}</label>
+            <div className="settings-panel">
+              <div className="images-list">
+                <label>{t('selectImages')}</label>
 
-                  <button
+                <button
+                  type="button"
+                  className="primary-btn"
+                  onClick={() => imagesInputRef.current.click()}
+                >
+                  {t('chooseFiles')}
+                </button>
+
+                <input
+                  ref={imagesInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageFiles}
+                  className="hidden-input"
+                />
+
+                {imageFiles.length > 0 ? (
+                  <div className="file-btns" onClick={e => e.stopPropagation()}>
+                    <span className="drop-text">
+                      {imageFiles.map(f => f.name).join(', ')}
+                    </span>
+                    <button
                       type="button"
-                      className="primary-btn"
-                      onClick={() => imagesInputRef.current.click()}
-                  >
-                    {t('chooseFiles')}
-                  </button>
-
-                  <input
-                      ref={imagesInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageFiles}
-                      className="hidden-input"
-                  />
-
-                  {imageFiles.length > 0 ? (
-                      <div className="file-btns" onClick={e => e.stopPropagation()}>
-                        <span className="drop-text">
-                          {imageFiles.map(f => f.name).join(', ')}
-                        </span>
-                        <button
-                            type="button"
-                            className="clear-btn"
-                            onClick={e => {
-                              e.stopPropagation();
-                              setImageFiles([]);
-                              setError("");
-                            }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                  ) : (
-                      <span>{t('fileNotSelected')}</span>
-                  )}
-                </div>
+                      className="clear-btn"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setImageFiles([]);
+                        setError("");
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <span>{t('fileNotSelected')}</span>
+                )}
               </div>
+            </div>
           )}
 
           {/* Add page numbers */}
           {selectedTool.path === "/add-page-numbers" && (
-              <div className="settings-panel">
-                <div className="generic-list">
-                  <p>{t('noSettings')}</p>
-                </div>
+            <div className="settings-panel">
+              <div className="generic-list">
+                <p>{t('noSettings')}</p>
               </div>
+            </div>
           )}
 
           {/* Watermark */}
           {selectedTool.path === "/add-watermark" && (
-              <div className="settings-panel">
-                <div className="watermark-list">
-                  {Object.entries(watermark).map(([key, val]) => (
-                      <div key={key} className="field-group">
-                        <label>{t(`watermark.${key}`)}</label>
-                        {typeof val === "boolean" ? (
-                            <input
-                                type="checkbox"
-                                checked={val}
-                                onChange={e =>
-                                    setWatermark(wm => ({ ...wm, [key]: e.target.checked }))
-                                }
-                            />
-                        ) : (
-                            <input
-                                type={typeof val === "number" ? "number" : "text"}
-                                value={val}
-                                onChange={e => {
-                                  const v = e.target.value;
-                                  setWatermark(wm => ({
-                                    ...wm,
-                                    [key]:
-                                        typeof watermark[key] === "number" ? +v : v
-                                  }));
-                                }}
-                            />
-                        )}
-                      </div>
-                  ))}
-                </div>
+            <div className="settings-panel">
+              <div className="watermark-list">
+                {Object.entries(watermark).map(([key, val]) => (
+                  <div key={key} className="field-group">
+                    <label>{t(`watermark.${key}`)}</label>
+                    {typeof val === "boolean" ? (
+                      <input
+                        type="checkbox"
+                        checked={val}
+                        onChange={e =>
+                          setWatermark(wm => ({ ...wm, [key]: e.target.checked }))
+                        }
+                      />
+                    ) : (
+                      <input
+                        type={typeof val === "number" ? "number" : "text"}
+                        value={val}
+                        onChange={e => {
+                          const v = e.target.value;
+                          setWatermark(wm => ({
+                            ...wm,
+                            [key]:
+                              typeof watermark[key] === "number" ? +v : v
+                          }));
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
+            </div>
           )}
 
           {/* Remove Pages */}
           {selectedTool.path === "/remove-pages" && (
-              <div className="settings-panel">
-                <div className="extract-list">
-                  <label>{t('pagesToRemove')}</label>
-                  <input
-                      type="text"
-                      value={pages}
-                      onChange={e => setPages(e.target.value)}
-                      placeholder={t('placeholder_pagesRemove')}
-                  />
-                </div>
+            <div className="settings-panel">
+              <div className="extract-list">
+                <label>{t('pagesToRemove')}</label>
+                <input
+                  type="text"
+                  value={pages}
+                  onChange={e => setPages(e.target.value)}
+                  placeholder={t('placeholder_pagesRemove')}
+                />
               </div>
+            </div>
           )}
 
           {/* URL to PDF */}
           {selectedTool.path === "/url-to-pdf" && (
-              <div className="settings-panel">
-                <div className="extract-list">
-                  <label>{t('pageUrl')}</label>
-                  <input
-                      type="text"
-                      value={pageUrl}
-                      onChange={e => setPageUrl(e.target.value)}
-                      placeholder={t('placeholder_url')}
-                  />
-                </div>
+            <div className="settings-panel">
+              <div className="extract-list">
+                <label>{t('pageUrl')}</label>
+                <input
+                  type="text"
+                  value={pageUrl}
+                  onChange={e => setPageUrl(e.target.value)}
+                  placeholder={t('placeholder_url')}
+                />
               </div>
+            </div>
           )}
 
           {selectedTool.path === "/compress-pdf" && (
@@ -748,11 +748,12 @@ export default function App() {
               (selectedTool.path === "/remove-pages" && !pages.trim()) ||
               (selectedTool.path === "/url-to-pdf" && !pageUrl.trim()) ||
               (selectedTool.path === "/add-watermark" && !watermark.text.trim())
-             }
+            }
           >
             {loading
-             ? t('processing')
-             : t(`actionLabels.${actionLabels[selectedTool.path]}`)}          </button>
+              ? t('processing')
+              : t(`actionLabels.${actionLabels[selectedTool.path]}`)}
+          </button>
         </aside>
       )}
     </div>

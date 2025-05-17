@@ -9,7 +9,6 @@ import PublicRoute from './components/PublicRoute.jsx'
 import HistoryPage from './pages/History';
 import InstructionPage from './pages/Instruction';
 
-
 export default function Router() {
   return (
     <Routes>
