@@ -91,7 +91,6 @@
     "Downloadingthispage": "Downloading this page...",
     "Allhistorycleared.": "All history cleared.",
 
-
     "User": "User",
     "Action": "Action",
     "City": "City",
@@ -99,8 +98,6 @@
     "Date": "Date",
     "Prev": "Prev",
     "Next": "Next",
-
-
 
     "totalRecords": "Total records: {{count}}",
     "show": "Show",

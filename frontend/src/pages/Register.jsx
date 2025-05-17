@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 
-import bg from "./font.png";
-import cat from "./cat.png";
+import bg from "../assets/font.png";
+import cat from "../assets/cat.png";
 import "./auth.css";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";

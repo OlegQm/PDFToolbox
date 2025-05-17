@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import bg from "./font.png";
-import cat from "./cat.png";
+import bg from "../assets/font.png";
+import cat from "../assets/cat.png";
 import Cookies from "js-cookie";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import "./auth.css";
