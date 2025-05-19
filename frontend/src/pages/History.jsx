@@ -12,6 +12,22 @@ const API_MAX_LIMIT = 200;
 const CSV_MAX_LIMIT = 1000;
 
 export default function HistoryPage() {
+    const startToken = Cookies.get("access_token");
+    const startUsername = Cookies.get("username");
+    if (!startToken || !startUsername || startUsername != "admin") {
+        setTimeout(() => {
+            if (!startToken || !startUsername) {
+                if (startToken) {
+                    Cookies.remove("access_token");
+                }
+                if (startUsername) {
+                    Cookies.remove("username");
+                }
+            }
+            window.location.href = "/";
+        }, 1000);
+        throw new Error("You must LOG IN as admin before using services!");
+    }
     const [logs, setLogs] = useState([]);
     const [total, setTotal] = useState(0);
     const [skip, setSkip] = useState(0);
@@ -100,15 +116,15 @@ export default function HistoryPage() {
                     `${BASE_URL}api/database/get-history-logs?${qs1}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-               // if (r1.status === 401) throw new Error('Your session has expired. Please log in again.');
                 if (r1.status === 401) {
 
-                             Cookies.remove('access_token');
-                           setInfoMessage('Your session has expired. Please log in again.');
-                             setTimeout(() => {
-                                   navigate('/login?expired=true');
-                                }, 2000);
-                        return;}
+                    Cookies.remove('access_token');
+                    setInfoMessage('Your session has expired. Please log in again.');
+                    setTimeout(() => {
+                        navigate('/login?expired=true');
+                    }, 2000);
+                    return;
+                }
                 if (!r1.ok) throw new Error(`Error ${r1.status}: ${await r1.text()}`);
 
                 const { total: tot, logs: firstLogs } = await r1.json();

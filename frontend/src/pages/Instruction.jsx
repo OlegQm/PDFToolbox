@@ -2,8 +2,23 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import "./Instruction.css";
+import Cookies from 'js-cookie';
 
 export default function InstructionPage() {
+    const startToken = Cookies.get("access_token");
+    const startUsername = Cookies.get("username");
+    if (!startToken || !startUsername) {
+        setTimeout(() => {
+            if (startToken) {
+                Cookies.remove("access_token");
+            }
+            if (startUsername) {
+                Cookies.remove("username");
+            }
+            window.location.href = "/login";
+        }, 1000);
+        throw new Error("You must LOG IN before using services!");
+    }
     const { t } = useTranslation();
     const navigate = useNavigate();
 

@@ -283,7 +283,7 @@ export default function App() {
   }, []);
 
   const handleLogout = () => {
-   // Cookies.remove("access_token");
+    // Cookies.remove("access_token");
     //Cookies.remove("username");
     ['access_token', 'username'].forEach(k => Cookies.remove(k));
     navigate("/login");
@@ -297,14 +297,14 @@ export default function App() {
         <div className="header-actions">
           {/* History */}
           {username === 'admin' && (
-          <button
-            type="button"
-            className="icon-btn history-btn"
-            onClick={() => navigate("/history")}
-          >
-            <img src={clockGif} alt={t('history')} width="24" height="24" />
-            <span>{t('history')}</span>
-          </button>
+            <button
+              type="button"
+              className="icon-btn history-btn"
+              onClick={() => navigate("/history")}
+            >
+              <img src={clockGif} alt={t('history')} width="24" height="24" />
+              <span>{t('history')}</span>
+            </button>
           )}
 
           {/* Language */}
