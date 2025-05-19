@@ -92,6 +92,7 @@ export default function Login() {
             }
 
             Cookies.set("access_token", data.access_token, { expires: 1 });
+            Cookies.set("username", username, { expires: 1 });
             navigate("/", { replace: true });
 
         } catch (err) {

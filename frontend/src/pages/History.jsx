@@ -17,7 +17,6 @@ export default function HistoryPage() {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(10);
     const [allMode, setAllMode] = useState(false);
-    const [error, setError] = useState('');
 
     const navigate = useNavigate();
     const tableRef = useRef(null);
@@ -81,11 +80,13 @@ export default function HistoryPage() {
 
     useEffect(() => {
         const fetchAll = async () => {
-            setError('');
+            setInfoMessage('');
             const token = Cookies.get('access_token');
             if (!token) {
-                setError('Token missing — please log in again.');
-                return;
+                setInfoMessage('Token missing — please log in again.');
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
             }
 
             try {
@@ -99,7 +100,15 @@ export default function HistoryPage() {
                     `${BASE_URL}api/database/get-history-logs?${qs1}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-                if (r1.status === 401) throw new Error('Your session has expired. Please log in again.');
+               // if (r1.status === 401) throw new Error('Your session has expired. Please log in again.');
+                if (r1.status === 401) {
+
+                             Cookies.remove('access_token');
+                           setInfoMessage('Your session has expired. Please log in again.');
+                             setTimeout(() => {
+                                   navigate('/login?expired=true');
+                                }, 2000);
+                        return;}
                 if (!r1.ok) throw new Error(`Error ${r1.status}: ${await r1.text()}`);
 
                 const { total: tot, logs: firstLogs } = await r1.json();
@@ -126,7 +135,7 @@ export default function HistoryPage() {
 
 
             } catch (err) {
-                setError(err.message);
+                setInfoMessage(err.message);
             }
         };
 
@@ -265,7 +274,7 @@ export default function HistoryPage() {
     return (
         <div className="history-container">
 
-            {error && <div className="error">⚠ {error}</div>}
+
             <div className="history-table-wrapper">
                 <div className="btn-tabs">
                     <button className="icon-btn history-btn" title="History">

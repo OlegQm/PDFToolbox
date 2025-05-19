@@ -4,6 +4,7 @@ import catImg from './components/white_cat.png';
 import HoverPawButton from "./components/HoverPawButton";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./App.css";
 import clockGif from "./assets/clock.png";
 import infoGif from "./assets/info.png";
@@ -74,6 +75,7 @@ function getTokenExpiration(token) {
 export default function App() {
   const dropInputRef = useRef(null);
   const navigate = useNavigate();
+  const username = Cookies.get("username");
   const { t, i18n } = useTranslation();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const mergeInputRef = useRef(null);
@@ -281,7 +283,9 @@ export default function App() {
   }, []);
 
   const handleLogout = () => {
-    Cookies.remove("access_token");
+   // Cookies.remove("access_token");
+    //Cookies.remove("username");
+    ['access_token', 'username'].forEach(k => Cookies.remove(k));
     navigate("/login");
   };
 
@@ -292,6 +296,7 @@ export default function App() {
 
         <div className="header-actions">
           {/* History */}
+          {username === 'admin' && (
           <button
             type="button"
             className="icon-btn history-btn"
@@ -300,6 +305,7 @@ export default function App() {
             <img src={clockGif} alt={t('history')} width="24" height="24" />
             <span>{t('history')}</span>
           </button>
+          )}
 
           {/* Language */}
           <div className="lang-switcher">
