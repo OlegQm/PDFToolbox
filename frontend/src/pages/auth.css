@@ -9,7 +9,9 @@
 
 .auth-container {
     position: relative;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
+
     background: #fff;
     border: 1px solid #333;
     border-radius: 8px;

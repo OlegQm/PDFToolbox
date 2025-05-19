@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import bg from "./font.png";
-import cat from "./cat.png";
+import bg from "../assets/font.png";
+import cat from "../assets/cat.png";
 import Cookies from "js-cookie";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import "./auth.css";
@@ -52,9 +52,27 @@ export default function Login() {
             return () => clearTimeout(timer);
         }
     }, [location]);
+
+    useEffect(() => {
+        if (errorMsg) {
+            const timer = setTimeout(() => setErrorMsg(""), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [errorMsg]);
+
     const handleSubmit = async e => {
         e.preventDefault();
         setErrorMsg("");
+
+        if (!username.trim()) {
+            setErrorMsg("Please enter a username.");
+            return;
+        }
+
+        if (!password.trim()) {
+            setErrorMsg("Please enter a password.");
+            return;
+        }
 
         try {
             const formData = new FormData();
@@ -74,6 +92,7 @@ export default function Login() {
             }
 
             Cookies.set("access_token", data.access_token, { expires: 1 });
+            Cookies.set("username", username, { expires: 1 });
             navigate("/", { replace: true });
 
         } catch (err) {
@@ -104,7 +123,6 @@ export default function Login() {
                                         placeholder="Username"
                                         value={username}
                                         onChange={e => setUsername(e.target.value)}
-                                        required
                                     />
                                 </div>
                                 <div className="field">
@@ -115,7 +133,6 @@ export default function Login() {
                                         placeholder="Password"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
-                                        required
                                     />
                                 </div>
 

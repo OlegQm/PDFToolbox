@@ -34,6 +34,8 @@
   "removePages":     "Remove Pages",
   "urlToPdf":        "URL to PDF",
   "compressPdf":     "Compress",
+  "loginAction":     "You must LOG IN before using services!",
+  "loginAdminAction": "You must LOG IN as admin before using services!",
   "watermark": {
     "opacity": "Opacity",
     "fontSize": "Font Size",
@@ -78,6 +80,37 @@
    "urlToPdf":        "Fetch a web page by URL and save it as a PDF.",
    "compressPdf":     "Reduce the file size of your PDF by applying compression."
  },
-  "back": "Back"
+  "back": "Back",
+
+
+  "historyPage": {
+    "logHistory": "Log History",
+    "History": "History",
+    "ClearHistory": "Clear History",
+    "DownloadCSV": "Download CSV",
+
+    "Clearcancelled": "Clear cancelled",
+    "Downloadingthispage": "Downloading this page...",
+    "Allhistorycleared.": "All history cleared.",
+
+    "User": "User",
+    "Action": "Action",
+    "City": "City",
+    "Country": "Country",
+    "Date": "Date",
+    "Prev": "Prev",
+    "Next": "Next",
+
+    "totalRecords": "Total records: {{count}}",
+    "show": "Show",
+    "noRecords": "No records",
+    "confirmClear": "Are you sure?",
+    "errorTokenMissing": "Token missing — please log in again.",
+    "cleared": "All history cleared.",
+    "Yes": "Yes",
+    "No": "No"
+  }
 
 }
+
+
