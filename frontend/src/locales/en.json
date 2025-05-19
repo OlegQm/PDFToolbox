@@ -69,19 +69,54 @@
 
  "instructions": {
    "title": "How to use",
-   "rotate":          "Rotate the pages of your PDF by a specified degree.",
-   "extractPages":    "Extract selected pages from your PDF into a new file.",
+   "rotate":          "Rotate the pages of your PDF by a specified degree.(Require PDF upload first)",
+   "extractPages":    "Extract selected pages from your PDF into a new file.(Require PDF upload first)",
    "mergePdfs":       "Combine multiple PDF files into a single document.",
-   "splitPdf":        "Split your PDF into separate files by page number.",
+   "splitPdf":        "Split your PDF into separate files by page number.(Require PDF upload first)",
    "imagesToPdf":     "Convert one or more images into a PDF document.",
-   "addPageNumbers":  "Add sequential page numbers to each page of your PDF.",
-   "addWatermark":    "Overlay a semi-transparent watermark on every page of your PDF.",
-   "removePages":     "Remove specific pages from your PDF.",
+   "addPageNumbers":  "Add sequential page numbers to each page of your PDF.(Require PDF upload first)",
+   "addWatermark":    "Overlay a semi-transparent watermark on every page of your PDF.(Require PDF upload first)",
+   "removePages":     "Remove specific pages from your PDF.(Require PDF upload first)",
    "urlToPdf":        "Fetch a web page by URL and save it as a PDF.",
-   "compressPdf":     "Reduce the file size of your PDF by applying compression."
+   "compressPdf":     "Reduce the file size of your PDF by applying compression.(Require PDF upload first)",
+   "overviewTitle": "Overview of functionality"
  },
   "back": "Back",
+  "overview": {
+    "pdfServices": {
+      "title": "10 PDF Services",
+      "description": "Our app provides 10 services for working with PDF files. Some require you to upload a PDF into the designated drop-zone first, others work immediately. Each service lists the exact steps you need to follow."
+    },
+    "history": {
+      "title": "History (Admin only)",
+      "description": "Only administrators can view the full history of actions, clear it with the “Clear History” button or export it as CSV via “Download CSV”."
+    },
+    "login": {
+      "title": "User Login",
+      "description": "On the Login screen, existing users enter their username and password to access the application. If you do not already have an account, click “Register”."
+    },
+    "registration": {
+      "title": "User Registration",
+      "description": "On the Registration screen, new users create an account by selecting a username, email and password. Once submitted, you will receive a verification email - click the link in it to verify your address. Once verified, return here to log in."
+    },
+    "language": {
+      "title": "Language Switching",
+      "description": "Switch between English and Slovensky on the fly—no page reload needed."
+    }
 
+  },
+  "login": {
+    "step1": "Go to the Login page.",
+    "step2": "Enter your username.",
+    "step3": "Enter your password.",
+    "step4": "Click Login or choose Register if you don’t have an account."
+  },
+  "registration": {
+    "step1": "Go to the Sign Up page.",
+    "step2": "Enter a username, email and password.",
+    "step3": "Click Register.",
+    "step4": "Return here and log in."
+  },
 
   "historyPage": {
     "logHistory": "Log History",
