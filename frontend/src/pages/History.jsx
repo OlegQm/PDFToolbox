@@ -12,6 +12,7 @@ const API_MAX_LIMIT = 200;
 const CSV_MAX_LIMIT = 1000;
 
 export default function HistoryPage() {
+    const navigate = useNavigate();
     const startToken = Cookies.get("access_token");
     const startUsername = Cookies.get("username");
     if (!startToken || !startUsername || startUsername != "admin") {
@@ -34,7 +35,6 @@ export default function HistoryPage() {
     const [limit, setLimit] = useState(10);
     const [allMode, setAllMode] = useState(false);
 
-    const navigate = useNavigate();
     const tableRef = useRef(null);
     const prevBtnRef = useRef(null);
     const [pageWindowSize, setPageWindowSize] = useState(1);

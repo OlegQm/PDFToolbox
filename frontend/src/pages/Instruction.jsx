@@ -5,6 +5,8 @@ import "./Instruction.css";
 import Cookies from 'js-cookie';
 
 export default function InstructionPage() {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
     const startToken = Cookies.get("access_token");
     const startUsername = Cookies.get("username");
     if (!startToken || !startUsername) {
@@ -19,8 +21,6 @@ export default function InstructionPage() {
         }, 1000);
         throw new Error("You must LOG IN before using services!");
     }
-    const { t } = useTranslation();
-    const navigate = useNavigate();
 
     const items = [
         { emoji: "🔄", key: "rotate" },
