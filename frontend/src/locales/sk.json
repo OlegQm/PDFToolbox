@@ -33,6 +33,8 @@
   "removePages":     "Odstrániť strany",
   "urlToPdf":        "URL na PDF",
   "compressPdf":     "Komprimovať" ,
+  "loginAction":     "Pred použitím služieb sa musíte prihlásiť!",
+  "loginAdminAction": "Pred použitím služieb sa musíte prihlásiť ako administrátor!",
   "watermark": {
     "opacity": "Priehľadnosť",
     "fontSize": "Veľkosť písma",

@@ -34,6 +34,8 @@
   "removePages":     "Remove Pages",
   "urlToPdf":        "URL to PDF",
   "compressPdf":     "Compress",
+  "loginAction":     "You must LOG IN before using services!",
+  "loginAdminAction": "You must LOG IN as admin before using services!",
   "watermark": {
     "opacity": "Opacity",
     "fontSize": "Font Size",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import "./Instruction.css";
@@ -9,17 +9,28 @@ export default function InstructionPage() {
     const navigate = useNavigate();
     const startToken = Cookies.get("access_token");
     const startUsername = Cookies.get("username");
+
+    useEffect(() => {
+        if (!startToken || !startUsername) {
+            const timer = setTimeout(() => {
+                if (startToken) {
+                    Cookies.remove("access_token");
+                }
+                if (startUsername) {
+                    Cookies.remove("username");
+                }
+                navigate("/");
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [startToken, startUsername, navigate]);
+
     if (!startToken || !startUsername) {
-        setTimeout(() => {
-            if (startToken) {
-                Cookies.remove("access_token");
-            }
-            if (startUsername) {
-                Cookies.remove("username");
-            }
-            navigate("/");
-        }, 1000);
-        throw new Error("You must LOG IN before using services!");
+        return (
+        <div className="instruction-container">
+            <p>{t("loginAction")}</p>
+        </div>
+        );
     }
 
     const items = [

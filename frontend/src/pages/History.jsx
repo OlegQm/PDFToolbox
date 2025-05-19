@@ -15,20 +15,29 @@ export default function HistoryPage() {
     const navigate = useNavigate();
     const startToken = Cookies.get("access_token");
     const startUsername = Cookies.get("username");
-    if (!startToken || !startUsername || startUsername != "admin") {
-        setTimeout(() => {
-            if (!startToken || !startUsername) {
-                if (startToken) {
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        if (!startToken || !startUsername || startUsername !== "admin") {
+            const timer = setTimeout(() => {
+                if (!startToken || !startUsername) {
                     Cookies.remove("access_token");
-                }
-                if (startUsername) {
                     Cookies.remove("username");
                 }
-            }
-            navigate("/");
-        }, 1000);
-        throw new Error("You must LOG IN as admin before using services!");
+                navigate("/");
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [startToken, startUsername, navigate]);
+
+    if (!startToken || !startUsername || startUsername !== "admin") {
+        return (
+            <div className="instruction-container">
+                <p>{t("loginAdminAction")}</p>
+            </div>
+        );
     }
+
     const [logs, setLogs] = useState([]);
     const [total, setTotal] = useState(0);
     const [skip, setSkip] = useState(0);
@@ -49,8 +58,6 @@ export default function HistoryPage() {
         const t = setTimeout(() => setInfoMessage(''), 3000);
         return () => clearTimeout(t);
     }, [infoMessage]);
-
-    const { t } = useTranslation();
 
     useEffect(() => {
         Object.assign(document.body.style, {
