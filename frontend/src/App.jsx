@@ -4,7 +4,6 @@ import catImg from './components/white_cat.png';
 import HoverPawButton from "./components/HoverPawButton";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
 import "./App.css";
 import clockGif from "./assets/clock.png";
 import infoGif from "./assets/info.png";
@@ -324,14 +323,12 @@ export default function App() {
                   English
                 </li>
                 <li onClick={() => { i18n.changeLanguage('sk'); setLangMenuOpen(false); }}>
-                  Slovak
+                  Slovenčina
                 </li>
               </ul>
             )}
           </div>
 
-
-          {/* Instruction */}
           <button
             type="button"
             className="icon-btn instruction-btn"
@@ -357,7 +354,6 @@ export default function App() {
                 ×
               </button>
 
-              {/* Ваша кнопка загрузки */}
               <a href={downloadUrl} download className="download-btn">
                 Download result
               </a>

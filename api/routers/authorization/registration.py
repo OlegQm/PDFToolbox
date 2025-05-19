@@ -1,5 +1,5 @@
 from typing import Dict
-from fastapi import APIRouter, Form, Depends, Request
+from fastapi import APIRouter, Form, Depends, Request, HTTPException
 from motor.motor_asyncio import AsyncIOMotorCollection
 from services.authorization.registration_service import (
     create_user,
@@ -30,13 +30,18 @@ async def register(
     - **username**: must be unique  
     - **password**: will be hashed before storage  
     """
-    user = await create_user(username, password, users)
-    city, country = await resolve_geo(request.client.host)
-    await log_action(
-        username=username,
-        action="User registration",
-        city=city,
-        country=country,
-        history_collection=history_collection
-    )
-    return {"msg": f"User '{user['username']}' created."}
+    try:
+        user = await create_user(username, password, users)
+        city, country = await resolve_geo(request.client.host)
+        await log_action(
+            username=username,
+            action="User registration",
+            city=city,
+            country=country,
+            history_collection=history_collection
+        )
+        return {"msg": f"User '{user['username']}' created."}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"Internal error: {e}")

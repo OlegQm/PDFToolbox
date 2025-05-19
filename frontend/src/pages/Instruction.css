@@ -8,7 +8,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Optional section wrapper */
 .section-card {
     margin-bottom: 2rem;
     padding: 1.5rem;
@@ -17,7 +16,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Headings */
 .instruction-container h1 {
     font-size: 2rem;
     font-weight: 700;
@@ -25,7 +23,6 @@
     color: #2c3e50;
 }
 
-/* Navigation header (Back + Language + Convert) */
 .nav-header {
     display: flex;
     justify-content: space-between;
@@ -33,7 +30,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* Back button */
 .back-btn {
     background: #f0f0f0;
     border: none;
@@ -55,7 +51,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Language dropdown */
 .language-select {
     appearance: none;
     -webkit-appearance: none;
@@ -230,5 +225,58 @@
     /* Ensure colors print correctly */
     * {
         -webkit-print-color-adjust: exact !important;
+    }
+}
+
+@page {
+    size: A4 portrait;
+    margin: 1cm;
+}
+
+@media print {
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    .nav-header,
+    .back-btn,
+    .language-select,
+    .convert-btn {
+        display: none !important;
+    }
+
+    .instruction-container {
+        max-width: none !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: none !important;
+        box-shadow: none !important;
+    }
+
+    .section-card,
+    .instruction-list {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .instruction-item {
+        display: block !important;
+        padding: 1rem 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }

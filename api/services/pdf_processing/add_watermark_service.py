@@ -22,8 +22,8 @@ async def add_watermark_service(
     angle: float
 ) -> StreamingResponse:
     """
-    Add a single watermark text on each page at the specified position.
-    All parameters are pre-validated in the router, но дублируем критичные проверки здесь.
+    Add a single watermark text on each page at the specified position
+        and parameters.
     """
     if file.content_type != "application/pdf":
         raise HTTPException(400, "Only PDF files are supported.")

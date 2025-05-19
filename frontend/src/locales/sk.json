@@ -4,8 +4,8 @@
   "chooseFile": "Vyberte súbor",
   "logout": "Odhlásiť sa",
   "history": "História",
-  "language": "Slovensky",
-  "instruction": "Inštrukcia",
+  "language": "Slovenčina",
+  "instruction": "Inštrukcie",
   "error_invalid_url": "Zadajte platnú URL adresu.",
   "error_no_rotation": "Špecifikujte aspoň jednu rotáciu.",
   "page": "Strana",
@@ -35,6 +35,8 @@
   "compressPdf":     "Komprimovať" ,
   "loginAction":     "Pred použitím služieb sa musíte prihlásiť!",
   "loginAdminAction": "Pred použitím služieb sa musíte prihlásiť ako administrátor!",
+  "convertToPdf":    "Stiahnuť ako PDF",
+  "requiresUpload":  "vyžaduje nahratie",
   "watermark": {
     "opacity": "Priehľadnosť",
     "fontSize": "Veľkosť písma",
@@ -67,16 +69,16 @@
 
  "instructions": {
    "title": "Ako používať",
-   "rotate":          "Otočí strany vášho PDF o zadaný počet stupňov.(Vyžadujú najprv odovzdanie PDF)",
-   "extractPages":    "Extrahuje vybrané strany z PDF do nového súboru.(Vyžadujú najprv odovzdanie PDF)",
+   "rotate":          "Otočí strany vášho PDF o zadaný počet stupňov (vyžadujú najprv odovzdanie PDF).",
+   "extractPages":    "Extrahuje vybrané strany z PDF do nového súboru (vyžadujú najprv odovzdanie PDF).",
    "mergePdfs":       "Zlúči viacero PDF do jedného dokumentu.",
-   "splitPdf":        "Rozdelí PDF na samostatné súbory podľa čísiel strán.(Vyžadujú najprv odovzdanie PDF)",
+   "splitPdf":        "Rozdelí PDF na samostatné súbory podľa čísiel strán (vyžadujú najprv odovzdanie PDF).",
    "imagesToPdf":     "Prevedie jednu alebo viac obrázkov na PDF dokument.",
-   "addPageNumbers":  "Pridá poradové čísla strán do vášho PDF.(Vyžadujú najprv odovzdanie PDF)",
-   "addWatermark":    "Umietni polopriehľadný vodoznak na každú stranu PDF.(Vyžadujú najprv odovzdanie PDF)",
-   "removePages":     "Odstráni špecifické strany z vášho PDF.(Vyžadujú najprv odovzdanie PDF)",
+   "addPageNumbers":  "Pridá poradové čísla strán do vášho PDF (vyžadujú najprv odovzdanie PDF).",
+   "addWatermark":    "Umietni polopriehľadný vodoznak na každú stranu PDF (vyžadujú najprv odovzdanie PDF).",
+   "removePages":     "Odstráni špecifické strany z vášho PDF (vyžadujú najprv odovzdanie PDF).",
    "urlToPdf":        "Načíta webovú stránku podľa URL a uloží ju ako PDF.",
-   "compressPdf":     "Zmenší veľkosť PDF kompresiou.(Vyžadujú najprv odovzdanie PDF)",
+   "compressPdf":     "Zmenší veľkosť PDF kompresiou (vyžadujú najprv odovzdanie PDF).",
    "overviewTitle": "Prehľad funkcií"
  },
   "back": "Späť",
@@ -112,7 +114,8 @@
     "step1": "Prejdite na stránku Sign Up.",
     "step2": "Zadajte používateľské meno, email a heslo.",
     "step3": "Kliknite na „Registrovať sa“.",
-    "step4": "Vráťte sa sem a prihláste sa."
+    "step4": "Vráťte sa sem a prihláste sa.",
+    "step5": "Kliknite na tlačidlo Log In."
   },
 
   "historyPage": {

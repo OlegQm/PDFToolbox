@@ -192,9 +192,9 @@
     border: 1px solid #ff7a7a;
     border-radius: 6px;
     padding: 10px;
-    margin-top: 0.5rem;        /* ближе к кнопке */
-    width: 100%;               /* не шире формы */
-    box-sizing: border-box;    /* учитываем padding в ширину */
+    margin-top: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
     text-align: center;
     font-weight: 500;
 }

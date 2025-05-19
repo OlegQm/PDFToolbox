@@ -5,7 +5,7 @@
   "logout": "Log Out",
   "history": "History",
   "language": "English",
-  "instruction": "Instruction",
+  "instruction": "Instructions",
   "error_invalid_url": "Please enter a valid URL.",
   "error_no_rotation": "Please specify at least one rotation.",
   "page": "Page",
@@ -36,6 +36,8 @@
   "compressPdf":     "Compress",
   "loginAction":     "You must LOG IN before using services!",
   "loginAdminAction": "You must LOG IN as admin before using services!",
+  "convertToPdf":    "Save as PDF",
+  "requiresUpload":  "requires upload",
   "watermark": {
     "opacity": "Opacity",
     "fontSize": "Font Size",
@@ -69,16 +71,16 @@
 
  "instructions": {
    "title": "How to use",
-   "rotate":          "Rotate the pages of your PDF by a specified degree.(Require PDF upload first)",
-   "extractPages":    "Extract selected pages from your PDF into a new file.(Require PDF upload first)",
+   "rotate":          "Rotate the pages of your PDF by a specified degree (require PDF upload first).",
+   "extractPages":    "Extract selected pages from your PDF into a new file (require PDF upload first).",
    "mergePdfs":       "Combine multiple PDF files into a single document.",
-   "splitPdf":        "Split your PDF into separate files by page number.(Require PDF upload first)",
+   "splitPdf":        "Split your PDF into separate files by page number (require PDF upload first).",
    "imagesToPdf":     "Convert one or more images into a PDF document.",
-   "addPageNumbers":  "Add sequential page numbers to each page of your PDF.(Require PDF upload first)",
-   "addWatermark":    "Overlay a semi-transparent watermark on every page of your PDF.(Require PDF upload first)",
-   "removePages":     "Remove specific pages from your PDF.(Require PDF upload first)",
+   "addPageNumbers":  "Add sequential page numbers to each page of your PDF (require PDF upload first).",
+   "addWatermark":    "Overlay a semi-transparent watermark on every page of your PDF (require PDF upload first).",
+   "removePages":     "Remove specific pages from your PDF (require PDF upload first).",
    "urlToPdf":        "Fetch a web page by URL and save it as a PDF.",
-   "compressPdf":     "Reduce the file size of your PDF by applying compression.(Require PDF upload first)",
+   "compressPdf":     "Reduce the file size of your PDF by applying compression (require PDF upload first).",
    "overviewTitle": "Overview of functionality"
  },
   "back": "Back",
@@ -101,7 +103,7 @@
     },
     "language": {
       "title": "Language Switching",
-      "description": "Switch between English and Slovensky on the fly—no page reload needed."
+      "description": "Switch between English and Slovensky on the fly - no page reload needed."
     }
 
   },
@@ -112,10 +114,11 @@
     "step4": "Click Login or choose Register if you don’t have an account."
   },
   "registration": {
-    "step1": "Go to the Sign Up page.",
+    "step1": "Go to the Log In page.",
     "step2": "Enter a username, email and password.",
     "step3": "Click Register.",
-    "step4": "Return here and log in."
+    "step4": "Return here and log in.",
+    "step5": "Click Log In button."
   },
 
   "historyPage": {

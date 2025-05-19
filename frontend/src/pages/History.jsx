@@ -124,7 +124,6 @@ export default function HistoryPage() {
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 if (r1.status === 401) {
-
                     Cookies.remove('access_token');
                     setInfoMessage('Your session has expired. Please log in again.');
                     setTimeout(() => {
@@ -296,8 +295,6 @@ export default function HistoryPage() {
 
     return (
         <div className="history-container">
-
-
             <div className="history-table-wrapper">
                 <div className="btn-tabs">
                     <button className="icon-btn history-btn" title="History">
@@ -311,7 +308,6 @@ export default function HistoryPage() {
                         ⬇ <span className="btn-text">{t('historyPage.DownloadCSV')}</span>
                     </button>
                 </div>
-
 
                 <table ref={tableRef} className="history-table">
                     <thead>

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Instruction.css';
 
-// Base URL for API (set via Vite):
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox';
 
 export default function InstructionPage() {
@@ -12,69 +11,57 @@ export default function InstructionPage() {
     const navigate = useNavigate();
     const token = Cookies.get('access_token');
     const username = Cookies.get('username');
-    const role = Cookies.get('role');
-    const isAdmin = role === 'admin';
+    const isAdmin = username === 'admin';
 
-    // State for conversion button
     const [loadingConvert, setLoadingConvert] = useState(false);
 
-    // Session check: redirect to login if token missing/expired
     useEffect(() => {
-        const checkToken = () => {
-            const tk = Cookies.get('access_token');
-            if (!tk) {
-                return navigate('/login');
-            }
-            try {
-                const exp = JSON.parse(atob(tk.split('.')[1])).exp * 1000;
-                if (Date.now() >= exp) {
-                    return navigate('/login?expired=true');
+        if (!token || !username) {
+            const timer = setTimeout(() => {
+                if (token) {
+                    Cookies.remove("access_token");
                 }
-            } catch {
-                return navigate('/login');
-            }
-        };
-        checkToken();
-        const interval = setInterval(checkToken, 5000);
-        return () => clearInterval(interval);
-    }, [navigate]);
+                if (username) {
+                    Cookies.remove("username");
+                }
+                navigate("/");
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [token, username, navigate]);
 
-    // If not authenticated, show prompt
-    if (!token) {
+    if (!token || !username) {
         return (
-            <div className="instruction-container">
-                <p>{t('loginAction')}</p>
-            </div>
+        <div className="instruction-container">
+            <p>{t("loginAction")}</p>
+        </div>
         );
     }
 
-    // Convert current page to PDF
+    useEffect(() => {
+        const checkToken = () => {
+            const token = Cookies.get('access_token');
+            if (!token) return;
+            try {
+                const exp = JSON.parse(atob(token.split('.')[1])).exp * 1000;
+                if (Date.now() >= exp) {
+                    Cookies.remove('access_token');
+                    navigate('/login?expired=true');
+                }
+            } catch {
+                Cookies.remove('access_token');
+                navigate('/login');
+            }
+        };
+        checkToken();
+        const iv = setInterval(checkToken, 5000);
+        return () => clearInterval(iv);
+    }, [navigate]);
+
     const handleConvert = async () => {
         setLoadingConvert(true);
         try {
-            const form = new FormData();
-            form.append('url', window.location.href);
-
-            const res = await fetch(`${BASE_URL}/api/url-to-pdf`, {
-                method: 'POST',
-                body: form,
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (res.status === 403) {
-                navigate('/login');
-                return;
-            }
-            if (!res.ok) {
-                throw new Error(`Conversion failed: ${res.status}`);
-            }
-
-            const blob = await res.blob();
-            const downloadUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = 'instructions.pdf';
-            a.click();
+            window.print();
         } catch (err) {
             console.error(err);
             alert(t('errorConvert'));
@@ -83,7 +70,6 @@ export default function InstructionPage() {
         }
     };
 
-    // Your PDF services and overview items (unchanged)
     const services = [
         { emoji: '🔄', key: 'rotate', requiresUpload: true },
         { emoji: '📑', key: 'extractPages', requiresUpload: true },
@@ -122,8 +108,8 @@ export default function InstructionPage() {
                     value={i18n.language}
                     onChange={e => i18n.changeLanguage(e.target.value)}
                 >
-                    <option value="en">English</option>
-                    <option value="sk">Slovensky</option>
+                    <option value="en">ENGLISH</option>
+                    <option value="sk">SLOVENČINA</option>
                 </select>
 
                 <button
@@ -145,7 +131,7 @@ export default function InstructionPage() {
                             <div className="instruction-content">
                                 <h2>
                                     {t(key)}
-                                    {requiresUpload && <span className="badge">{t('requiresUpload')}</span>}
+                                    {requiresUpload && <span className="badge">{` (${t('requiresUpload')})`}</span>}
                                 </h2>
                                 <p>{t(`instructions.${key}`)}</p>
                             </div>
@@ -188,17 +174,6 @@ export default function InstructionPage() {
                         </li>
                     ))}
                 </ul>
-
-                {/* 3. History for Admin */}
-                {isAdmin && (
-                    <section className="admin-history">
-                        <h2>{t('history.title')}</h2>
-                        <div className="history-buttons">
-                            <button>{t('history.clear')}</button>
-                            <button>{t('history.downloadCsv')}</button>
-                        </div>
-                    </section>
-                )}
             </aside>
         </div>
     );
