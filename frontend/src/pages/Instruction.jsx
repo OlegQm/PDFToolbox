@@ -1,31 +1,36 @@
-import React, { useEffect } from 'react';
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import "./Instruction.css";
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import './Instruction.css';
+
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox';
 
 export default function InstructionPage() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
-    const startToken = Cookies.get("access_token");
-    const startUsername = Cookies.get("username");
+    const token = Cookies.get('access_token');
+    const username = Cookies.get('username');
+    const isAdmin = username === 'admin';
+
+    const [loadingConvert, setLoadingConvert] = useState(false);
 
     useEffect(() => {
-        if (!startToken || !startUsername) {
+        if (!token || !username) {
             const timer = setTimeout(() => {
-                if (startToken) {
+                if (token) {
                     Cookies.remove("access_token");
                 }
-                if (startUsername) {
+                if (username) {
                     Cookies.remove("username");
                 }
                 navigate("/");
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [startToken, startUsername, navigate]);
+    }, [token, username, navigate]);
 
-    if (!startToken || !startUsername) {
+    if (!token || !username) {
         return (
         <div className="instruction-container">
             <p>{t("loginAction")}</p>
@@ -33,41 +38,143 @@ export default function InstructionPage() {
         );
     }
 
-    const items = [
-        { emoji: "🔄", key: "rotate" },
-        { emoji: "📑", key: "extractPages" },
-        { emoji: "📚", key: "mergePdfs" },
-        { emoji: "✂️", key: "splitPdf" },
-        { emoji: "🖼️", key: "imagesToPdf" },
-        { emoji: "🔢", key: "addPageNumbers" },
-        { emoji: "💧", key: "addWatermark" },
-        { emoji: "➖", key: "removePages" },
-        { emoji: "🌐", key: "urlToPdf" },
-        { emoji: "⚙️", key: "compressPdf" },
+    useEffect(() => {
+        const checkToken = () => {
+            const token = Cookies.get('access_token');
+            if (!token) return;
+            try {
+                const exp = JSON.parse(atob(token.split('.')[1])).exp * 1000;
+                if (Date.now() >= exp) {
+                    Cookies.remove('access_token');
+                    navigate('/login?expired=true');
+                }
+            } catch {
+                Cookies.remove('access_token');
+                navigate('/login');
+            }
+        };
+        checkToken();
+        const iv = setInterval(checkToken, 5000);
+        return () => clearInterval(iv);
+    }, [navigate]);
+
+    const handleConvert = async () => {
+        setLoadingConvert(true);
+        try {
+            window.print();
+        } catch (err) {
+            console.error(err);
+            alert(t('errorConvert'));
+        } finally {
+            setLoadingConvert(false);
+        }
+    };
+
+    const services = [
+        { emoji: '🔄', key: 'rotate', requiresUpload: true },
+        { emoji: '📑', key: 'extractPages', requiresUpload: true },
+        { emoji: '📚', key: 'mergePdfs', requiresUpload: true },
+        { emoji: '✂️', key: 'splitPdf', requiresUpload: true },
+        { emoji: '🖼️', key: 'imagesToPdf', requiresUpload: false },
+        { emoji: '🔢', key: 'addPageNumbers', requiresUpload: true },
+        { emoji: '💧', key: 'addWatermark', requiresUpload: true },
+        { emoji: '➖', key: 'removePages', requiresUpload: true },
+        { emoji: '🌐', key: 'urlToPdf', requiresUpload: false },
+        { emoji: '⚙️', key: 'compressPdf', requiresUpload: true }
+    ];
+
+    const overviewItems = [
+        { key: 'overview.pdfServices' },
+        { key: 'overview.history' },
+        { key: 'overview.login' },
+        { key: 'overview.registration' },
+        { key: 'overview.language' }
     ];
 
     return (
         <div className="instruction-container">
-            <button
-                type="button"
-                className="back-btn"
-                onClick={() => navigate("/")}
-            >
-                ← {t('back')}
-            </button>
+            {/* Navigation Header */}
+            <section className="nav-header">
+                <button
+                    type="button"
+                    className="back-btn"
+                    onClick={() => navigate(-1)}
+                >
+                    ← {t('back')}
+                </button>
 
-            <h1>{t("instructions.title")}</h1>
-            <ul className="instruction-list">
-                {items.map(({ emoji, key }) => (
-                    <li className="instruction-item" key={key}>
-                        <div className="instruction-emoji">{emoji}</div>
-                        <div className="instruction-content">
-                            <h2>{t(key)}</h2>
-                            <p>{t(`instructions.${key}`)}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+                <select
+                    className="language-select"
+                    value={i18n.language}
+                    onChange={e => i18n.changeLanguage(e.target.value)}
+                >
+                    <option value="en">ENGLISH</option>
+                    <option value="sk">SLOVENČINA</option>
+                </select>
+
+                <button
+                    className="convert-btn"
+                    onClick={handleConvert}
+                    disabled={loadingConvert}
+                >
+                    {loadingConvert ? t('processing') : t('convertToPdf')}
+                </button>
+            </section>
+
+            {/* 1. PDF Services */}
+            <aside className="section-card">
+                <h1>{t('instructions.title')}</h1>
+                <ul className="instruction-list">
+                    {services.map(({ emoji, key, requiresUpload }) => (
+                        <li className="instruction-item" key={key}>
+                            <div className="instruction-emoji">{emoji}</div>
+                            <div className="instruction-content">
+                                <h2>
+                                    {t(key)}
+                                    {requiresUpload && <span className="badge">{` (${t('requiresUpload')})`}</span>}
+                                </h2>
+                                <p>{t(`instructions.${key}`)}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </aside>
+
+            {/* 2. Overview of Functionality */}
+            <aside className="section-card">
+                <h1>{t('instructions.overviewTitle')}</h1>
+                <ul className="instruction-list">
+                    {overviewItems.map(({ key }) => (
+                        <li className="instruction-item" key={key}>
+                            <div className="instruction-content">
+                                <h2>{t(`${key}.title`)}</h2>
+                                <p>{t(`${key}.description`)}</p>
+
+                                {/* Steps for login */}
+                                {key === 'overview.login' && (
+                                    <ol className="auth-steps">
+                                        <li>{t('login.step1')}</li>
+                                        <li>{t('login.step2')}</li>
+                                        <li>{t('login.step3')}</li>
+                                        <li>{t('login.step4')}</li>
+                                    </ol>
+                                )}
+
+                                {/* Steps for registration */}
+                                {key === 'overview.registration' && (
+                                    <ol className="auth-steps">
+                                        <li>{t('registration.step1')}</li>
+                                        <li>{t('registration.step2')}</li>
+                                        <li>{t('registration.step3')}</li>
+                                        <li>{t('registration.step4')}</li>
+                                        <li>{t('registration.step5')}</li>
+                                    </ol>
+                                )}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </aside>
         </div>
     );
 }

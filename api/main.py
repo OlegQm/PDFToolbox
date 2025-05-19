@@ -20,7 +20,8 @@ from routers.pdf_processing import (
 )
 from routers.authorization import (
     token,
-    registration
+    registration,
+    regenerate_token
 )
 from services.authorization.logging_service import (
     get_history_collection,
@@ -130,6 +131,7 @@ api_router.include_router(compress_pdf.router)
 ######## Authentication routers ########
 api_router.include_router(token.router)
 api_router.include_router(registration.router)
+api_router.include_router(regenerate_token.router)
 
 ######## Database routers ########
 api_router.include_router(check_db_health.router)

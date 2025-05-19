@@ -49,6 +49,18 @@ async def create_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already exists."
         )
+    username = username.strip()
+    password = password.strip()
+    if not username or len(username) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username must be a non-empty string."
+        )
+    if not password or len(password) < 7:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 6 characters long."
+        )
     hashed = pwd_context.hash(password)
     user_doc = {
         "username": username,
