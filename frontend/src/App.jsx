@@ -32,7 +32,7 @@ async function callApi(path, file, extraBody = {}) {
   if (!token) {
     setTimeout(() => {
       Cookies.remove("access_token");
-      window.location.href = "/login";
+      navigate("/login");
     }, 1000);
     throw new Error("You must LOG IN before using services!");
   }

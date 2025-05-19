@@ -15,7 +15,7 @@ export default function InstructionPage() {
             if (startUsername) {
                 Cookies.remove("username");
             }
-            window.location.href = "/login";
+            navigate("/");
         }, 1000);
         throw new Error("You must LOG IN before using services!");
     }

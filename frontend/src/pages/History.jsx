@@ -24,7 +24,7 @@ export default function HistoryPage() {
                     Cookies.remove("username");
                 }
             }
-            window.location.href = "/";
+            navigate("/");
         }, 1000);
         throw new Error("You must LOG IN as admin before using services!");
     }
