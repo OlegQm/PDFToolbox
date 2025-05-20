@@ -485,7 +485,6 @@ input[type="file"] {
   padding: 0;
   cursor: pointer;
   position: relative;
-  top: -2px;
   margin-left: 0.5rem;
   vertical-align: middle;
   z-index: 10;
@@ -495,7 +494,6 @@ input[type="file"] {
 
 .clear-btn:hover {
   opacity: 0.8;
-
 }
 
 .header-actions {

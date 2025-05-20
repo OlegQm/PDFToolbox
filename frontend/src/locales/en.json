@@ -38,7 +38,17 @@
   "loginAdminAction": "You must LOG IN as admin before using services!",
   "convertToPdf":    "Save as PDF",
   "requiresUpload":  "requires upload",
-  "updateToken": "Update token",
+  "updateToken":     "Refresh token",
+  "sessionExpired":  "Session expired",
+  "sessionExpiredMessage": "⚠️ Your session expired. Please log in again.",
+  "authorizationError": "Authorization error",
+  "authorizationErrorMessage": "❌ Unable to update token: you are not authorized.",
+  "responseError":   "Response error",
+  "responseErrorMessage": "⚠️ The server did not return the correct token.",
+  "tokenUpdated":    "Token updated",
+  "tokenUpdatedMessage": "✅ Token has been successfully updated!",
+  "updateError":     "Update error",
+  "updateErrorMessage": "⚠️ Error during token update.",
 
   "watermark": {
     "opacity": "Opacity",
@@ -67,7 +77,6 @@
      "convertUrl":    "Convert URL",
      "compress":      "Compress"
   },
-
   "chooseFiles":     "Choose Files",
   "fileNotSelected": "No file chosen",
 
@@ -107,7 +116,6 @@
       "title": "Language Switching",
       "description": "Switch between English and Slovensky on the fly - no page reload needed."
     }
-
   },
   "login": {
     "step1": "Go to the Login page.",
@@ -150,7 +158,4 @@
     "Yes": "Yes",
     "No": "No"
   }
-
 }
-
-
