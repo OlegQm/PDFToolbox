@@ -13,7 +13,7 @@ services:
       - MONGO_DB_NAME=pdftoolbox_dev_db
       - API_PREFIX=/
       - ADMIN_USER=admin
-      - ADMIN_PASSWORD=best
+      - ADMIN_PASSWORD=best259
       - GEOIP_API_URL=https://ipapi.co
 
   frontend:
