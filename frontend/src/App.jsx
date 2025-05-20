@@ -360,11 +360,43 @@ export default function App() {
     ['access_token', 'username'].forEach(k => Cookies.remove(k));
     navigate("/login");
   };
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="app-container">
       <header className="header">
         <h1>📁 {t('instruments')}</h1>
+        {/* Language */}
+        <div className="lang-switcher">
+          <button
+              type="button"
+              className="icon-btn language-btn"
+              onClick={() => setLangMenuOpen(open => !open)}
+          >
+            <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
+            <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
+          </button>
+
+          {langMenuOpen && (
+              <ul className="lang-menu">
+                <li onClick={() => {
+                  i18n.changeLanguage('en');
+                  setLangMenuOpen(false);
+                }}>
+                  English
+                </li>
+                <li onClick={() => {
+                  i18n.changeLanguage('sk');
+                  setLangMenuOpen(false);
+                }}>
+                  Slovenčina
+                </li>
+              </ul>
+          )}
+        </div>
+        <button className="hamburger-btn" onClick={() => setMenuOpen(true)}>
+          ☰
+        </button>
 
         <div className="header-actions">
           {/* History */}
@@ -379,34 +411,7 @@ export default function App() {
               </button>
           )}
 
-          {/* Language */}
-          <div className="lang-switcher">
-            <button
-                type="button"
-                className="icon-btn language-btn"
-                onClick={() => setLangMenuOpen(open => !open)}
-            >
-              <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
-              <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
-            </button>
 
-            {langMenuOpen && (
-                <ul className="lang-menu">
-                  <li onClick={() => {
-                    i18n.changeLanguage('en');
-                    setLangMenuOpen(false);
-                  }}>
-                    English
-                  </li>
-                  <li onClick={() => {
-                    i18n.changeLanguage('sk');
-                    setLangMenuOpen(false);
-                  }}>
-                    Slovenčina
-                  </li>
-                </ul>
-            )}
-          </div>
           <button
               type="button"
               className="icon-btn"
@@ -431,28 +436,28 @@ export default function App() {
         </button>
 
         {downloadUrl && (
-          <div className="modal" onClick={() => setDownloadUrl("")}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
-              <button
-                type="button"
-                className="modal-close"
-                onClick={() => setDownloadUrl("")}
-              >
-                ×
-              </button>
+            <div className="modal" onClick={() => setDownloadUrl("")}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button
+                    type="button"
+                    className="modal-close"
+                    onClick={() => setDownloadUrl("")}
+                >
+                  ×
+                </button>
 
-              <a href={downloadUrl} download className="download-btn">
-                Download result
-              </a>
+                <a href={downloadUrl} download className="download-btn">
+                  Download result
+                </a>
+              </div>
             </div>
-          </div>
         )}
 
       </header>
 
       <div className="main-area">
         <div className="dropzone-wrapper">
-          <div className="cat-wrapper">
+        <div className="cat-wrapper">
             <div className="cat-container" ref={containerRef}>
               <img src={catImg} className="cat" alt="cat" />
               <div className="pupil" ref={pupilRef} />
@@ -845,6 +850,29 @@ export default function App() {
           </button>
         </aside>
       )}
+      {menuOpen && (
+          <div className="mobile-menu">
+            <button className="mobile-menu-close" onClick={() => setMenuOpen(false)}>×</button>
+
+            <div className="mobile-menu-actions">
+              {username === 'admin' && (
+                  <button className="icon-btn" onClick={() => navigate("/history")}>
+                    <img src={clockGif} alt={t('history')} width="24" height="24"/>
+                    <span>{t('history')}</span>                  </button>
+              )}
+              <button className="icon-btn" onClick={regenerateToken}>
+                <img src={refresh} alt={t('updateToken')} width="24" height="24"/>
+                <span>{t('updateToken')}</span></button>
+              <button className="icon-btn" onClick={() => navigate("/instruction")}>
+                <img src={infoGif} alt={t('instruction')} width="24" height="24"/>
+                <span>{t('instruction')}</span>              </button>
+              <button className="icon-btn" onClick={handleLogout}>
+                {t('logout')}
+              </button>
+            </div>
+          </div>
+      )}
+
       <AlertModal
         open={modal.open}
         onClose={() => setModal({ ...modal, open: false })}
