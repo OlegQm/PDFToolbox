@@ -56,7 +56,7 @@ async def create_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username must be a non-empty string."
         )
-    if not password or len(password) < 7:
+    if not password or len(password) < 6:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Password must be at least 6 characters long."
