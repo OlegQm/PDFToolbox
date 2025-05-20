@@ -222,7 +222,7 @@ export default function InstructionPage() {
                                     components={[
                                         <a
                                         key="0"
-                                        href={`${BASE_URL}/api/docs`}
+                                        href={`${BASE_URL}api/docs`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         />,
