@@ -295,29 +295,37 @@ export default function HistoryPage() {
 
     return (
         <div className="history-container">
-            <div className="history-table-wrapper">
-                <div className="btn-tabs">
-                    <button className="icon-btn history-btn" title="History">
-                        <span className="btn-text"> {t('historyPage.History')}</span>
-                    </button>
-
-                    <button type="button" className="icon-btn clear-btn" title="Clear history" onClick={handleClearClick}>
-                        ✖ <span className="btn-text">{t('historyPage.ClearHistory')}</span>
-                    </button>
-                    <button type="button" className="icon-btn download-btn" title="Download CSV" onClick={handleDownload}>
-                        ⬇ <span className="btn-text">{t('historyPage.DownloadCSV')}</span>
-                    </button>
+            <div className="backhistory">
+                <button
+                    className="backhistory-btn" title="Back" onClick={() => navigate(-1)}>
+                    <span className="btn-text">←&nbsp;{t('historyPage.Back')} </span>
+                </button>
                 </div>
+                <div className="history-table-wrapper">
+                    <div className="btn-tabs">
+                        <button className="icon-btn history-btn" title="History">
+                            <span className="btn-text"> {t('historyPage.History')}</span>
+                        </button>
 
-                <table ref={tableRef} className="history-table">
-                    <thead>
+                        <button type="button" className="icon-btn clear-btn" title="Clear history"
+                                onClick={handleClearClick}>
+                            ✖ <span className="btn-text">{t('historyPage.ClearHistory')}</span>
+                        </button>
+                        <button type="button" className="icon-btn download-btn" title="Download CSV"
+                                onClick={handleDownload}>
+                            ⬇ <span className="btn-text">{t('historyPage.DownloadCSV')}</span>
+                        </button>
+                    </div>
+
+                    <table ref={tableRef} className="history-table">
+                        <thead>
                         <tr className="table-title-row">
                             <th colSpan={5}>
                                 <div className="header-row">
                                     <div className="header-left">
                                         <span className="table-title">{t('historyPage.logHistory')}</span>
                                         <div className="total-count">
-                                            {t('historyPage.totalRecords', { count: total })}
+                                            {t('historyPage.totalRecords', {count: total})}
                                         </div>
                                     </div>
                                     <div className="header-right">
@@ -332,7 +340,8 @@ export default function HistoryPage() {
                                         ) : null}
 
 
-                                        <span className="table-show"> {t('historyPage.show')}: <select value={allMode ? -1 : limit}
+                                        <span className="table-show"> {t('historyPage.show')}: <select
+                                            value={allMode ? -1 : limit}
                                             onChange={onLimitChange}>
                                             <option value={10}>10</option>
                                             <option value={20}>20</option>
@@ -353,8 +362,8 @@ export default function HistoryPage() {
                             <th>{t('historyPage.Country')}</th>
                             <th>{t('historyPage.Date')}</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         {logs.length > 0 ? (
                             logs.map((log, i) => (
                                 <tr key={i}>
@@ -369,7 +378,7 @@ export default function HistoryPage() {
                             <tr>
                                 <td colSpan={5} className="no-records">
                                     {t('historyPage.noRecords')}
-                                    <br />
+                                    <br/>
                                     <img
                                         src={emptyImg}
                                         alt="No records"
@@ -382,32 +391,32 @@ export default function HistoryPage() {
                                 </td>
                             </tr>
                         )}
-                    </tbody>
-                </table>
-            </div>
-
-            {!allMode && (
-                <div className="paging">
-                    <button ref={prevBtnRef} onClick={goPrev} disabled={skip === 0}>
-                        &lt; {t('historyPage.Prev')}
-                    </button>
-                    {Array.from({ length: winEnd - winStart + 1 }, (_, idx) => {
-                        const p = winStart + idx;
-                        return (
-                            <button
-                                key={p}
-                                onClick={() => setSkip((p - 1) * chunkSize)}
-                                disabled={currentPage === p}
-                            >
-                                {p}
-                            </button>
-                        );
-                    })}
-                    <button onClick={goNext} disabled={skip + chunkSize >= total}>
-                        {t('historyPage.Next')}&gt;
-                    </button>
+                        </tbody>
+                    </table>
                 </div>
-            )}
-        </div>
-    );
-}
+
+                {!allMode && (
+                    <div className="paging">
+                        <button ref={prevBtnRef} onClick={goPrev} disabled={skip === 0}>
+                            &lt; {t('historyPage.Prev')}
+                        </button>
+                        {Array.from({length: winEnd - winStart + 1}, (_, idx) => {
+                            const p = winStart + idx;
+                            return (
+                                <button
+                                    key={p}
+                                    onClick={() => setSkip((p - 1) * chunkSize)}
+                                    disabled={currentPage === p}
+                                >
+                                    {p}
+                                </button>
+                            );
+                        })}
+                        <button onClick={goNext} disabled={skip + chunkSize >= total}>
+                            {t('historyPage.Next')}&gt;
+                        </button>
+                    </div>
+                )}
+            </div>
+            );
+            }

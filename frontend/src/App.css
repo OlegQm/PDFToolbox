@@ -419,21 +419,21 @@ input[type="file"] {
 .cat-wrapper {
   position: absolute;
   top: -80px;
-  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
+  width: 100%;
+  max-width: 300px;
   pointer-events: none;
   z-index: 10;
-  overflow: visible;
-
 }
 
 .cat-container {
   position: relative;
   width: 100%;
-  height: auto;
+  max-width: 300px;
+  margin: 0 auto;
 }
+
 
 .cat-container img {
   display: block;
@@ -449,12 +449,12 @@ input[type="file"] {
 
 .pupil {
   position: absolute;
-  width: 5%;
-  padding-bottom: 5%;
+  width: 6%;
+  padding-bottom: 6%;
   border-radius: 50%;
   background: #000;
-  top: 40%;
-  left: 22%;
+  top: 44%;
+  left: 32%;
   pointer-events: none;
   transition: top 0.05s, left 0.05s;
 }
@@ -624,4 +624,82 @@ input[type="file"] {
   color: #111111;
   border-color: #111111;
   cursor: pointer;
+}
+
+
+
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 608px) {
+  .header-actions,
+  .logout-btn {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: inline-block;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #fff;
+    width: 260px;
+    height: 100vh;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    padding: 1rem;
+  }
+
+  .mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+  }
+
+  .mobile-menu-actions {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .mobile-menu-actions .icon-btn {
+    font-size: 1rem;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 608px) {
+  .desktop-lang {
+    display: none;
+  }
+
+  .mobile-lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+@media (min-width: 609px) {
+  .mobile-lang {
+    display: none;
+  }
+}
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
 }

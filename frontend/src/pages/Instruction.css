@@ -285,3 +285,44 @@
         print-color-adjust: exact !important;
     }
 }
+
+.lang-switcher-instruction {
+    position: relative;
+    display: inline-block;
+    z-index: 999;
+}
+
+.language-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #2c3e50;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.lang-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 120px;
+    font-size: 0.95rem;
+}
+
+.lang-menu li {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.lang-menu li:hover {
+    background: #f0f0f0;
+}

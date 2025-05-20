@@ -156,6 +156,7 @@
     "errorTokenMissing": "Chýba token — prosím, prihláste sa znova.",
     "cleared": "Všetka história bola vymazaná.",
     "Yes": "Áno",
-    "No": "Nie"
+    "No": "Nie",
+    "Back": "Späť"
   }
 }
