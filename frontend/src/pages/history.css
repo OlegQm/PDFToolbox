@@ -41,7 +41,7 @@
 
 }
 
-.btn-tabs .icon-btn {
+.btn-tabs .icon-btn{
     margin: 0;
     background: rgba(255,255,255,0.95);
     padding: 0.25rem 0.75rem;
@@ -51,13 +51,35 @@
     cursor: pointer;
     transition: color 0.2s;
     color: #333;
-
-
     font-size: 1.35rem;
     font-weight: bold;
     border: 2px solid #000;
     border-bottom: none;
     border-radius: 8px 8px 0 0;
+}
+
+
+.backhistory-btn{
+    background: rgba(255,255,255,0.95);
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    color: #333;
+    font-size: 1.35rem;
+    font-weight: bold;
+    border: 2px solid #000;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    font-family: "Courier New", Courier, monospace;
+    position: absolute;
+    top: 0;
+    left: 0.5rem;
+    z-index: 5;
+}
+
+.backhistory-btn:hover {
+    transform: translateY(+1.5px);
+    transition: color .2s ease, transform .2s ease;
 }
 
 .btn-tabs .icon-btn + .icon-btn {
