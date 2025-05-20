@@ -449,8 +449,8 @@ input[type="file"] {
 
 .pupil {
   position: absolute;
-  width: 5%;
-  padding-bottom: 5%;
+  width: 6%;
+  padding-bottom: 6%;
   border-radius: 50%;
   background: #000;
   top: 44%;
@@ -679,4 +679,27 @@ input[type="file"] {
     font-size: 1rem;
     justify-content: flex-start;
   }
+}
+@media (max-width: 608px) {
+  .desktop-lang {
+    display: none;
+  }
+
+  .mobile-lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+@media (min-width: 609px) {
+  .mobile-lang {
+    display: none;
+  }
+}
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
 }

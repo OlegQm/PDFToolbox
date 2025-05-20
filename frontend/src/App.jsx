@@ -361,20 +361,32 @@ export default function App() {
     navigate("/login");
   };
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 608 && menuOpen) {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [menuOpen]);
+
 
   return (
     <div className="app-container">
       <header className="header">
         <h1>📁 {t('instruments')}</h1>
         {/* Language */}
-        <div className="lang-switcher">
+
+        <div className="lang-switcher mobile-lang">
           <button
               type="button"
               className="icon-btn language-btn"
               onClick={() => setLangMenuOpen(open => !open)}
           >
             <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
-            <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
+            <span>{i18n.language === 'en' ? 'EN' : 'SK'}</span>
           </button>
 
           {langMenuOpen && (
@@ -382,23 +394,49 @@ export default function App() {
                 <li onClick={() => {
                   i18n.changeLanguage('en');
                   setLangMenuOpen(false);
-                }}>
-                  English
+                }}>English
                 </li>
                 <li onClick={() => {
                   i18n.changeLanguage('sk');
                   setLangMenuOpen(false);
-                }}>
-                  Slovenčina
+                }}>Slovenčina
                 </li>
               </ul>
           )}
         </div>
+
         <button className="hamburger-btn" onClick={() => setMenuOpen(true)}>
           ☰
         </button>
 
         <div className="header-actions">
+          <div className="lang-switcher">
+            <button
+                type="button"
+                className="icon-btn language-btn"
+                onClick={() => setLangMenuOpen(open => !open)}
+            >
+              <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
+              <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
+            </button>
+
+            {langMenuOpen && (
+                <ul className="lang-menu">
+                  <li onClick={() => {
+                    i18n.changeLanguage('en');
+                    setLangMenuOpen(false);
+                  }}>
+                    English
+                  </li>
+                  <li onClick={() => {
+                    i18n.changeLanguage('sk');
+                    setLangMenuOpen(false);
+                  }}>
+                    Slovenčina
+                  </li>
+                </ul>
+            )}
+          </div>
           {/* History */}
           {username === 'admin' && (
               <button
@@ -457,10 +495,10 @@ export default function App() {
 
       <div className="main-area">
         <div className="dropzone-wrapper">
-        <div className="cat-wrapper">
+          <div className="cat-wrapper">
             <div className="cat-container" ref={containerRef}>
-              <img src={catImg} className="cat" alt="cat" />
-              <div className="pupil" ref={pupilRef} />
+              <img src={catImg} className="cat" alt="cat"/>
+              <div className="pupil" ref={pupilRef}/>
             </div>
           </div>
           <div className={`dropzone ${error ? "drop-error-active" : ""}`}>
@@ -468,8 +506,8 @@ export default function App() {
             <div className="drop-icon">📄</div>
 
             {file ? (
-              <div className="file-btns" onClick={e => e.stopPropagation()}>
-                <span className="drop-text">{file.name}</span>
+                <div className="file-btns" onClick={e => e.stopPropagation()}>
+                  <span className="drop-text">{file.name}</span>
                 <button
                   type="button"
                   className="clear-btn"
@@ -851,35 +889,59 @@ export default function App() {
         </aside>
       )}
       {menuOpen && (
-          <div className="mobile-menu">
-            <button className="mobile-menu-close" onClick={() => setMenuOpen(false)}>×</button>
+          <div
+              className="mobile-menu-backdrop"
+              onClick={() => setMenuOpen(false)}
+          >
+            <div
+                className="mobile-menu"
+                onClick={(e) => e.stopPropagation()} // не закрывать при клике по самому меню
+            >
+              <button className="mobile-menu-close" onClick={() => setMenuOpen(false)}>×</button>
 
-            <div className="mobile-menu-actions">
-              {username === 'admin' && (
-                  <button className="icon-btn" onClick={() => navigate("/history")}>
-                    <img src={clockGif} alt={t('history')} width="24" height="24"/>
-                    <span>{t('history')}</span>                  </button>
-              )}
-              <button className="icon-btn" onClick={regenerateToken}>
-                <img src={refresh} alt={t('updateToken')} width="24" height="24"/>
-                <span>{t('updateToken')}</span></button>
-              <button className="icon-btn" onClick={() => navigate("/instruction")}>
-                <img src={infoGif} alt={t('instruction')} width="24" height="24"/>
-                <span>{t('instruction')}</span>              </button>
-              <button className="icon-btn" onClick={handleLogout}>
-                {t('logout')}
-              </button>
+              <div className="mobile-menu-actions">
+                {username === 'admin' && (
+                    <button className="icon-btn" onClick={() => {
+                      navigate("/history");
+                      setMenuOpen(false);
+                    }}>
+                      <img src={clockGif} alt={t('history')} width="24" height="24"/>
+                      <span>{t('history')}</span>
+                    </button>
+                )}
+                <button className="icon-btn" onClick={async () => {
+                  await regenerateToken();
+                  setMenuOpen(false);
+                }}>
+                  <img src={refresh} alt={t('updateToken')} width="24" height="24"/>
+                  <span>{t('updateToken')}</span>
+                </button>
+                <button className="icon-btn" onClick={() => {
+                  navigate("/instruction");
+                  setMenuOpen(false);
+                }}>
+                  <img src={infoGif} alt={t('instruction')} width="24" height="24"/>
+                  <span>{t('instruction')}</span>
+                </button>
+                <button className="icon-btn" onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}>
+                  {t('logout')}
+                </button>
+              </div>
             </div>
           </div>
       )}
 
+
       <AlertModal
-        open={modal.open}
-        onClose={() => setModal({ ...modal, open: false })}
-        title={modal.title}
-        message={modal.message}
-        type={modal.type}
-     />
+          open={modal.open}
+          onClose={() => setModal({...modal, open: false})}
+          title={modal.title}
+          message={modal.message}
+          type={modal.type}
+      />
     </div>
   );
 }
