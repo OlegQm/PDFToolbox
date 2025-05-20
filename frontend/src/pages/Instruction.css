@@ -55,17 +55,22 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    padding: 0.4rem 1rem;
+    padding: 0.4rem 2.2rem 0.4rem 0.2rem; /* больше внутреннего отступа справа для стрелки */
     border: 1px solid #ccc;
-    border-radius: 4px;
-    background: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path fill='%23666' d='M0 0l5 6 5-6z'/></svg>") no-repeat right 0.75rem center / 10px 6px;
+    border-radius: 6px;
+    background: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path fill='%23666' d='M0 0l5 6 5-6z'/></svg>")
+    no-repeat right 0.8rem center / 10px 6px;
     background-color: #f9f9f9;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 450;
+    min-width: 100px;
+    text-align: left;
     color: #333;
     cursor: pointer;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: border-color 0.2s, background-color 0.2s;
 }
+
 
 .language-select:hover {
     border-color: #999;
