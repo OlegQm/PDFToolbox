@@ -5,61 +5,19 @@ import HoverPawButton from "./components/HoverPawButton";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
+import AlertModal from "./components/AlertModal";
 import clockGif from "./assets/clock.png";
 import infoGif from "./assets/info.png";
 import globe from "./assets/planet.png";
+import refresh from "./assets/refresh_token.png"
 
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
 
-
-async function callApi(path, file, extraBody = {}) {
-  const form = new FormData();
-  if (file) {
-    form.append("file", file, file.name);
-  }
-  if (extraBody.files && Array.isArray(extraBody.files)) {
-    extraBody.files.forEach(f => form.append("files", f, f.name));
-    delete extraBody.files;
-  }
-  Object.entries(extraBody).forEach(([k, v]) => {
-    form.append(k, typeof v === "string" ? v : JSON.stringify(v));
-  });
-
-  const token = Cookies.get("access_token");
-  if (!token) {
-    setTimeout(() => {
-      Cookies.remove("access_token");
-      navigate("/login");
-    }, 1000);
-    throw new Error("You must LOG IN before using services!");
-  }
-
-  const res = await fetch(`${BASE_URL}/api${path}`, {
-    method: "POST",
-    body: form,
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  if (res.status === 401) {
-    Cookies.remove("access_token");
-    throw new Error("Your session has expired. Please log in again.");
-  }
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Error ${res.status}`);
-  }
-
-  return res.blob();
-}
-
-
 function getTokenExpiration(token) {
   try {
+    if (!token || token === "undefined" || token.split(".").length !== 3) return null;
     const payload = token.split(".")[1];
     const decoded = atob(payload);
     const parsed = JSON.parse(decoded);
@@ -130,7 +88,50 @@ export default function App() {
     { label: "URL to PDF", path: "/url-to-pdf", needsConfig: true, i18nKey: "urlToPdf" },
     { label: "Compress", path: "/compress-pdf", needsConfig: true, i18nKey: "compressPdf" },
   ];
+  const [modal, setModal] = useState({ open: false, title: "", message: "", type: "info" });
 
+  async function callApi(path, file, extraBody = {}) {
+    const form = new FormData();
+    if (file) {
+      form.append("file", file, file.name);
+    }
+    if (extraBody.files && Array.isArray(extraBody.files)) {
+      extraBody.files.forEach(f => form.append("files", f, f.name));
+      delete extraBody.files;
+    }
+    Object.entries(extraBody).forEach(([k, v]) => {
+      form.append(k, typeof v === "string" ? v : JSON.stringify(v));
+    });
+
+    const token = Cookies.get("access_token");
+    if (!token) {
+      setTimeout(() => {
+        Cookies.remove("access_token");
+        navigate("/login");
+      }, 1000);
+      throw new Error("You must LOG IN before using services!");
+    }
+
+    const res = await fetch(`${BASE_URL}/api${path}`, {
+      method: "POST",
+      body: form,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (res.status === 401) {
+      Cookies.remove("access_token");
+      throw new Error("Your session has expired. Please log in again.");
+    }
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `Error ${res.status}`);
+    }
+
+    return res.blob();
+  }
 
   function isPdfFile(file) {
     return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
@@ -232,6 +233,80 @@ export default function App() {
   };
   const containerRef = useRef(null);
   const pupilRef = useRef(null);
+  const regenerateToken = async () => {
+    const currentToken = Cookies.get("access_token");
+    if (!currentToken || currentToken === "undefined") {
+      setModal(
+        {
+          open: true, title: t('authorizationError'),
+          message: t('authorizationErrorMessage'),
+          type: "error"
+        }
+      );
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/authorization/regenerate-token`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      });
+
+      if (response.status === 401) {
+        Cookies.remove("access_token");
+        setModal(
+          {
+            open: true,
+            title: t('sessionExpired'),
+            message: t('sessionExpiredMessage'),
+            type: "warning"
+          }
+        );
+        navigate("/login");
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Response from the server:", data);
+
+      const newToken = data.access_token;
+
+      if (!newToken || newToken === "undefined") {
+        setModal(
+          {
+            open: true,
+            title: t('responseError'),
+            message: t('responseErrorMessage'),
+            type: "warning"
+          }
+        );
+        return;
+      }
+
+      Cookies.set("access_token", newToken);
+      setModal(
+        {
+          open: true,
+          title: t('tokenUpdated'),
+          message: t('tokenUpdatedMessage'),
+          type: "success"
+        }
+      );
+    } catch (error) {
+      setModal(
+        {
+          open: true,
+          title: t('updateError'),
+          message: t('updateErrorMessage'),
+          type: "warning"
+        }
+      );
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const onMouseMove = (e) => {
@@ -282,8 +357,6 @@ export default function App() {
   }, []);
 
   const handleLogout = () => {
-    // Cookies.remove("access_token");
-    //Cookies.remove("username");
     ['access_token', 'username'].forEach(k => Cookies.remove(k));
     navigate("/login");
   };
@@ -296,45 +369,59 @@ export default function App() {
         <div className="header-actions">
           {/* History */}
           {username === 'admin' && (
-            <button
-              type="button"
-              className="icon-btn history-btn"
-              onClick={() => navigate("/history")}
-            >
-              <img src={clockGif} alt={t('history')} width="24" height="24" />
-              <span>{t('history')}</span>
-            </button>
+              <button
+                  type="button"
+                  className="icon-btn history-btn"
+                  onClick={() => navigate("/history")}
+              >
+                <img src={clockGif} alt={t('history')} width="24" height="24"/>
+                <span>{t('history')}</span>
+              </button>
           )}
 
           {/* Language */}
           <div className="lang-switcher">
             <button
-              type="button"
-              className="icon-btn language-btn"
-              onClick={() => setLangMenuOpen(open => !open)}
+                type="button"
+                className="icon-btn language-btn"
+                onClick={() => setLangMenuOpen(open => !open)}
             >
-              <img src={globe} alt="Language" width="24" height="24" className="icon-img" />
+              <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
               <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
             </button>
 
             {langMenuOpen && (
-              <ul className="lang-menu">
-                <li onClick={() => { i18n.changeLanguage('en'); setLangMenuOpen(false); }}>
-                  English
-                </li>
-                <li onClick={() => { i18n.changeLanguage('sk'); setLangMenuOpen(false); }}>
-                  Slovenčina
-                </li>
-              </ul>
+                <ul className="lang-menu">
+                  <li onClick={() => {
+                    i18n.changeLanguage('en');
+                    setLangMenuOpen(false);
+                  }}>
+                    English
+                  </li>
+                  <li onClick={() => {
+                    i18n.changeLanguage('sk');
+                    setLangMenuOpen(false);
+                  }}>
+                    Slovenčina
+                  </li>
+                </ul>
             )}
           </div>
+          <button
+              type="button"
+              className="icon-btn"
+              onClick={regenerateToken}
+          >
+            <img src={refresh} alt={t('updateToken')} width="24" height="24"/>
+            <span>{t('updateToken')}</span>
+          </button>
 
           <button
-            type="button"
-            className="icon-btn instruction-btn"
-            onClick={() => navigate("/instruction")}
+              type="button"
+              className="icon-btn instruction-btn"
+              onClick={() => navigate("/instruction")}
           >
-            <img src={infoGif} alt={t('instruction')} width="24" height="24" />
+            <img src={infoGif} alt={t('instruction')} width="24" height="24"/>
             <span>{t('instruction')}</span>
           </button>
         </div>
@@ -758,6 +845,13 @@ export default function App() {
           </button>
         </aside>
       )}
+      <AlertModal
+        open={modal.open}
+        onClose={() => setModal({ ...modal, open: false })}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+     />
     </div>
   );
 }
