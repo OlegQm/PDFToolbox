@@ -7,7 +7,7 @@ import './history.css';
 
 import { useTranslation } from 'react-i18next';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/';
 const API_MAX_LIMIT = 200;
 const CSV_MAX_LIMIT = 1000;
 

@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import './Instruction.css';
 import globe from "../assets/planet.png";
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox/';
 
 export default function InstructionPage() {
     const { t, i18n } = useTranslation();

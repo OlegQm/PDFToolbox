@@ -12,7 +12,7 @@ import globe from "./assets/planet.png";
 import refresh from "./assets/refresh_token.png"
 
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
 
 function getTokenExpiration(token) {
@@ -112,7 +112,7 @@ export default function App() {
       throw new Error("You must LOG IN before using services!");
     }
 
-    const res = await fetch(`${BASE_URL}/api${path}`, {
+    const res = await fetch(`${BASE_URL}api${path}`, {
       method: "POST",
       body: form,
       headers: {
@@ -257,7 +257,7 @@ export default function App() {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/api/authorization/regenerate-token`, {
+      const response = await fetch(`${BASE_URL}api/authorization/regenerate-token`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${currentToken}`,

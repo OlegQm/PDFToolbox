@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import "./auth.css";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/";
 
 export default function Login() {
     const [username, setUsername] = useState("");

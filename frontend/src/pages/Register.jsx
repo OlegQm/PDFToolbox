@@ -5,7 +5,7 @@ import bg from "../assets/font.png";
 import cat from "../assets/cat.png";
 import "./auth.css";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/";
 export default function Register() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -78,7 +78,7 @@ export default function Register() {
             formData.append("username", username);
             formData.append("password", password);
 
-            const res = await fetch(`${BASE_URL}/api/authorization/register`, {
+            const res = await fetch(`${BASE_URL}api/authorization/register`, {
                 method: "POST",
                 body: formData
             });
