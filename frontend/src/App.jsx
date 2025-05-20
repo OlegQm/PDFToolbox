@@ -60,6 +60,7 @@ async function callApi(path, file, extraBody = {}) {
 
 function getTokenExpiration(token) {
   try {
+    if (!token || token === "undefined" || token.split(".").length !== 3) return null;
     const payload = token.split(".")[1];
     const decoded = atob(payload);
     const parsed = JSON.parse(decoded);
@@ -69,6 +70,7 @@ function getTokenExpiration(token) {
     return null;
   }
 }
+
 
 
 export default function App() {
@@ -232,6 +234,48 @@ export default function App() {
   };
   const containerRef = useRef(null);
   const pupilRef = useRef(null);
+  const regenerateToken = async () => {
+    const currentToken = Cookies.get("access_token");
+
+    if (!currentToken || currentToken === "undefined") {
+      alert("❌ Unable to update token: you are not authorized.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/authorization/regenerate-token`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      });
+
+      if (response.status === 401) {
+        Cookies.remove("access_token");
+        navigate("/login");
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Response from the server:", data);
+
+      const newToken = data.access_token;
+
+      if (!newToken || newToken === "undefined") {
+        alert("⚠️ The server did not return the correct token.");
+        return;
+      }
+
+      Cookies.set("access_token", newToken);
+      alert("✅ Token has been successfully updated!");
+    } catch (error) {
+      alert("⚠️ Error during token update.");
+      console.error(error);
+    }
+  };
+
+
 
   useEffect(() => {
     const onMouseMove = (e) => {
@@ -296,45 +340,58 @@ export default function App() {
         <div className="header-actions">
           {/* History */}
           {username === 'admin' && (
-            <button
-              type="button"
-              className="icon-btn history-btn"
-              onClick={() => navigate("/history")}
-            >
-              <img src={clockGif} alt={t('history')} width="24" height="24" />
-              <span>{t('history')}</span>
-            </button>
+              <button
+                  type="button"
+                  className="icon-btn history-btn"
+                  onClick={() => navigate("/history")}
+              >
+                <img src={clockGif} alt={t('history')} width="24" height="24"/>
+                <span>{t('history')}</span>
+              </button>
           )}
 
           {/* Language */}
           <div className="lang-switcher">
             <button
-              type="button"
-              className="icon-btn language-btn"
-              onClick={() => setLangMenuOpen(open => !open)}
+                type="button"
+                className="icon-btn language-btn"
+                onClick={() => setLangMenuOpen(open => !open)}
             >
-              <img src={globe} alt="Language" width="24" height="24" className="icon-img" />
+              <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
               <span>{i18n.language === 'en' ? t('language') : t('language')}</span>
             </button>
 
             {langMenuOpen && (
-              <ul className="lang-menu">
-                <li onClick={() => { i18n.changeLanguage('en'); setLangMenuOpen(false); }}>
-                  English
-                </li>
-                <li onClick={() => { i18n.changeLanguage('sk'); setLangMenuOpen(false); }}>
-                  Slovenčina
-                </li>
-              </ul>
+                <ul className="lang-menu">
+                  <li onClick={() => {
+                    i18n.changeLanguage('en');
+                    setLangMenuOpen(false);
+                  }}>
+                    English
+                  </li>
+                  <li onClick={() => {
+                    i18n.changeLanguage('sk');
+                    setLangMenuOpen(false);
+                  }}>
+                    Slovenčina
+                  </li>
+                </ul>
             )}
           </div>
+          <button
+              type="button"
+              className="icon-btn"
+              onClick={regenerateToken}
+          >
+            🔁 {t('updateToken')}
+          </button>
 
           <button
-            type="button"
-            className="icon-btn instruction-btn"
-            onClick={() => navigate("/instruction")}
+              type="button"
+              className="icon-btn instruction-btn"
+              onClick={() => navigate("/instruction")}
           >
-            <img src={infoGif} alt={t('instruction')} width="24" height="24" />
+            <img src={infoGif} alt={t('instruction')} width="24" height="24"/>
             <span>{t('instruction')}</span>
           </button>
         </div>

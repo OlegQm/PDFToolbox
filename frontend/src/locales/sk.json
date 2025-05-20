@@ -37,6 +37,8 @@
   "loginAdminAction": "Pred použitím služieb sa musíte prihlásiť ako administrátor!",
   "convertToPdf":    "Stiahnuť ako PDF",
   "requiresUpload":  "vyžaduje nahratie",
+  "updateToken": "Obnoviť token",
+
   "watermark": {
     "opacity": "Priehľadnosť",
     "fontSize": "Veľkosť písma",

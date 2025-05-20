@@ -38,6 +38,8 @@
   "loginAdminAction": "You must LOG IN as admin before using services!",
   "convertToPdf":    "Save as PDF",
   "requiresUpload":  "requires upload",
+  "updateToken": "Update token",
+
   "watermark": {
     "opacity": "Opacity",
     "fontSize": "Font Size",
