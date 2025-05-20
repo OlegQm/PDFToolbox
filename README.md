@@ -37,17 +37,17 @@
     &nbsp;&nbsp;&nbsp;&nbsp;• On server: `https://node100.webte.fei.stuba.sk/PDFToolbox/`
 
     4.2. **Backend (API)**
-    &nbsp;&nbsp;&nbsp;&nbsp;• Locally:
+    &nbsp;&nbsp;&nbsp;&nbsp;• Locally:  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`http://localhost:8000/api`  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`http://localhost:8000/api/docs` — for documentation
-    &nbsp;&nbsp;&nbsp;&nbsp;• On server:
+    &nbsp;&nbsp;&nbsp;&nbsp;• On server:  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api`
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs` — for documentation
 
     4.3. **MongoDB**  
     &nbsp;&nbsp;&nbsp;&nbsp;• URI: `mongodb://mongodb:27017`
 
-5. **Stop the application:**
+6. **Stop the application:**
 
     Press `Ctrl + C` or run the command:
 
@@ -55,7 +55,7 @@
     docker compose down
     ```
 
-6. **Restart the application:**
+7. **Restart the application:**
 
     ```bash
     docker compose down && docker compose up --build
