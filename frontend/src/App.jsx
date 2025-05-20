@@ -159,12 +159,21 @@ export default function App() {
       setError(`File ${notPdf.name} is not a PDF.`);
       return;
     }
-    setMergeFiles(arr);
+    setMergeFiles(prev => {
+      const newFiles = Array.from(e.target.files);
+      const merged = [...prev, ...newFiles];
+      return Array.from(new Map(merged.map(f => [f.name, f])).values());
+    });
     setError("");
     setDownloadUrl("");
   };
 
-  const handleImageFiles = (e) => { setImageFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
+  const handleImageFiles = (e) => {
+    const newImgs = Array.from(e.target.files);
+    setImageFiles(prev => [...prev, ...newImgs]);
+    setError("");
+    setDownloadUrl("");
+  };
 
   const openTool = tool => {
     const noFileNeeded = canWorkWithoutMainFile.includes(tool.path);
