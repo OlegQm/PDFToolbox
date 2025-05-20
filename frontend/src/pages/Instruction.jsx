@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Instruction.css';
 import globe from "../assets/planet.png";
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox/';
 
 export default function InstructionPage() {
     const { t, i18n } = useTranslation();
@@ -90,7 +91,13 @@ export default function InstructionPage() {
         { key: 'overview.history' },
         { key: 'overview.login' },
         { key: 'overview.registration' },
-        { key: 'overview.language' }
+        { key: 'overview.language' },
+        { key: 'overview.tokenRefreshing' }
+    ];
+
+    const apiDescriptions = [
+        { key: 'api.generalInfo' },
+        { key: 'api.additionalInfo' },
     ];
 
     return (
@@ -153,7 +160,12 @@ export default function InstructionPage() {
                                     {t(key)}
                                     {requiresUpload && <span className="badge">{` (${t('requiresUpload')})`}</span>}
                                 </h2>
-                                <p>{t(`instructions.${key}`)}</p>
+                                <p>
+                                    <Trans
+                                        i18nKey={`instructions.${key}`}
+                                        components={{ br: <br/>, strong: <strong/> }}
+                                    />
+                                </p>
                             </div>
                         </li>
                     ))}
@@ -190,6 +202,34 @@ export default function InstructionPage() {
                                         <li>{t('registration.step5')}</li>
                                     </ol>
                                 )}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </aside>
+
+            {/* 3. API description */}
+            <aside className="section-card">
+                <h1>{t('api.overviewTitle')}</h1>
+                <ul className="instruction-list">
+                    {apiDescriptions.map(({ key }) => (
+                        <li className="instruction-item" key={key}>
+                            <div className="instruction-content">
+                                <h2>{t(`${key}.title`)}</h2>
+                                <p>
+                                    <Trans
+                                    i18nKey={`${key}.description`}
+                                    components={[
+                                        <a
+                                        key="0"
+                                        href={`${BASE_URL}api/docs`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        />,
+                                        <strong key="strong"/>
+                                    ]}
+                                    />
+                                </p>
                             </div>
                         </li>
                     ))}

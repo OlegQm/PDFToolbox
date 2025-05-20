@@ -81,18 +81,29 @@
   "fileNotSelected": "No file chosen",
 
  "instructions": {
-   "title": "How to use",
-   "rotate":          "Rotate the pages of your PDF by a specified degree (require PDF upload first).",
-   "extractPages":    "Extract selected pages from your PDF into a new file (require PDF upload first).",
-   "mergePdfs":       "Combine multiple PDF files into a single document.",
-   "splitPdf":        "Split your PDF into separate files by page number (require PDF upload first).",
-   "imagesToPdf":     "Convert one or more images into a PDF document.",
-   "addPageNumbers":  "Add sequential page numbers to each page of your PDF (require PDF upload first).",
-   "addWatermark":    "Overlay a semi-transparent watermark on every page of your PDF (require PDF upload first).",
-   "removePages":     "Remove specific pages from your PDF (require PDF upload first).",
-   "urlToPdf":        "Fetch a web page by URL and save it as a PDF.",
-   "compressPdf":     "Reduce the file size of your PDF by applying compression (require PDF upload first).",
+   "title": "PDF Services",
+   "rotate":          "Rotate the pages of your PDF by a specified degree (require PDF upload first).<br/><strong>Endpoint: /api/rotate-pdf</strong>",
+   "extractPages":    "Extract selected pages from your PDF into a new file (require PDF upload first).<br/><strong>Endpoint: /api/extract-pages</strong>",
+   "mergePdfs":       "Combine multiple PDF files into a single document.<br/><strong>Endpoint: /api/merge-pdfs</strong>",
+   "splitPdf":        "Split your PDF into separate files by page number (require PDF upload first).<br/><strong>Endpoint: /api/split-pdf</strong>",
+   "imagesToPdf":     "Convert one or more images into a PDF document.<br/><strong>Endpoint: /api/images-to-pdf</strong>",
+   "addPageNumbers":  "Add sequential page numbers to each page of your PDF (require PDF upload first).<br/><strong>Endpoint: /api/add-page-numbers</strong>",
+   "addWatermark":    "Overlay a semi-transparent watermark on every page of your PDF (require PDF upload first).<br/><strong>Endpoint: /api/add-watermark</strong>",
+   "removePages":     "Remove specific pages from your PDF (require PDF upload first).<br/><strong>Endpoint: /api/remove-pages</strong>",
+   "urlToPdf":        "Fetch a web page by URL and save it as a PDF.<br/><strong>Endpoint: /api/url-to-pdf</strong>",
+   "compressPdf":     "Reduce the file size of your PDF by applying compression (require PDF upload first).<br/><strong>Endpoint: /api/compress-pdf</strong>",
    "overviewTitle": "Overview of functionality"
+ },
+ "api": {
+    "overviewTitle": "API Description",
+    "generalInfo": {
+      "title": "General API info",
+      "description": "All the features of the app are also available via the API, which allows you to use the PDF services, perform operations with its usage history (if you are an admin), as well as authorize and update the token. You can find a detailed set of endpoints at <0>this link</0>."
+    },
+    "additionalInfo": {
+      "title": "More info about API",
+      "description": "When sending a request for endpoints, you need to add an authorisation token to the header. This token can be obtained after Log-In. The data is transmitted via <1>x-www-form-urlencoded</1>."
+    }
  },
   "back": "Back",
   "overview": {
@@ -114,7 +125,11 @@
     },
     "language": {
       "title": "Language Switching",
-      "description": "Switch between English and Slovensky on the fly - no page reload needed."
+      "description": "Switch between English and Slovak on the fly - no page reload needed."
+    },
+    "tokenRefreshing": {
+      "title": "Token Refresh",
+      "description": "There is a button on the page which, when clicked, updates the token responsible for user authorisation. By default you can use the page for half an hour, after which you will be thrown out of it, you can extend the session by clicking on this button."
     }
   },
   "login": {

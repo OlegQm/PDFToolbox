@@ -81,19 +81,30 @@
   "fileNotSelected": "Žiadny súbor nevybraný",
 
  "instructions": {
-   "title": "Ako používať",
-   "rotate":          "Otočí strany vášho PDF o zadaný počet stupňov (vyžadujú najprv odovzdanie PDF).",
-   "extractPages":    "Extrahuje vybrané strany z PDF do nového súboru (vyžadujú najprv odovzdanie PDF).",
-   "mergePdfs":       "Zlúči viacero PDF do jedného dokumentu.",
-   "splitPdf":        "Rozdelí PDF na samostatné súbory podľa čísiel strán (vyžadujú najprv odovzdanie PDF).",
-   "imagesToPdf":     "Prevedie jednu alebo viac obrázkov na PDF dokument.",
-   "addPageNumbers":  "Pridá poradové čísla strán do vášho PDF (vyžadujú najprv odovzdanie PDF).",
-   "addWatermark":    "Umietni polopriehľadný vodoznak na každú stranu PDF (vyžadujú najprv odovzdanie PDF).",
-   "removePages":     "Odstráni špecifické strany z vášho PDF (vyžadujú najprv odovzdanie PDF).",
-   "urlToPdf":        "Načíta webovú stránku podľa URL a uloží ju ako PDF.",
-   "compressPdf":     "Zmenší veľkosť PDF kompresiou (vyžadujú najprv odovzdanie PDF).",
+   "title": "PDF Služby",
+   "rotate":          "Otočí strany vášho PDF o zadaný počet stupňov (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/rotate-pdf</strong>",
+   "extractPages":    "Extrahuje vybrané strany z PDF do nového súboru (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/extract-pages</strong>",
+   "mergePdfs":       "Zlúči viacero PDF do jedného dokumentu.<br/><strong>Endpoint: /api/merge-pdfs</strong>",
+   "splitPdf":        "Rozdelí PDF na samostatné súbory podľa čísiel strán (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/split-pdf</strong>",
+   "imagesToPdf":     "Prevedie jednu alebo viac obrázkov na PDF dokument.<br/><strong>Endpoint: /api/images-to-pdf</strong>",
+   "addPageNumbers":  "Pridá poradové čísla strán do vášho PDF (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/add-page-numbers</strong>",
+   "addWatermark":    "Umietni polopriehľadný vodoznak na každú stranu PDF (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/add-watermark</strong>",
+   "removePages":     "Odstráni špecifické strany z vášho PDF (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/remove-pages</strong>",
+   "urlToPdf":        "Načíta webovú stránku podľa URL a uloží ju ako PDF.<br/><strong>Endpoint: /api/url-to-pdf</strong>",
+   "compressPdf":     "Zmenší veľkosť PDF kompresiou (vyžadujú najprv odovzdanie PDF).<br/><strong>Endpoint: /api/compress-pdf</strong>",
    "overviewTitle": "Prehľad funkcií"
  },
+ "api": {
+    "overviewTitle": "Opis API",
+    "generalInfo": {
+      "title": "Všeobecné informácie o API",
+      "description": "Všetky funkcie aplikácie sú dostupné aj prostredníctvom API, pomocou ktorého môžete využívať PDF-služby, vykonávať operácie s históriou jej používania (ak ste admin), ako aj autorizovať a aktualizovať token. Podrobnú sadu endpointov nájdete na <0>tomto odkaze</0>."
+    },
+    "additionalInfo": {
+      "title": "Ďalšie informácie o API",
+      "description": "Pri odosielaní požiadavky na koncové body je potrebné do hlavičky pridať autorizačný token. Tento token môžete získať po prihlásení. Údaje sa prenášajú prostredníctvom <1>x-www-form-urlencoded</1>."
+    }
+  },
   "back": "Späť",
   "overview": {
     "pdfServices": {
@@ -115,6 +126,10 @@
     "language": {
       "title": "Prepínanie jazyka",
       "description": "Prepínajte medzi angličtinou a slovenčinou bez potreby obnovy stránky."
+    },
+    "tokenRefreshing": {
+      "title": "Obnovenie tokenu",
+      "description": "Na stránke sa nachádza tlačidlo, po kliknutí na ktoré sa aktualizuje token zodpovedný za autorizáciu používateľa. V predvolenom nastavení môžete stránku používať pol hodiny, po ktorej budete vyhodení, reláciu môžete predĺžiť kliknutím na toto tlačidlo."
     }
   },
   "login": {

@@ -12,7 +12,7 @@ import globe from "./assets/planet.png";
 import refresh from "./assets/refresh_token.png"
 
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
 
 function getTokenExpiration(token) {
@@ -112,7 +112,7 @@ export default function App() {
       throw new Error("You must LOG IN before using services!");
     }
 
-    const res = await fetch(`${BASE_URL}/api${path}`, {
+    const res = await fetch(`${BASE_URL}api${path}`, {
       method: "POST",
       body: form,
       headers: {
@@ -159,12 +159,21 @@ export default function App() {
       setError(`File ${notPdf.name} is not a PDF.`);
       return;
     }
-    setMergeFiles(arr);
+    setMergeFiles(prev => {
+      const newFiles = Array.from(e.target.files);
+      const merged = [...prev, ...newFiles];
+      return Array.from(new Map(merged.map(f => [f.name, f])).values());
+    });
     setError("");
     setDownloadUrl("");
   };
 
-  const handleImageFiles = (e) => { setImageFiles(Array.from(e.target.files)); setError(""); setDownloadUrl(""); };
+  const handleImageFiles = (e) => {
+    const newImgs = Array.from(e.target.files);
+    setImageFiles(prev => [...prev, ...newImgs]);
+    setError("");
+    setDownloadUrl("");
+  };
 
   const openTool = tool => {
     const noFileNeeded = canWorkWithoutMainFile.includes(tool.path);
@@ -248,7 +257,7 @@ export default function App() {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/api/authorization/regenerate-token`, {
+      const response = await fetch(`${BASE_URL}api/authorization/regenerate-token`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${currentToken}`,
@@ -270,8 +279,6 @@ export default function App() {
       }
 
       const data = await response.json();
-      console.log("Response from the server:", data);
-
       const newToken = data.access_token;
 
       if (!newToken || newToken === "undefined") {
