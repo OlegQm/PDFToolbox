@@ -279,8 +279,6 @@ export default function App() {
       }
 
       const data = await response.json();
-      console.log("Response from the server:", data);
-
       const newToken = data.access_token;
 
       if (!newToken || newToken === "undefined") {
