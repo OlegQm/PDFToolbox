@@ -156,6 +156,7 @@
     "errorTokenMissing": "Token missing — please log in again.",
     "cleared": "All history cleared.",
     "Yes": "Yes",
-    "No": "No"
+    "No": "No",
+    "Back": "Back"
   }
 }
