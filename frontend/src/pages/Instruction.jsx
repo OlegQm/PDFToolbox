@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Instruction.css';
+import globe from "../assets/planet.png";
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://node100.webte.fei.stuba.sk/PDFToolbox';
 
@@ -14,6 +15,7 @@ export default function InstructionPage() {
     const isAdmin = username === 'admin';
 
     const [loadingConvert, setLoadingConvert] = useState(false);
+    const [langOpen, setLangOpen] = useState(false);
 
     useEffect(() => {
         if (!token || !username) {
@@ -103,14 +105,32 @@ export default function InstructionPage() {
                     ← {t('back')}
                 </button>
 
-                <select
-                    className="language-select"
-                    value={i18n.language}
-                    onChange={e => i18n.changeLanguage(e.target.value)}
-                >
-                    <option value="en">ENGLISH</option>
-                    <option value="sk">SLOVENČINA</option>
-                </select>
+                <div className="lang-switcher-instruction">
+                    <button
+                        type="button"
+                        className="language-btn"
+                        onClick={() => setLangOpen(open => !open)}
+                    >
+                        <img src={globe} alt="Language" width="24" height="24" className="icon-img"/>
+                        {i18n.language.toUpperCase()}
+                    </button>
+
+                    {langOpen && (
+                        <ul className="lang-menu">
+                            <li onClick={() => {
+                                i18n.changeLanguage('en');
+                                setLangOpen(false);
+                            }}>English
+                            </li>
+                            <li onClick={() => {
+                                i18n.changeLanguage('sk');
+                                setLangOpen(false);
+                            }}>Slovenčina
+                            </li>
+                        </ul>
+                    )}
+                </div>
+
 
                 <button
                     className="convert-btn"
@@ -125,7 +145,7 @@ export default function InstructionPage() {
             <aside className="section-card">
                 <h1>{t('instructions.title')}</h1>
                 <ul className="instruction-list">
-                    {services.map(({ emoji, key, requiresUpload }) => (
+                    {services.map(({emoji, key, requiresUpload}) => (
                         <li className="instruction-item" key={key}>
                             <div className="instruction-emoji">{emoji}</div>
                             <div className="instruction-content">
