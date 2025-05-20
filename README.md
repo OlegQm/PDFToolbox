@@ -1,70 +1,70 @@
 # PDFToolbox
 
-## Начало работы
+## Getting Started
 
-### Необходимые компоненты
+### Required Components
 - [Git](https://git-scm.com/downloads)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-### Системные требования
-- Свободное место: 5–8 ГБ
-- Оперативная память: минимум 2 ГБ
+### System Requirements
+- Free space: 5 GB
+- RAM: at least 2 GB
 
-## Установка и запуск
+## Installation and Launch
 
-1. **Клонировать репозиторий:**
+1. **Clone the repository:**
 
     ```bash
     git clone https://github.com/OlegQm/PDFToolbox.git
     ```
 
-2. **Перейти в папку проекта:**
+2. **Go to the project folder:**
 
     ```bash
     cd PDFToolbox
     ```
 
-3. **Запустить контейнеры:**
+3. **Start the containers:**
 
     ```bash
     docker compose up --build
     ```
 
-4. **Открыть в браузере:**
+4. **Open in browser:**
 
-    4.1. **Фронтенд**  
-    &nbsp;&nbsp;&nbsp;&nbsp;• Локально: `http://localhost:3001`  
-    &nbsp;&nbsp;&nbsp;&nbsp;• На сервере: `https://node100.webte.fei.stuba.sk/PDFToolbox/`
+    4.1. **Frontend**
+    &nbsp;&nbsp;&nbsp;&nbsp;• Locally: `http://localhost:3001`
+    &nbsp;&nbsp;&nbsp;&nbsp;• On server: `https://node100.webte.fei.stuba.sk/PDFToolbox/`
 
-    4.2. **Бэкенд (API)**  
-    &nbsp;&nbsp;&nbsp;&nbsp;• Локально:  
+    4.2. **Backend (API)**
+    &nbsp;&nbsp;&nbsp;&nbsp;• Locally:
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`http://localhost:8000/api`  
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`http://localhost:8000/api/docs` — если нужна документация  
-    &nbsp;&nbsp;&nbsp;&nbsp;• На сервере:  
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api`  
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs` — если нужна документация
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`http://localhost:8000/api/docs` — for documentation
+    &nbsp;&nbsp;&nbsp;&nbsp;• On server:
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api`
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`https://node100.webte.fei.stuba.sk/PDFToolbox/api/docs` — for documentation
 
     4.3. **MongoDB**  
     &nbsp;&nbsp;&nbsp;&nbsp;• URI: `mongodb://mongodb:27017`
 
-5. **Остановить приложение:**
+5. **Stop the application:**
 
-    Нажмите `Ctrl + C` или выполните команду:
+    Press `Ctrl + C` or run the command:
 
     ```bash
     docker compose down
     ```
 
-6. **Перезапустить приложение:**
+6. **Restart the application:**
 
     ```bash
     docker compose down && docker compose up --build
     ```
 
-## Полезные команды
-#### Очистить файлы Docker-а
+## Useful Commands
+#### Clean Docker files
 - `docker compose down --volumes --remove-orphans`
 - `docker system prune -a --volumes -f`
-- При проблемах с Docker (если не очистит) — переустановить Docker Desktop
-#### Посмотреть логи приложения в Docker:
+- If you have issues with Docker (if not cleaned) — reinstall Docker Desktop
+#### View application logs in Docker:
 - `docker compose logs -f`
