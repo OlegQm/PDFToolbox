@@ -11,7 +11,6 @@ import infoGif from "./assets/info.png";
 import globe from "./assets/planet.png";
 import refresh from "./assets/refresh_token.png"
 
-
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/";
 const canWorkWithoutMainFile = ["/images-to-pdf", "/url-to-pdf", "/merge-pdfs"]
 
