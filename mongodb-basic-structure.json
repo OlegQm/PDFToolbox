@@ -1,0 +1,27 @@
+{
+  "users": [
+        {
+            "_id": {
+                    "$oid":"6824760426730b32845b5880"
+                },
+            "username": "admin",
+            "password": "$2b$12$BKzmpa2MegLXO6nc96MGpe1esAJPM1pSDk8R0hqaOIPgZLXPx/wR6",
+            "is_admin": true
+        }
+    ],
+  "usage_history":
+    [
+        {
+            "_id": {
+                "$oid":"682cd2d359cf96a0be952997"
+            },
+            "username": "admin",
+            "action":"Clear history collection",
+            "city":"Bratislava",
+            "country":"Slovakia",
+            "timestamp": {
+                "$date":"2025-05-20T19:06:59.425Z"
+            }
+        }
+    ]
+}
